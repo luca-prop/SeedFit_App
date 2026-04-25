@@ -29,17 +29,16 @@ const REPORT_DATA = [
 ];
 
 /**
- * 심층 분석 리포트 (Deep Analysis Report) — Mobile-First
+ * 심층 분석 리포트 (Deep Analysis Report) — Unified 3-Column Table
  * 
  * @description
  * 재개발 구역과 기축 아파트의 투자 구조 및 미래 가치를 상세하게 테이블 형태로 비교합니다.
  * 하드코딩된 HTML 반복을 줄이고, `REPORT_DATA` 배열을 순회하며 동적으로 렌더링(Data-Driven)합니다.
  * 부모 페이지에서 "리포트 보기" 버튼을 클릭했을 때 조건부로 렌더링되며 fade-in 애니메이션을 동반합니다.
  * 
- * @mobile_first
- * - 모바일: 각 행을 독립된 카드로 표시하되, 내부 요소를 세로 스택(수직 정렬)으로 배치하여 가독성 강화.
- * - 모바일에서 highlight 색상을 텍스트는 기본색, 배경에만 하늘색 음영 적용.
- * - md+: 기존 3열 테이블 레이아웃 유지
+ * @responsive
+ * - 모바일/데스크톱 모두 3열 테이블(구분, 재개발, 기축) 구조 유지 (가독성 향상 목적).
+ * - 모바일 뷰포트에서 내용이 잘리지 않도록 overflow-x-auto 및 폰트 사이즈(text-xs) 최적화.
  */
 export function DeepAnalysisReport() {
   return (
@@ -59,48 +58,26 @@ export function DeepAnalysisReport() {
               {section.title}
             </h3>
 
-            {/* 모바일 뷰 — 세로 스택형 리스트 (가독성 개선) */}
-            <div className="md:hidden space-y-3">
-              {section.rows.map((row, idx) => (
-                <div 
-                  key={idx} 
-                  className={`p-4 rounded-xl border ${row.highlight ? "bg-blue-50/50 border-blue-200" : "bg-white border-gray-100"}`}
-                >
-                  <p className="text-sm font-bold text-gray-800 mb-3">{row.label}</p>
-                  <div className="space-y-2">
-                    <div className="flex justify-between items-center border-b border-gray-100/50 pb-2">
-                      <span className="text-xs font-semibold text-gray-500">재개발 구역</span>
-                      <span className="text-base font-bold text-gray-900">{row.redev}</span>
-                    </div>
-                    <div className="flex justify-between items-center pt-1">
-                      <span className="text-xs font-semibold text-gray-500">기축 아파트</span>
-                      <span className="text-base font-semibold text-gray-600">{row.apt}</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* 데스크톱 테이블 뷰 — md 이상 */}
-            <div className="hidden md:block border-t-2 border-gray-900">
-              <Table>
+            {/* 통합 3열 테이블 뷰 (모바일/데스크톱 공통 적용) */}
+            <div className="border-t-2 border-gray-900 overflow-x-auto pb-2">
+              <Table className="min-w-[320px]">
                 <TableHeader>
                   <TableRow className="hover:bg-transparent border-b border-gray-200">
-                    <TableHead className="w-1/3 font-semibold text-gray-600 align-middle">구분</TableHead>
-                    <TableHead className="w-1/3 font-semibold text-gray-900 text-center align-middle">재개발 구역</TableHead>
-                    <TableHead className="w-1/3 font-semibold text-gray-900 text-center align-middle">기축 아파트 (평균)</TableHead>
+                    <TableHead className="w-[34%] font-semibold text-gray-600 align-middle text-xs md:text-sm px-2 md:px-4 break-keep">구분</TableHead>
+                    <TableHead className="w-[33%] font-semibold text-gray-900 text-center align-middle text-xs md:text-sm px-2 md:px-4 break-keep">재개발 구역</TableHead>
+                    <TableHead className="w-[33%] font-semibold text-gray-900 text-center align-middle text-xs md:text-sm px-2 md:px-4 break-keep">기축 아파트 (평균)</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {section.rows.map((row, idx) => (
-                    <TableRow key={idx} className={`border-b border-gray-100 ${row.highlight ? "bg-blue-50/50" : ""}`}>
-                      <TableCell className="py-4 font-medium text-gray-600">
+                    <TableRow key={idx} className={`border-b border-gray-100 ${row.highlight ? "bg-blue-50/40" : ""}`}>
+                      <TableCell className="py-3 md:py-4 font-medium text-gray-600 text-xs md:text-sm px-2 md:px-4 break-keep">
                         {row.label}
                       </TableCell>
-                      <TableCell className="text-center py-4 font-bold text-gray-900">
+                      <TableCell className="text-center py-3 md:py-4 font-bold text-gray-900 text-xs md:text-sm px-2 md:px-4 break-keep">
                         {row.redev}
                       </TableCell>
-                      <TableCell className="text-center py-4 font-semibold text-gray-700">
+                      <TableCell className="text-center py-3 md:py-4 font-semibold text-gray-700 text-xs md:text-sm px-2 md:px-4 break-keep">
                         {row.apt}
                       </TableCell>
                     </TableRow>
