@@ -41,16 +41,16 @@ graph TD
     E1 --> U5(Badge UI)
 
     %% Shared UI Primitives
-    subgraph Shared UI (components/ui/)
+    subgraph Shared_UI ["Shared UI (components/ui/)"]
         U1(MetricCard)
-        U2(Dialog / Button / Input)
+        U2("Dialog / Button / Input")
         U3(Table)
         U4(Pagination)
-        U5(Badge / Card)
+        U5("Badge / Card")
         U6(KeyValueRow)
     end
 
-    subgraph Domain UI (components/domain/)
+    subgraph Domain_UI ["Domain UI (components/domain/)"]
         D2
         D4
     end
