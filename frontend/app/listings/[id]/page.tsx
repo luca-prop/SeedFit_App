@@ -94,7 +94,7 @@ export default function ListingsPage() {
                             </DialogHeader>
                             <div className="py-4 space-y-4">
                               <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
-                                <h4 className="font-bold text-gray-900 mb-1">씨드핀 전속 파트너 공인중개사</h4>
+                                <h4 className="font-bold text-gray-900 mb-1">씨드핏 전속 파트너 공인중개사</h4>
                                 <p className="text-sm text-gray-600 mb-2">대표: 김중개</p>
                                 <p className="text-xl font-bold text-blue-600 tracking-tight">010-1234-5678</p>
                               </div>
