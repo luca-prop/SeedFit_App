@@ -44,7 +44,7 @@ const labelVariants = cva(
 );
 
 const valueVariants = cva(
-  "text-xl font-bold tracking-tight",
+  "text-lg md:text-xl font-bold tracking-tight",
   {
     variants: {
       highlight: {
