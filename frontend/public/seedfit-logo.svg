@@ -1,0 +1,11 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <clipPath id="seed">
+    <path d="M120,410 C 60,220 220,60 410,120 C 470,310 310,470 120,410 Z" />
+  </clipPath>
+  <!-- Dark blue seed base -->
+  <path d="M120,410 C 60,220 220,60 410,120 C 470,310 310,470 120,410 Z" fill="#0A5B94" />
+  <!-- Light blue S-curve -->
+  <path d="M 330,80 C 130,80 60,200 220,250 C 380,300 380,430 180,430" fill="none" stroke="#2F9ADB" stroke-width="110" stroke-linecap="round" clip-path="url(#seed)" />
+  <!-- FIT text -->
+  <text x="265" y="285" font-family="'Inter', 'Arial', sans-serif" font-size="140" font-weight="900" fill="white" text-anchor="middle" dominant-baseline="middle" letter-spacing="4">FIT</text>
+</svg>

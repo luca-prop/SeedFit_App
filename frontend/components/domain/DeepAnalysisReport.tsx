@@ -37,8 +37,8 @@ const REPORT_DATA = [
  * 부모 페이지에서 "리포트 보기" 버튼을 클릭했을 때 조건부로 렌더링되며 fade-in 애니메이션을 동반합니다.
  * 
  * @mobile_first
- * - 모바일: 테이블을 가로 스크롤 가능한 래퍼로 감싸 잘림 방지
- * - 모바일 카드형 대체 뷰: 각 행을 독립된 카드로 표시하여 가독성 확보
+ * - 모바일: 각 행을 독립된 카드로 표시하되, 내부 요소를 세로 스택(수직 정렬)으로 배치하여 가독성 강화.
+ * - 모바일에서 highlight 색상을 텍스트는 기본색, 배경에만 하늘색 음영 적용.
  * - md+: 기존 3열 테이블 레이아웃 유지
  */
 export function DeepAnalysisReport() {
@@ -59,24 +59,22 @@ export function DeepAnalysisReport() {
               {section.title}
             </h3>
 
-            {/* 모바일 카드형 뷰 — md 미만 */}
+            {/* 모바일 뷰 — 세로 스택형 리스트 (가독성 개선) */}
             <div className="md:hidden space-y-3">
               {section.rows.map((row, idx) => (
                 <div 
                   key={idx} 
-                  className={`rounded-xl border p-4 ${row.highlight ? "bg-blue-50/50 border-blue-200" : "bg-white border-gray-100"}`}
+                  className={`p-4 rounded-xl border ${row.highlight ? "bg-blue-50/50 border-blue-200" : "bg-white border-gray-100"}`}
                 >
-                  <p className={`text-xs font-semibold uppercase tracking-wider mb-2 ${row.highlight ? "text-blue-600" : "text-gray-500"}`}>
-                    {row.label}
-                  </p>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <p className="text-[10px] text-gray-400 mb-0.5">재개발 구역</p>
-                      <p className={`text-lg font-bold ${row.highlight ? "text-blue-700" : "text-gray-900"}`}>{row.redev}</p>
+                  <p className="text-sm font-bold text-gray-800 mb-3">{row.label}</p>
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center border-b border-gray-100/50 pb-2">
+                      <span className="text-xs font-semibold text-gray-500">재개발 구역</span>
+                      <span className="text-base font-bold text-gray-900">{row.redev}</span>
                     </div>
-                    <div>
-                      <p className="text-[10px] text-gray-400 mb-0.5">기축 아파트</p>
-                      <p className="text-lg font-bold text-gray-900">{row.apt}</p>
+                    <div className="flex justify-between items-center pt-1">
+                      <span className="text-xs font-semibold text-gray-500">기축 아파트</span>
+                      <span className="text-base font-semibold text-gray-600">{row.apt}</span>
                     </div>
                   </div>
                 </div>
@@ -95,14 +93,14 @@ export function DeepAnalysisReport() {
                 </TableHeader>
                 <TableBody>
                   {section.rows.map((row, idx) => (
-                    <TableRow key={idx} className={`border-b border-gray-100 ${row.highlight ? "bg-gray-50/50" : ""}`}>
-                      <TableCell className={`py-4 ${row.highlight ? "font-medium text-gray-900" : "font-medium text-gray-600"}`}>
+                    <TableRow key={idx} className={`border-b border-gray-100 ${row.highlight ? "bg-blue-50/50" : ""}`}>
+                      <TableCell className="py-4 font-medium text-gray-600">
                         {row.label}
                       </TableCell>
-                      <TableCell className={`text-center py-4 ${row.highlight ? "font-bold text-gray-900" : "font-semibold text-gray-900"}`}>
+                      <TableCell className="text-center py-4 font-bold text-gray-900">
                         {row.redev}
                       </TableCell>
-                      <TableCell className={`text-center py-4 ${row.highlight ? "font-semibold text-gray-900" : "font-semibold text-gray-900"}`}>
+                      <TableCell className="text-center py-4 font-semibold text-gray-700">
                         {row.apt}
                       </TableCell>
                     </TableRow>
