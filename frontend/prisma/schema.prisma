@@ -1,0 +1,21 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  // 로컬 개발 시에는 sqlite를 사용합니다.
+  // 배포 시(Supabase)에는 provider = "postgresql" 로 변경하고 DATABASE_URL 환경 변수를 설정합니다.
+  provider = "sqlite"
+}
+
+model User {
+  id    String @id @default(uuid())
+  email String @unique
+  name  String?
+}
