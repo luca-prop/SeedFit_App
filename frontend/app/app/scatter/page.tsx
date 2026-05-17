@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo, useCallback, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ArrowLeft, MapPin, X, SlidersHorizontal, ExternalLink, ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
+import { ArrowLeft, MapPin, X, SlidersHorizontal, ExternalLink, Maximize2, Minimize2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { scatterData } from "../../lib/scatterData";
@@ -202,11 +202,8 @@ function ScatterChartContent() {
   const [showAllZones, setShowAllZones] = useState(!(budgetMinParam || legacyBudget));
   const [pinnedData, setPinnedData] = useState<any>(null);
 
-  // 모바일 줌 레벨 (item 3: 핀치 줌 대체)
-  const [zoomLevel, setZoomLevel] = useState(1);
-  const handleZoomIn = useCallback(() => setZoomLevel((z) => Math.min(z + 0.5, 3)), []);
-  const handleZoomOut = useCallback(() => setZoomLevel((z) => Math.max(z - 0.5, 1)), []);
-  const handleZoomReset = useCallback(() => setZoomLevel(1), []);
+  // 모바일 자동 줌 토글 (도메인 기반)
+  const [mobileAutoZoom, setMobileAutoZoom] = useState(true);
 
   // 모바일 감지: X축 라벨 축약용 (item 2-B)
   const [isMobile, setIsMobile] = useState(false);
@@ -280,12 +277,82 @@ function ScatterChartContent() {
     return applyPositionDodge(data);
   }, [hasBudget, budgetMinEok, budgetMaxEok, showAllZones, selectedDistrict, activeDistricts]);
 
+  // 모바일 자동 줌 도메인: 예산 범위 구역이 화면의 85%를 차지하도록
+  const autoZoomDomains = useMemo(() => {
+    if (!isMobile || !hasBudget || !mobileAutoZoom) return null;
+    const budgetZones = displayData.filter((d: any) => !d.isOut && !d.isRef);
+    if (budgetZones.length === 0) return null;
+
+    const stages = budgetZones.map((d: any) => d.stage);
+    const invMins = budgetZones.map((d: any) => d.investmentMin);
+    const invMaxs = budgetZones.map((d: any) => d.investmentMax);
+
+    const sMin = Math.min(...stages);
+    const sMax = Math.max(...stages);
+    const iMin = Math.min(...invMins);
+    const iMax = Math.max(...invMaxs);
+
+    // 패딩 15%: 구역이 화면의 ~85% 차지
+    const sPad = Math.max((sMax - sMin) * 0.15, 0.8);
+    const iPad = Math.max((iMax - iMin) * 0.15, 1);
+
+    return {
+      x: [Math.max(0.5, Math.floor(sMin - sPad)), Math.min(9.5, Math.ceil(sMax + sPad))] as [number, number],
+      y: [Math.max(0, Math.floor(iMin - iPad)), Math.ceil(iMax + iPad)] as [number, number],
+    };
+  }, [isMobile, hasBudget, mobileAutoZoom, displayData]);
+
   const handlePointClick = useCallback((payload: any) => {
     setPinnedData(payload);
   }, []);
 
-  // 호버 툴팁 완전 비활성화 — 클릭(핀) 방식만 사용 (item 2 피드백)
-  const renderTooltip = useCallback(() => null, []);
+  // 웹: 호버 툴팁 표시 / 모바일: 비활성화 (클릭 핀 방식만)
+  const renderTooltip = useCallback(
+    ({ active, payload }: any) => {
+      if (isMobile) return null;
+      if (pinnedData) return null;
+      if (!active || !payload || !payload.length) return null;
+
+      const data = payload[0].payload;
+      if (data.isRef) {
+        return (
+          <div className="bg-white/95 backdrop-blur-sm p-4 rounded-xl shadow-xl border border-gray-100 min-w-[200px]">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="font-bold text-gray-900 text-lg">{data.name}</h3>
+              <span className="text-xs font-semibold px-2 py-1 rounded-full bg-purple-50 text-purple-600 border border-purple-100">
+                레퍼런스 단지
+              </span>
+            </div>
+            <div className="space-y-1.5 border-t border-gray-100 pt-2 mt-2">
+              <p className="text-sm text-gray-900 font-bold">
+                <span className="text-gray-400 font-normal mr-2">시세 (84타입)</span> {data.investmentMin}억
+              </p>
+            </div>
+          </div>
+        );
+      }
+      return (
+        <div className="bg-white/95 backdrop-blur-sm p-4 rounded-xl shadow-xl border border-gray-100 min-w-[220px]">
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="font-bold text-gray-900 text-lg">{data.name}</h3>
+            <span className="text-xs font-semibold px-2 py-1 rounded-full bg-indigo-50 text-indigo-600 border border-indigo-100">
+              {data.district}
+            </span>
+          </div>
+          <div className="space-y-1.5 border-t border-gray-100 pt-2 mt-2">
+            <p className="text-sm text-gray-600">
+              <span className="text-gray-400 mr-2">단계</span> {data.stageStr}
+            </p>
+            <p className="text-sm text-gray-900 font-bold">
+              <span className="text-gray-400 font-normal mr-2">투자금</span> {data.investmentMin}억 ~{" "}
+              {data.investmentMax}억
+            </p>
+          </div>
+        </div>
+      );
+    },
+    [pinnedData, isMobile]
+  );
 
   return (
     <div className="container mx-auto px-4 py-6 md:py-8 max-w-6xl min-h-screen flex flex-col bg-gray-50/30">
@@ -427,79 +494,63 @@ function ScatterChartContent() {
         </div>
       )}
 
-      {/* 줌 컨트롤 (모바일 전용) */}
-      {isMobile && (
+      {/* 모바일 줌 토글 */}
+      {isMobile && hasBudget && (
         <div className="mb-3 flex items-center justify-end gap-2">
-          <span className="text-xs text-gray-400 mr-1">{zoomLevel > 1 ? `${zoomLevel.toFixed(1)}x` : '확대/축소'}</span>
           <button
-            onClick={handleZoomOut}
-            disabled={zoomLevel <= 1}
-            className="p-2 rounded-xl bg-white border border-gray-200 shadow-sm hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+            onClick={() => setMobileAutoZoom(!mobileAutoZoom)}
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all ${
+              mobileAutoZoom
+                ? 'bg-indigo-600 text-white shadow-md'
+                : 'bg-white border border-gray-200 text-gray-600 shadow-sm'
+            }`}
           >
-            <ZoomOut className="h-4 w-4 text-gray-600" />
+            {mobileAutoZoom ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
+            {mobileAutoZoom ? '전체 보기' : '예산 맞춤 줌'}
           </button>
-          <button
-            onClick={handleZoomIn}
-            disabled={zoomLevel >= 3}
-            className="p-2 rounded-xl bg-white border border-gray-200 shadow-sm hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
-          >
-            <ZoomIn className="h-4 w-4 text-gray-600" />
-          </button>
-          {zoomLevel > 1 && (
-            <button
-              onClick={handleZoomReset}
-              className="p-2 rounded-xl bg-white border border-gray-200 shadow-sm hover:bg-gray-50 transition-all"
-            >
-              <RotateCcw className="h-4 w-4 text-gray-600" />
-            </button>
-          )}
         </div>
       )}
 
-      {/* Chart — 줌 적용 시 overflow-auto로 스크롤 가능 */}
+      {/* Chart */}
       <div
-        className={`w-full shadow-2xl border border-gray-100 bg-white rounded-[2rem] relative ${
-          zoomLevel > 1 ? 'overflow-auto' : 'overflow-visible'
-        }`}
+        className="w-full shadow-2xl border border-gray-100 bg-white rounded-[2rem] overflow-visible relative"
         style={{ height: isMobile ? '450px' : '600px' }}
         onClick={() => setPinnedData(null)}
       >
-        {/* Budget range highlight band */}
-        {hasBudget && (
-          <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-0 overflow-hidden rounded-[2rem]" />
-        )}
-        
-        <div style={{ width: `${100 * zoomLevel}%`, height: `${100 * zoomLevel}%`, minWidth: '100%', minHeight: '100%', padding: isMobile ? '8px' : '32px' }}>
+        <div style={{ width: '100%', height: '100%', padding: isMobile ? '8px' : '32px' }}>
         <ResponsiveContainer width="100%" height="100%">
-          <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 0 }}>
+          <ScatterChart margin={{ top: 20, right: 20, bottom: isMobile && autoZoomDomains ? 40 : 20, left: 0 }}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
 
             <XAxis
               type="number"
               dataKey="stageDodged"
-              domain={[0.5, 9.5]}
+              domain={autoZoomDomains ? autoZoomDomains.x : [0.5, 9.5]}
               ticks={[1, 2, 3, 4, 5, 6, 7, 8, 9]}
               tickFormatter={(val) => (isMobile ? STAGE_LABELS_SHORT : STAGE_LABELS)[val] || ""}
-              tick={{ fontSize: isMobile ? 11 : 13, fill: "#64748b", fontWeight: 600 }}
-              axisLine={{ stroke: "#f1f5f9" }}
+              tick={{ fontSize: isMobile ? 11 : 13, fill: autoZoomDomains ? '#94a3b880' : '#64748b', fontWeight: 600 }}
+              axisLine={{ stroke: '#f1f5f9' }}
               tickLine={false}
               dy={15}
             />
 
-            {/* Y축 자동 줌: 예산 범위 ±50% 포커싱 (item 2-A) */}
             <YAxis
               type="number"
               dataKey="avg"
               unit="억"
-              domain={[
-                hasBudget && !showAllZones
-                  ? Math.max(0, Math.floor(budgetMinEok * 0.5))
-                  : 0,
-                hasBudget && !showAllZones
-                  ? Math.ceil(budgetMaxEok * 1.8)
-                  : 32
-              ]}
-              tick={{ fontSize: 12, fill: "#94a3b8", fontWeight: 500 }}
+              domain={
+                autoZoomDomains
+                  ? autoZoomDomains.y
+                  : [
+                      hasBudget && !showAllZones
+                        ? Math.max(0, Math.floor(budgetMinEok * 0.5))
+                        : 0,
+                      hasBudget && !showAllZones
+                        ? Math.ceil(budgetMaxEok * 1.8)
+                        : 32
+                    ]
+              }
+              tick={{ fontSize: 12, fill: '#94a3b8', fontWeight: 500 }}
               axisLine={false}
               tickLine={false}
               dx={-10}
@@ -614,37 +665,47 @@ function ScatterChartContent() {
         )}
       </div>
 
+      {/* 모바일 자동 줌 시 하단 단계 바 (반투명 오버레이) */}
+      {isMobile && autoZoomDomains && (
+        <div className="mt-2 flex justify-between items-center bg-white/80 backdrop-blur-sm px-4 py-2.5 rounded-2xl border border-gray-100 shadow-sm">
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((s) => (
+            <span key={s} className="text-[10px] font-bold text-gray-400/70 text-center leading-tight">
+              {STAGE_LABELS_SHORT[s]}
+            </span>
+          ))}
+        </div>
+      )}
+
       {/* Legend */}
-      <div className="mt-8 flex flex-wrap gap-8 justify-center text-sm font-bold text-gray-500 bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
+      <div className="mt-4 md:mt-8 flex flex-wrap gap-4 md:gap-8 justify-center text-sm font-bold text-gray-500 bg-white p-4 md:p-5 rounded-2xl shadow-sm border border-gray-100">
         {Object.entries(TIER_COLORS)
           .filter(([k]) => k !== "T_REF")
           .map(([tier, color]) => (
-            <div key={tier} className="flex items-center gap-2.5">
-              {/* Dumbbell legend icon */}
-              <svg width="16" height="20" viewBox="0 0 16 20">
-                <circle cx="8" cy="3" r="3" fill={color} />
-                <line x1="8" y1="3" x2="8" y2="17" stroke={color} strokeWidth="2" />
-                <circle cx="8" cy="17" r="3" fill={color} />
+            <div key={tier} className="flex items-center gap-2">
+              <svg width="14" height="18" viewBox="0 0 14 18">
+                <circle cx="7" cy="3" r="2.5" fill={color} />
+                <line x1="7" y1="3" x2="7" y2="15" stroke={color} strokeWidth="1.5" />
+                <circle cx="7" cy="15" r="2.5" fill={color} />
               </svg>
-              <span>
+              <span className="text-xs md:text-sm">
                 {tier === "T1" ? "1~3억" : tier === "T2" ? "3~5억" : tier === "T3" ? "5~10억" : "10억+"}
               </span>
             </div>
           ))}
-        <div className="flex items-center gap-2.5 ml-4">
+        <div className="flex items-center gap-2">
           <div
-            className="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[10px] shadow-sm"
+            className="w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-b-[9px] shadow-sm"
             style={{ borderBottomColor: TIER_COLORS.T_REF }}
           />
-          <span>레퍼런스 기축 단지</span>
+          <span className="text-xs md:text-sm">레퍼런스 기축 단지</span>
         </div>
       </div>
 
       {/* Chart reading guide */}
-      <div className="mt-4 bg-white p-4 rounded-2xl shadow-sm border border-gray-100 text-center">
-        <p className="text-xs text-gray-400">
+      <div className="mt-3 md:mt-4 bg-white p-3 md:p-4 rounded-2xl shadow-sm border border-gray-100 text-center">
+        <p className="text-[11px] md:text-xs text-gray-400">
           💡 각 점은 재개발 구역의 <span className="font-semibold text-gray-600">실투자금 범위(Min~Max)</span>를 덤벨 형태로 표시합니다.
-          동일 단계의 구역은 좌우로 나란히 배치되어 겹침 없이 비교할 수 있습니다.
+          {isMobile ? '' : ' 동일 단계의 구역은 좌우로 나란히 배치되어 겹침 없이 비교할 수 있습니다.'}
         </p>
       </div>
     </div>
