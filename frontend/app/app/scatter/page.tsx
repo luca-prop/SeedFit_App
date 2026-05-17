@@ -531,8 +531,8 @@ function ScatterChartContent() {
               !(d.investmentMin > budgetMaxEok * 1.1 || d.investmentMax < budgetMinEok * 0.9)
             ).length
             : scatterData.filter((d) => d.district === district).length;
-          // 예산 필터 활성화 시 0개 구역인 구는 숨김 (전체 보기 모드 제외)
-          if (hasBudget && !showAllZones && budgetCount === 0 && !isActive) return null;
+          // 예산 필터 활성화 시 0개 구역인 구는 숨김 (활성 여부 무관)
+          if (hasBudget && !showAllZones && budgetCount === 0) return null;
           return (
             <button
               key={district}
@@ -598,9 +598,11 @@ function ScatterChartContent() {
                 type="number"
                 dataKey="stageDodged"
                 domain={autoZoomDomains ? autoZoomDomains.x : [0.5, 9.5]}
-                ticks={[1, 2, 3, 4, 5, 6, 7, 8, 9]}
+                ticks={autoZoomDomains
+                  ? [1,2,3,4,5,6,7,8,9].filter(s => s >= Math.ceil(autoZoomDomains.x[0]) && s <= Math.floor(autoZoomDomains.x[1]))
+                  : [1, 2, 3, 4, 5, 6, 7, 8, 9]}
                 tickFormatter={(val) => (isMobile ? STAGE_LABELS_SHORT : STAGE_LABELS)[val] || ""}
-                tick={autoZoomDomains ? false : { fontSize: isMobile ? 11 : 13, fill: '#64748b', fontWeight: 600 }}
+                tick={{ fontSize: isMobile ? 11 : 13, fill: '#64748b', fontWeight: 600 }}
                 axisLine={{ stroke: '#f1f5f9' }}
                 tickLine={false}
                 dy={15}
@@ -634,6 +636,7 @@ function ScatterChartContent() {
                 content={renderTooltip}
                 cursor={false}
                 trigger="hover"
+                wrapperStyle={{ outline: 'none', boxShadow: 'none' }}
               />
 
               {/* Budget range band as a reference area */}
