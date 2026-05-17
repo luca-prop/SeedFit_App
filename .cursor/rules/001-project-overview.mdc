@@ -1,0 +1,31 @@
+---
+description: SeedFit 프로젝트 개요 — 예산 맞춤 재개발 투자 분석 플랫폼
+globs: 
+alwaysApply: true
+---
+# PROJECT OVERVIEW: 씨드핏 (SeedFit)
+
+## Vision
+투자금(예산) 맞춤 재개발 투자 플랫폼. 내 예산을 입력하면 진입 가능한 재개발 구역을 비교 분석해주고, 파트너 중개사의 Verified 매물을 연결합니다.
+
+## Core Features (Phase 1 MVP)
+- ① Reverse Filter: 가용 현금 → 취득세·대출 역산 → 진입 가능 구역 자동 산출
+- ② 1:1 Comparison Dashboard: 기축 아파트 vs 재개발 심층 비교
+- ③ B2B Verified Listings: 교차검증 기반 Verified 뱃지 시스템
+- ④ Single Search Landing: 가용 현금 단일 입력창 UX
+- ⑤ Multi-Zone Scatter Chart: 사업단계 × 실투자금 Range 시각화
+
+## Target Audience
+- Primary (B2C): 스마트 비기너 — 30대 재개발 예비 투자자
+- Secondary (B2B): 공인중개사 — 디지털 브리핑 도구
+
+## Success Metrics
+- 가용 현금 쿼리 검색 완료율 ≥ 65%
+- Verified 매물 CTR ≥ 40%
+- 1:1 대시보드 체류 시간 ≥ 3분
+- 실투자금 오차율 ±5% 이내
+
+## Architecture Decisions
+- ADR-01: 역산 로직은 백엔드(Server-side) 처리
+- ADR-02: 기축 비교군은 Curated DB (자동 크롤링 금지)
+- ADR-03: LTV/DSR 정책 하드코딩 금지 (Admin Parameterization)

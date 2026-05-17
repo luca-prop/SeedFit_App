@@ -1,0 +1,28 @@
+---
+description: SeedFit 개발 가이드라인 및 아키텍처 원칙 (Next.js Full-stack)
+globs: 
+alwaysApply: true
+---
+# Development Guidelines
+
+## Version Control
+- System: Git + GitHub
+- Branching: Feature Branch Workflow
+- Commit: Conventional Commits (`feat:`, `fix:`, `docs:`, `refactor:`, `test:`)
+- GitHub Project 로드맵 연동
+
+## Architecture Principles
+- **Next.js Full-stack Monorepo**: 프론트엔드와 백엔드 기능을 통합 관리.
+- **Server-side Reverse Calculation**: 역산 로직은 브라우저에서 노출되지 않도록 반드시 `app/actions/` 내부의 Next.js Server Action에서 처리 (ADR-01)
+- **Curated DB**: 기축 비교군은 수동/반자동 큐레이션 (ADR-02)
+- **LTV Parameterization**: DB 저장 및 Admin 패널 관리 (ADR-03)
+
+## Performance Standards (SRS)
+- Reverse Filter Server Action: p95 ≤ 1.5s
+- Landing Render (LCP): ≤ 1.0s
+- Report Render: ≤ 0.5s
+
+## Code Quality
+- Comments: WHY 중심. 비즈니스 로직(역산, 검증)은 한국어
+- 핵심 비즈니스 로직은 반드시 단위 테스트 작성
+- 면책 조항: 모든 데이터 화면에 고정 노출
