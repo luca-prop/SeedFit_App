@@ -512,7 +512,7 @@ function ScatterChartContent() {
       x: [Math.max(0.5, Math.floor(sMin - sPad)), Math.min(9.5, Math.ceil(sMax + sPad))] as [number, number],
       y: [Math.max(0, Math.floor(iMin - iPad)), Math.ceil(iMax + iPad)] as [number, number],
     };
-  }, [isMobile, hasBudget, mobileAutoZoom, displayData]);
+  }, [hasBudget, autoZoomEnabled, displayData]);
 
   const handlePointClick = useCallback((payload: any) => {
     setPinnedData(payload);
