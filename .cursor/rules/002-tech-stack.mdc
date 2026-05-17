@@ -1,0 +1,28 @@
+---
+description: SeedFit 기술 스택 정의 (Next.js Full-stack)
+globs: 
+alwaysApply: true
+---
+# Technical Stack
+
+## Frontend & Backend Core
+- Framework: Next.js 16.x (App Router, Turbopack, Server Actions)
+- Language: TypeScript (strict mode)
+- Styling: Tailwind CSS + shadcn/ui (Radix primitives)
+- Charts: Recharts (scatter, bar, line)
+- State/Data: React Server Components (RSC) + React hooks (useState, useMemo)
+- ORM: Prisma
+- Database: Supabase (PostgreSQL) + RLS (Row Level Security)
+- Package Manager: npm
+
+## AI & Document Engine
+- Language: Python 3.10+
+- Framework: FastAPI
+- AI Orchestration: LangChain
+- LLM Provider: Google Gemini
+
+## Infrastructure
+- Hosting: Vercel (Edge Functions, Serverless)
+- Batch Jobs: Vercel Cron
+- Monitoring: Amplitude, Vercel Analytics, Datadog
+- Version Control: Git + GitHub Issues

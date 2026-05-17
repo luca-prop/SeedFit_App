@@ -1,0 +1,21 @@
+---
+description: Prisma ORM, Supabase RLS, 및 Next.js Server Actions 활용 규칙
+globs: "**/*.ts, **/*.tsx, prisma/schema.prisma"
+alwaysApply: false
+---
+# Prisma & Supabase & Server Actions Rules
+
+## Server Actions (`app/actions/*.ts`)
+- 파일 최상단에 `"use server"` 지시어 명시.
+- 데이터 조회 및 변경은 Prisma Client를 통해 수행.
+- Zod를 활용한 강력한 파라미터 검증 수행 후 로직 실행.
+- 응답 형태는 객체 `{ success: boolean, data?: any, error?: string }` 형식 유지.
+
+## Prisma Schema
+- `prisma/schema.prisma`를 단일 진실 공급원으로 유지.
+- Naming: Model은 PascalCase (`User`), DB Table은 snake_case (`@@map("users")`).
+- 변경 후 `npx prisma generate` 및 마이그레이션 실행.
+
+## Supabase RLS (Row Level Security)
+- 민감 정보(owner_contact, unit_number)는 테이블 RLS 정책을 통해 등록 중개사/Admin 외 접근 차단.
+- B2B용 데이터 접근 시 패스코드 및 세션 정보를 릴레이하여 RLS 검증 통과 여부 확인.
