@@ -336,8 +336,8 @@ function ScatterChartContent() {
   const [showAllZones, setShowAllZones] = useState(!(budgetMinParam || legacyBudget));
   const [pinnedData, setPinnedData] = useState<any>(null);
 
-  // 모바일 자동 줌 토글 (도메인 기반)
-  const [mobileAutoZoom, setMobileAutoZoom] = useState(true);
+  // 자동 줌 토글 (도메인 기반, 모바일/웹 공통 적용)
+  const [autoZoomEnabled, setAutoZoomEnabled] = useState(true);
 
   // 모바일 감지: X축 라벨 축약용 (item 2-B)
   const [isMobile, setIsMobile] = useState(false);
@@ -481,9 +481,9 @@ function ScatterChartContent() {
     return applyPositionDodge(data);
   }, [hasBudget, budgetMinEok, budgetMaxEok, showAllZones, selectedDistrict, activeDistricts, pinnedData]);
 
-  // 모바일 자동 줌 도메인: 예산 범위 구역이 화면의 85%를 차지하도록
+  // 자동 줌 도메인: 예산 범위 구역이 화면의 85%를 차지하도록
   const autoZoomDomains = useMemo(() => {
-    if (!isMobile || !hasBudget || !mobileAutoZoom) return null;
+    if (!hasBudget || !autoZoomEnabled) return null;
     const budgetZones = displayData.filter((d: any) => !d.isOut && !d.isRef);
     if (budgetZones.length === 0) return null;
 
@@ -710,18 +710,18 @@ function ScatterChartContent() {
         </div>
       )}
 
-      {/* 모바일 줌 토글 */}
-      {isMobile && hasBudget && (
+      {/* 줌 토글 (모바일/웹 공통) */}
+      {hasBudget && (
         <div className="mb-3 flex items-center justify-end gap-2">
           <button
-            onClick={() => setMobileAutoZoom(!mobileAutoZoom)}
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all ${mobileAutoZoom
+            onClick={() => setAutoZoomEnabled(!autoZoomEnabled)}
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all ${autoZoomEnabled
                 ? 'bg-indigo-600 text-white shadow-md'
                 : 'bg-white border border-gray-200 text-gray-600 shadow-sm'
               }`}
           >
-            {mobileAutoZoom ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
-            {mobileAutoZoom ? '전체 보기' : '예산 맞춤 줌'}
+            {autoZoomEnabled ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
+            {autoZoomEnabled ? '전체 보기' : '예산 맞춤 줌'}
           </button>
         </div>
       )}
