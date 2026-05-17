@@ -6,8 +6,8 @@ export const scatterData = [
     "tier": "T4",
     "stage": 4.1,
     "stageStr": "시공사선정",
-    "investmentMin": 13.0,
-    "investmentMax": 13.0
+    "investmentMin": 11.7,
+    "investmentMax": 12.5
   },
   {
     "id": "후암1구역(재건축)",
@@ -38,6 +38,16 @@ export const scatterData = [
     "stageStr": "정비구역지정",
     "investmentMin": 5.5,
     "investmentMax": 7.9
+  },
+  {
+    "id": "이촌1구역(재건축)",
+    "name": "이촌1구역(재건축)",
+    "district": "용산구",
+    "tier": "T4",
+    "stage": 2.1,
+    "stageStr": "정비구역지정",
+    "investmentMin": 11.5,
+    "investmentMax": 13.0
   },
   {
     "id": "동후암 1구역",
@@ -294,7 +304,7 @@ export const scatterData = [
     "name": "자양동 772-1(건대모아)",
     "district": "광진구",
     "tier": "T2",
-    "stage": 1.45,
+    "stage": 1.0,
     "stageStr": "(모아)관리계획수립",
     "investmentMin": 4.7,
     "investmentMax": 5.1
@@ -454,7 +464,7 @@ export const scatterData = [
     "name": "상도 21구역(모아타운)",
     "district": "동작구",
     "tier": "T2",
-    "stage": 2.0,
+    "stage": 1.0,
     "stageStr": "(모아)관리계획고시",
     "investmentMin": 4.5,
     "investmentMax": 5.0

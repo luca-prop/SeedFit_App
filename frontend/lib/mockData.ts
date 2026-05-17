@@ -13,7 +13,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
     name: "청파 1구역",
     district: "용산구",
     stage: "시공사선정",
-    minBudget: 1300000000,
+    minBudget: 1170000000,
     data: {
       "59": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억 (분양권)", refAptName: "이촌한가람  / 마포자이힐스테이트라첼스 30.6억" },
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억 (분양권)", refAptName: "이촌한가람  / 마포자이힐스테이트라첼스 30.6억" },
@@ -50,6 +50,16 @@ export const ZONE_DATA: Record<string, ZoneData> = {
     },
   },
   "zone-5": {
+    name: "이촌1구역(재건축)",
+    district: "용산구",
+    stage: "정비구역지정",
+    minBudget: 1150000000,
+    data: {
+      "59": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억 (분양권)", refAptName: "이촌한가람  / 마포자이힐스테이트라첼스 30.6억" },
+      "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억 (분양권)", refAptName: "이촌한가람  / 마포자이힐스테이트라첼스 30.6억" },
+    },
+  },
+  "zone-6": {
     name: "동후암 1구역",
     district: "용산구",
     stage: "신속통합기획 대상지 선정",
@@ -59,7 +69,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억 (분양권)", refAptName: "이촌한가람  / 마포자이힐스테이트라첼스 30.6억" },
     },
   },
-  "zone-6": {
+  "zone-7": {
     name: "동후암 3구역",
     district: "용산구",
     stage: "신속통합기획 대상지 선정",
@@ -69,7 +79,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억 (분양권)", refAptName: "이촌한가람  / 마포자이힐스테이트라첼스 30.6억" },
     },
   },
-  "zone-7": {
+  "zone-8": {
     name: "청파 3구역",
     district: "용산구",
     stage: "신속통합기획 대상지 선정",
@@ -79,7 +89,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억 (분양권)", refAptName: "이촌한가람  / 마포자이힐스테이트라첼스 30.6억" },
     },
   },
-  "zone-8": {
+  "zone-9": {
     name: "원효로3가 2-2",
     district: "용산구",
     stage: "신속통합기획 대상지 선정",
@@ -89,7 +99,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억", refAptName: "이촌한가람" },
     },
   },
-  "zone-9": {
+  "zone-10": {
     name: "용산 1구역",
     district: "용산구",
     stage: "신속통합기획 대상지 선정",
@@ -99,7 +109,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억 (분양권)", refAptName: "이촌한가람  / 마포자이힐스테이트라첼스 30.6억" },
     },
   },
-  "zone-10": {
+  "zone-11": {
     name: "남산 1구역",
     district: "용산구",
     stage: "신속통합기획 대상지 선정",
@@ -109,7 +119,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억 (분양권)", refAptName: "이촌한가람  / 마포자이힐스테이트라첼스 30.6억" },
     },
   },
-  "zone-11": {
+  "zone-12": {
     name: "용산 3구역",
     district: "용산구",
     stage: "신속통합기획 대상지 선정",
@@ -119,7 +129,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억 (분양권)", refAptName: "이촌한가람  / 마포자이힐스테이트라첼스 30.6억" },
     },
   },
-  "zone-12": {
+  "zone-13": {
     name: "이태원 1구역",
     district: "용산구",
     stage: "신속통합기획 대상지 선정",
@@ -129,7 +139,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억 (분양권)", refAptName: "이촌한가람  / 마포자이힐스테이트라첼스 30.6억" },
     },
   },
-  "zone-13": {
+  "zone-14": {
     name: "남산 3구역",
     district: "용산구",
     stage: "연번 부여",
@@ -139,7 +149,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억 (분양권)", refAptName: "이촌한가람  / 마포자이힐스테이트라첼스 30.6억" },
     },
   },
-  "zone-14": {
+  "zone-15": {
     name: "용산 4구역",
     district: "용산구",
     stage: "연번 부여",
@@ -149,7 +159,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억 (분양권)", refAptName: "이촌한가람  / 마포자이힐스테이트라첼스 30.6억" },
     },
   },
-  "zone-15": {
+  "zone-16": {
     name: "남산 2구역",
     district: "용산구",
     stage: "연변 부여",
@@ -159,7 +169,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억 (분양권)", refAptName: "이촌한가람  / 마포자이힐스테이트라첼스 30.6억" },
     },
   },
-  "zone-16": {
+  "zone-17": {
     name: "동후암 2구역",
     district: "용산구",
     stage: "연번 부여",
@@ -169,7 +179,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억 (분양권)", refAptName: "이촌한가람  / 마포자이힐스테이트라첼스 30.6억" },
     },
   },
-  "zone-17": {
+  "zone-18": {
     name: "원효로3가 1구역",
     district: "용산구",
     stage: "연번 부여",
@@ -179,7 +189,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억", refAptName: "이촌한가람" },
     },
   },
-  "zone-18": {
+  "zone-19": {
     name: "금호 16구역",
     district: "성동구",
     stage: "관리처분인가",
@@ -189,7 +199,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "27.5억", refAptName: "옥수파크힐스" },
     },
   },
-  "zone-19": {
+  "zone-20": {
     name: "금호 21구역",
     district: "성동구",
     stage: "시공사 선정",
@@ -199,7 +209,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "27.5억", refAptName: "옥수파크힐스" },
     },
   },
-  "zone-20": {
+  "zone-21": {
     name: "용답 2구역",
     district: "성동구",
     stage: "신속통합기획 대상지 선정",
@@ -209,7 +219,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "20.3억 (분양권)", refAptName: "성동리버뷰자이" },
     },
   },
-  "zone-21": {
+  "zone-22": {
     name: "사근동 190-2",
     district: "성동구",
     stage: "연번 부여",
@@ -219,7 +229,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "27억", refAptName: "라체르보푸르지오써밋" },
     },
   },
-  "zone-22": {
+  "zone-23": {
     name: "금호 22구역",
     district: "성동구",
     stage: "연번 부여",
@@ -229,7 +239,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "27.5억", refAptName: "옥수파크힐스" },
     },
   },
-  "zone-23": {
+  "zone-24": {
     name: "용답 1구역",
     district: "성동구",
     stage: "연번 부여",
@@ -239,7 +249,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "20.3억 (분양권)", refAptName: "성동리버뷰자이" },
     },
   },
-  "zone-24": {
+  "zone-25": {
     name: "금호 23구역",
     district: "성동구",
     stage: "연번 부여",
@@ -249,7 +259,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "27.5억", refAptName: "옥수파크힐스" },
     },
   },
-  "zone-25": {
+  "zone-26": {
     name: "자양 7구역",
     district: "광진구",
     stage: "시공사 선정",
@@ -259,7 +269,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "26.8억", refAptName: "롯데캐슬이스트폴" },
     },
   },
-  "zone-26": {
+  "zone-27": {
     name: "자양4동 A구역",
     district: "광진구",
     stage: "정비구역 지정",
@@ -269,7 +279,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "26.8억", refAptName: "롯데캐슬이스트폴" },
     },
   },
-  "zone-27": {
+  "zone-28": {
     name: "자양2동 681(모아타운)",
     district: "광진구",
     stage: "(모아)통합심의통과",
@@ -279,7 +289,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "26.8억", refAptName: "롯데캐슬이스트폴" },
     },
   },
-  "zone-28": {
+  "zone-29": {
     name: "자양1동 779(모아타운)",
     district: "광진구",
     stage: "(모아)통합심의통과",
@@ -289,7 +299,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "26.8억", refAptName: "롯데캐슬이스트폴" },
     },
   },
-  "zone-29": {
+  "zone-30": {
     name: "자양2동 649(B)(모아타운)",
     district: "광진구",
     stage: "(모아)통합심의통과",
@@ -299,7 +309,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "26.8억", refAptName: "롯데캐슬이스트폴" },
     },
   },
-  "zone-30": {
+  "zone-31": {
     name: "자양동 772-1(건대모아)",
     district: "광진구",
     stage: "(모아)관리계획수립",
@@ -309,7 +319,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "26.8억", refAptName: "롯데캐슬이스트폴" },
     },
   },
-  "zone-31": {
+  "zone-32": {
     name: "자양동 227-147",
     district: "광진구",
     stage: "정비구역 지정",
@@ -319,7 +329,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "26.8억", refAptName: "롯데캐슬이스트폴" },
     },
   },
-  "zone-32": {
+  "zone-33": {
     name: "중곡 1구역(A5)",
     district: "광진구",
     stage: "신속통합기획 완료",
@@ -329,7 +339,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "20억", refAptName: "래미안구의파크스위트" },
     },
   },
-  "zone-33": {
+  "zone-34": {
     name: "구의동 46",
     district: "광진구",
     stage: "신속통합기획 대상지 선정",
@@ -339,7 +349,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "20억", refAptName: "래미안구의파크스위트" },
     },
   },
-  "zone-34": {
+  "zone-35": {
     name: "자양2동 663(C)(모아타운)",
     district: "광진구",
     stage: "(모아)대상지 선정",
@@ -349,7 +359,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "26.8억", refAptName: "롯데캐슬이스트폴" },
     },
   },
-  "zone-35": {
+  "zone-36": {
     name: "자양1동 593(A)(모아타운)",
     district: "광진구",
     stage: "(모아)대상지 선정",
@@ -359,7 +369,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "26.8억", refAptName: "롯데캐슬이스트폴" },
     },
   },
-  "zone-36": {
+  "zone-37": {
     name: "중곡동 232-1(A4)",
     district: "광진구",
     stage: "신속통합기획 대상지 선정",
@@ -369,7 +379,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "20억", refAptName: "래미안구의파크스위트" },
     },
   },
-  "zone-37": {
+  "zone-38": {
     name: "구의1동 221-1",
     district: "광진구",
     stage: "연번 부여",
@@ -379,7 +389,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "20억", refAptName: "래미안구의파크스위트" },
     },
   },
-  "zone-38": {
+  "zone-39": {
     name: "구의동 32",
     district: "광진구",
     stage: "연번 부여",
@@ -389,7 +399,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "20억", refAptName: "래미안구의파크스위트" },
     },
   },
-  "zone-39": {
+  "zone-40": {
     name: "자양동 629(모아타운)",
     district: "광진구",
     stage: "추진준비",
@@ -399,7 +409,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "26.8억", refAptName: "롯데캐슬이스트폴" },
     },
   },
-  "zone-40": {
+  "zone-41": {
     name: "사당 5구역(재건축)",
     district: "동작구",
     stage: "사업시행인가",
@@ -409,7 +419,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "22.5억", refAptName: "래미안로이파크" },
     },
   },
-  "zone-41": {
+  "zone-42": {
     name: "상도 15구역",
     district: "동작구",
     stage: "사업시행자 지정",
@@ -419,7 +429,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "22.6억", refAptName: "e편한세상상도노빌리티" },
     },
   },
-  "zone-42": {
+  "zone-43": {
     name: "상도 14구역",
     district: "동작구",
     stage: "사업시행자 지정",
@@ -429,7 +439,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "22.6억", refAptName: "e편한세상상도노빌리티" },
     },
   },
-  "zone-43": {
+  "zone-44": {
     name: "사당 17구역",
     district: "동작구",
     stage: "추진위 승인",
@@ -439,7 +449,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "22.5억", refAptName: "래미안로이파크" },
     },
   },
-  "zone-44": {
+  "zone-45": {
     name: "사당 12구역",
     district: "동작구",
     stage: "추진위 승인",
@@ -449,7 +459,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "22.5억", refAptName: "래미안로이파크" },
     },
   },
-  "zone-45": {
+  "zone-46": {
     name: "상도 16구역",
     district: "동작구",
     stage: "추진위 승인",
@@ -459,7 +469,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "22.6억", refAptName: "e편한세상상도노빌리티" },
     },
   },
-  "zone-46": {
+  "zone-47": {
     name: "상도 21구역(모아타운)",
     district: "동작구",
     stage: "(모아)관리계획고시",
@@ -469,7 +479,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "22.6억", refAptName: "e편한세상상도노빌리티" },
     },
   },
-  "zone-47": {
+  "zone-48": {
     name: "사당 16구역",
     district: "동작구",
     stage: "신속통합기획 대상지 선정",
@@ -479,7 +489,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "22.5억", refAptName: "래미안로이파크" },
     },
   },
-  "zone-48": {
+  "zone-49": {
     name: "상도 23구역",
     district: "동작구",
     stage: "신속통합기획 대상지 선정",
@@ -489,17 +499,17 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "22.6억", refAptName: "e편한세상상도노빌리티" },
     },
   },
-  "zone-49": {
+  "zone-50": {
     name: "흑석 10구역",
     district: "동작구",
     stage: "신속통합기획 대상지 선정",
     minBudget: 700000000,
     data: {
-      "59": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "추후 업데이트", refAptName: "추후 업데이트" },
-      "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "추후 업데이트", refAptName: "추후 업데이트" },
+      "59": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "추후 업데이트", refAptName: "" },
+      "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "추후 업데이트", refAptName: "" },
     },
   },
-  "zone-50": {
+  "zone-51": {
     name: "사당 15구역",
     district: "동작구",
     stage: "신속통합기획 대상지 선정",
@@ -509,7 +519,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "22.5억", refAptName: "래미안로이파크" },
     },
   },
-  "zone-51": {
+  "zone-52": {
     name: "사당 21구역",
     district: "동작구",
     stage: "신속통합기획 대상지 선정",
@@ -519,7 +529,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "22.5억", refAptName: "래미안로이파크" },
     },
   },
-  "zone-52": {
+  "zone-53": {
     name: "사당 18구역",
     district: "동작구",
     stage: "연번 부여",
@@ -529,7 +539,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "22.5억", refAptName: "래미안로이파크" },
     },
   },
-  "zone-53": {
+  "zone-54": {
     name: "상도 25구역",
     district: "동작구",
     stage: "연번 부여",
@@ -539,17 +549,17 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "22.6억", refAptName: "e편한세상상도노빌리티" },
     },
   },
-  "zone-54": {
+  "zone-55": {
     name: "노량진 14구역",
     district: "동작구",
     stage: "신속통합기획 대상지 선정",
     minBudget: 819999999,
     data: {
-      "59": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "추후 업데이트", refAptName: "추후 업데이트" },
-      "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "추후 업데이트", refAptName: "추후 업데이트" },
+      "59": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "추후 업데이트", refAptName: "" },
+      "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "추후 업데이트", refAptName: "" },
     },
   },
-  "zone-55": {
+  "zone-56": {
     name: "염리 4구역",
     district: "마포구",
     stage: "추진위설립",
@@ -559,7 +569,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "29.6억", refAptName: "마포프레스티지자이" },
     },
   },
-  "zone-56": {
+  "zone-57": {
     name: "염리 5구역",
     district: "마포구",
     stage: "정비구역지정",
@@ -569,7 +579,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "29.6억", refAptName: "마포프레스티지자이" },
     },
   },
-  "zone-57": {
+  "zone-58": {
     name: "신수 13구역",
     district: "마포구",
     stage: "신속통합기획 대상지 선정",
@@ -579,7 +589,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "25.2억", refAptName: "신촌숲아이파크" },
     },
   },
-  "zone-58": {
+  "zone-59": {
     name: "대흥 5구역",
     district: "마포구",
     stage: "연번 부여",
@@ -589,7 +599,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "29.6억", refAptName: "마포프레스티지자이" },
     },
   },
-  "zone-59": {
+  "zone-60": {
     name: "신길 16-2구역",
     district: "영등포구",
     stage: "신속통합기획 확정",
@@ -599,7 +609,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "20.5억", refAptName: "힐스테이트클래시안" },
     },
   },
-  "zone-60": {
+  "zone-61": {
     name: "여의대방신길 2구역",
     district: "영등포구",
     stage: "신속통합기획 대상지 선정",
@@ -609,7 +619,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "20.5억", refAptName: "힐스테이트클래시안" },
     },
   },
-  "zone-61": {
+  "zone-62": {
     name: "전농 8구역",
     district: "동대문구",
     stage: "조합설립인가",
@@ -619,7 +629,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "18억", refAptName: "래미안크레시티" },
     },
   },
-  "zone-62": {
+  "zone-63": {
     name: "전농 15구역",
     district: "동대문구",
     stage: "신속통합기획 대상지 선정",
@@ -629,7 +639,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "18억", refAptName: "래미안크레시티" },
     },
   },
-  "zone-63": {
+  "zone-64": {
     name: "전농 10구역",
     district: "동대문구",
     stage: "연번 부여",
@@ -639,7 +649,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "18억", refAptName: "래미안크레시티" },
     },
   },
-  "zone-64": {
+  "zone-65": {
     name: "용두 7구역",
     district: "동대문구",
     stage: "연번 부여",
@@ -649,7 +659,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "18억", refAptName: "래미안크레시티" },
     },
   },
-  "zone-65": {
+  "zone-66": {
     name: "장위 14구역",
     district: "성북구",
     stage: "시공사 선정",
@@ -659,7 +669,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "17.73억 (분양권)", refAptName: "서울원아이파크" },
     },
   },
-  "zone-66": {
+  "zone-67": {
     name: "장위 15구역",
     district: "성북구",
     stage: "시공사 선정",
@@ -669,7 +679,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "17.73억 (분양권)", refAptName: "서울원아이파크" },
     },
   },
-  "zone-67": {
+  "zone-68": {
     name: "장위 13-1구역",
     district: "성북구",
     stage: "신속통합기획 완료",
@@ -679,7 +689,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "17.73억 (분양권)", refAptName: "서울원아이파크" },
     },
   },
-  "zone-68": {
+  "zone-69": {
     name: "장위 13-2구역",
     district: "성북구",
     stage: "신속통합기획 완료",
@@ -689,7 +699,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "17.73억 (분양권)", refAptName: "서울원아이파크" },
     },
   },
-  "zone-69": {
+  "zone-70": {
     name: "수택 2구역",
     district: "구리시",
     stage: "조합설립인가",
@@ -699,7 +709,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "13.5억", refAptName: "e편한세상인창어반포레" },
     },
   },
-  "zone-70": {
+  "zone-71": {
     name: "중화 6구역",
     district: "중랑구",
     stage: "정비구역지정",
@@ -709,7 +719,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "14.95억", refAptName: "사가정센트럴아이파크" },
     },
   },
-  "zone-71": {
+  "zone-72": {
     name: "신정 1구역",
     district: "양천구",
     stage: "신속통합기획 대상지 선정",
@@ -719,7 +729,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "21.3억", refAptName: "목동힐스테이트" },
     },
   },
-  "zone-72": {
+  "zone-73": {
     name: "신흥 1구역",
     district: "성남시 수정구",
     stage: "사업시행인가",
@@ -729,7 +739,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "15.73억 (분양권)", refAptName: "산성역 헤리스톤" },
     },
   },
-  "zone-73": {
+  "zone-74": {
     name: "수진 1구역",
     district: "성남시 수정구",
     stage: "사업시행인가",
@@ -739,7 +749,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "15.73억 (분양권)", refAptName: "산성역 헤리스톤" },
     },
   },
-  "zone-74": {
+  "zone-75": {
     name: "신흥 3구역",
     district: "성남시 수정구",
     stage: "시공사 선정",
@@ -749,7 +759,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "15.73억 (분양권)", refAptName: "산성역 헤리스톤" },
     },
   },
-  "zone-75": {
+  "zone-76": {
     name: "마천 3구역",
     district: "송파구",
     stage: "사업시행인가",
@@ -759,7 +769,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "22.3억", refAptName: "송파시그니처롯데캐슬" },
     },
   },
-  "zone-76": {
+  "zone-77": {
     name: "마천 1구역",
     district: "송파구",
     stage: "조합설립인가",
@@ -769,7 +779,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "22.3억", refAptName: "송파시그니처롯데캐슬" },
     },
   },
-  "zone-77": {
+  "zone-78": {
     name: "북아현 2구역",
     district: "서대문구",
     stage: "관리처분인가",
@@ -779,7 +789,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "29.6억", refAptName: "마포프레스티지자이" },
     },
   },
-  "zone-78": {
+  "zone-79": {
     name: "북아현 3구역",
     district: "서대문구",
     stage: "사업시행인가",
@@ -789,7 +799,7 @@ export const ZONE_DATA: Record<string, ZoneData> = {
       "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "29.6억", refAptName: "마포프레스티지자이" },
     },
   },
-  "zone-79": {
+  "zone-80": {
     name: "신당 10구역",
     district: "중구",
     stage: "시공사 선정",
