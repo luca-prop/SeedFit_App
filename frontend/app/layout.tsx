@@ -1,4 +1,6 @@
 import type { Metadata, Viewport } from "next";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 
 export const viewport: Viewport = {
@@ -32,6 +34,10 @@ export default function RootLayout({
     <html lang="ko" className="h-full antialiased">
       <body className="min-h-full flex flex-col">
         {children}
+        {/* Vercel Analytics: 페이지뷰 및 사용자 행동 트래킹 */}
+        <Analytics />
+        {/* Vercel Speed Insights: Core Web Vitals (LCP, FID, CLS) 수집 */}
+        <SpeedInsights />
       </body>
     </html>
   );

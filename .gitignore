@@ -6,3 +6,9 @@ docs/*.xlsx
 docs/*.py
 docs/씨드핏핵심가치.md
 docs/excel_out.json
+
+# 🛠️ Local-only Scripts & Temp Files
+temp_issue_body.md
+sync_github_project.py
+update_local_md.py
+skills
