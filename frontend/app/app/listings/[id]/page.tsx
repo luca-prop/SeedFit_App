@@ -84,10 +84,12 @@ export default function ListingsPage() {
                         Verified
                       </Badge>
                       <Dialog>
-                        <DialogTrigger asChild>
-                          <Button size="sm" className="bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 text-white font-semibold min-h-[40px] text-xs md:text-sm">
+                        <DialogTrigger
+                          render={
+                            <Button size="sm" className="bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 text-white font-semibold min-h-[40px] text-xs md:text-sm" />
+                          }
+                        >
                             중개소 연결
-                          </Button>
                         </DialogTrigger>
                         <DialogContent className="mx-4 max-w-md">
                           <DialogHeader>

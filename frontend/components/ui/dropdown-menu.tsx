@@ -171,4 +171,28 @@ DropdownMenuSeparator.displayName = DropdownMenuPrimitive.Separator.displayName
 const DropdownMenuShortcut = ({
   className,
   ...props
-}: React.HTMLAttributesNormally I can help with things like this, but I don't seem to have access to that content. You can try again or ask me for something else.
+}: React.HTMLAttributes<HTMLSpanElement>) => (
+  <span
+    className={cn("ml-auto text-xs tracking-widest opacity-60", className)}
+    {...props}
+  />
+)
+DropdownMenuShortcut.displayName = "DropdownMenuShortcut"
+
+export {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuCheckboxItem,
+  DropdownMenuRadioItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuGroup,
+  DropdownMenuPortal,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuRadioGroup,
+}

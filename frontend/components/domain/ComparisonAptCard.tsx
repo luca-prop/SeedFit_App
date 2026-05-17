@@ -64,10 +64,12 @@ export function ComparisonAptCard({ apt }: { apt: AptData }) {
             </div>
           </div>
           <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="outline" size="sm" className="text-xs md:text-sm min-h-[36px] flex-shrink-0 ml-2">
+            <DialogTrigger
+              render={
+                <Button variant="outline" size="sm" className="text-xs md:text-sm min-h-[36px] flex-shrink-0 ml-2" />
+              }
+            >
                 변경
-              </Button>
             </DialogTrigger>
             <DialogContent className="mx-4 max-w-md">
               <DialogHeader>
@@ -95,7 +97,7 @@ export function ComparisonAptCard({ apt }: { apt: AptData }) {
           <MetricCard 
             label="전고점 대비 회복률" 
             value={`${apt.recovery}%`} 
-            highlight="none"
+            highlight="default"
             withBackground={false}
           />
           <MetricCard 

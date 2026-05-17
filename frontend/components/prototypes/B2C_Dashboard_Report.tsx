@@ -1,7 +1,7 @@
 "use client";
 
 import React, { Suspense, useState } from "react";
-import { Info, AlertTriangle, ArrowRightRight, Settings2 } from "lucide-react";
+import { Info, AlertTriangle, ArrowBigRight, Settings2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
@@ -90,7 +90,7 @@ export default function B2CDashboardReport() {
                 max={1000000000}
                 min={100000000}
                 step={10000000}
-                onValueChange={(vals) => setBudget(vals[0])}
+                onValueChange={(vals) => setBudget(Array.isArray(vals) ? vals[0] : vals)}
                 className="w-full sm:w-auto flex-grow"
               />
               <span className="font-bold whitespace-nowrap text-lg">{(budget / 100000000).toFixed(1)}억 원</span>
@@ -157,11 +157,13 @@ export default function B2CDashboardReport() {
                   </Badge>
                   
                   <Dialog>
-                    <DialogTrigger asChild>
-                      <Button variant="ghost" size="sm" className="text-gray-400 hover:text-gray-900 group-hover:opacity-100 opacity-0 transition-opacity absolute top-2 right-2">
-                        <Settings2 className="h-4 w-4 mr-1" />
-                        변경
-                      </Button>
+                    <DialogTrigger
+                      render={
+                        <Button variant="ghost" size="sm" className="text-gray-400 hover:text-gray-900 group-hover:opacity-100 opacity-0 transition-opacity absolute top-2 right-2" />
+                      }
+                    >
+                      <Settings2 className="h-4 w-4 mr-1" />
+                      변경
                     </DialogTrigger>
                     <DialogContent>
                       <DialogHeader>

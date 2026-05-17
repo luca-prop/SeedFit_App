@@ -117,7 +117,7 @@ function ComparisonContent() {
                     max={1000000000}
                     min={100000000}
                     step={10000000}
-                    onValueChange={(v) => setAdjustedBudget(v[0])}
+                    onValueChange={(v) => setAdjustedBudget(Array.isArray(v) ? v[0] : v)}
                     className="flex-1"
                   />
                   <span className="font-bold whitespace-nowrap text-sm">{formatBudget(adjustedBudget)}</span>

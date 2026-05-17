@@ -189,7 +189,7 @@ export default function B2CDashboardReport() {
                 max={1000000000}
                 min={100000000}
                 step={10000000}
-                onValueChange={(vals) => setBudget(vals[0])}
+                onValueChange={(value) => setBudget(Array.isArray(value) ? value[0] : value)}
                 className="w-full sm:w-auto flex-grow"
               />
               <span className="font-bold whitespace-nowrap text-lg">{(budget / 100000000).toFixed(1)}억 원</span>
@@ -239,16 +239,18 @@ export default function B2CDashboardReport() {
               <Card key={apt.id} className="relative group border shadow-sm hover:shadow-md transition-shadow">
                 {/* 변경 버튼 - hover 시 표시 */}
                 <Dialog>
-                  <DialogTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="text-gray-400 hover:text-gray-900 group-hover:opacity-100 opacity-0 transition-opacity absolute top-2 right-2 z-10"
+                  <DialogTrigger
+                      render={
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-gray-400 hover:text-gray-900 group-hover:opacity-100 opacity-0 transition-opacity absolute top-2 right-2 z-10"
+                        />
+                      }
                     >
                       <Settings2 className="h-4 w-4 mr-1" />
                       변경
-                    </Button>
-                  </DialogTrigger>
+                    </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
                       <DialogTitle>비교 아파트 변경</DialogTitle>
