@@ -110,12 +110,23 @@ function applyPositionDodge(data: any[]) {
 }
 
 /**
+ * 긴 구역명을 약식으로 변환 (예: 북아현3구역 -> 북아현3, 자양4동 A구역 -> 자양4A)
+ */
+function getShortZoneName(name: string) {
+  if (!name) return "";
+  let short = name.replace(/구역.*$/, ""); // 구역 및 그 뒤 문자열 제거
+  short = short.replace(/\s+/g, ""); // 공백 제거
+  short = short.replace(/동([A-Z0-9])/g, "$1"); // 자양4동A -> 자양4A
+  return short;
+}
+
+/**
  * Dumbbell (덤벨) 형태 마커 렌더러
  * - 얇은 실선 + 양 끝 작은 점(Min/Max)
  * - 투명도(Alpha) 적용으로 겹침 시 밀도 표현
  */
 function DumbbellShape(props: any) {
-  const { cx, payload, yAxis, onPointClick } = props;
+  const { cx, payload, yAxis, onPointClick, showLabels } = props;
 
   if (!payload || isNaN(cx)) return null;
 
@@ -188,6 +199,23 @@ function DumbbellShape(props: any) {
       {/* Bottom dot (Min) */}
       {!samePrice && (
         <circle cx={cx} cy={yMin} r={payload.isPinned ? 4.5 : 3.5} fill={fill} stroke="#fff" strokeWidth={1} />
+      )}
+      
+      {/* 덤벨 약식 구역명 라벨 (겹침 방지를 위해 약간 우상단으로 기울임) */}
+      {showLabels && !payload.isPinned && !payload.isOut && !payload.isRef && (
+        <text
+          x={cx + 5}
+          y={yMax - 5}
+          fill="#64748b"
+          fontSize={11}
+          fontWeight={600}
+          textAnchor="start"
+          alignmentBaseline="baseline"
+          transform={`rotate(-45, ${cx + 5}, ${yMax - 5})`}
+          style={{ pointerEvents: "none" }}
+        >
+          {getShortZoneName(payload.name)}
+        </text>
       )}
     </g>
   );
@@ -805,7 +833,7 @@ function ScatterChartContent() {
               <Scatter
                 name="재개발 구역"
                 data={displayData}
-                shape={<DumbbellShape onPointClick={handlePointClick} />}
+                shape={<DumbbellShape onPointClick={handlePointClick} showLabels={!isMobile || autoZoomEnabled} />}
                 activeShape={false}
                 isAnimationActive={false}
               />
