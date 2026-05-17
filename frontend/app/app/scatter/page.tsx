@@ -452,7 +452,7 @@ function ScatterChartContent() {
         const avg = (d.investmentMin + d.investmentMax) / 2;
         const isOut = hasBudget && (d.investmentMin > budgetMaxEok * 1.1 || d.investmentMax < budgetMinEok * 0.9);
         const isPinned = pinnedData && pinnedData.name === d.name;
-        return { ...d, avg, isOut, isPinned };
+        return { ...d, avg, isOut, isPinned, hasPinned: !!pinnedData };
       }).filter((d) => d.district === selectedDistrict);
 
       const refs = REFERENCE_COMPLEXES[selectedDistrict] || [];
@@ -472,6 +472,7 @@ function ScatterChartContent() {
           isOut: false,
           isRef: true,
           isPinned,
+          hasPinned: !!pinnedData,
         };
       });
       data = [...data, ...refPoints];
