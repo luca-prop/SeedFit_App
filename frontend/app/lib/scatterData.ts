@@ -70,6 +70,16 @@ export const scatterData = [
     "investmentMax": 7.2
   },
   {
+    "id": "한남 1구역",
+    "name": "한남 1구역",
+    "district": "용산구",
+    "tier": "T4",
+    "stage": 1.3,
+    "stageStr": "신속통합기획 대상지 선정",
+    "investmentMin": 28.0,
+    "investmentMax": 30.0
+  },
+  {
     "id": "청파 3구역",
     "name": "청파 3구역",
     "district": "용산구",
