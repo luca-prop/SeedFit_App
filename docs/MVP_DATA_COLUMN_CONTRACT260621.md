@@ -68,6 +68,13 @@ The MVP uses five normalized table contracts:
 
 All money columns use KRW integer values. Source files may use `억`, but normalized columns must not.
 
+Important `DATA_CURATION_SPEC.v.2.md` rule:
+
+- Zones are not physically assigned to fixed tiers in the master data.
+- Zone master data is organized by administrative district (`district`) to keep a single source of truth.
+- T1~T4 is a runtime matching result derived from user available cash and the latest `investment_min_krw`.
+- Do not add a persistent `tier` column to `zones`.
+
 ## 4. Common Types And Conventions
 
 ### IDs
@@ -222,7 +229,11 @@ Parsing rule:
 
 ## 9. `ltv_policies`
 
-Purpose: store active LTV/DSR interpretation values without hardcoding policy in application logic.
+Purpose: store cash-band matching policy and optional LTV/DSR interpretation values without hardcoding policy in application logic.
+
+For the MVP, this table primarily stores dynamic cash-tier bands (`T1`~`T4`). These tiers are not assigned to zones. The application computes a user's tier at runtime by comparing available cash against the active policy bands, then compares that cash against each zone's latest `investment_min_krw`.
+
+`ltv_ratio` remains optional until a verified lending policy source is introduced. Do not invent or backfill LTV ratios from the current curation documents.
 
 | Column | Type | Required | Source | Notes |
 |---|---:|:---:|---|---|
@@ -247,6 +258,14 @@ Initial MVP tier ranges:
 
 These tiers are matching/display categories, not a replacement for investment snapshots.
 
+Runtime classification example:
+
+```text
+user_cash_krw = 450000000 -> T2
+zone.investment_min_krw = 380000000 -> budget match
+zone.investment_min_krw = 520000000 -> near/over budget depending on UI rule
+```
+
 ## 10. Source Mapping: `golden_samples260519.csv.csv`
 
 | Source column | Target table | Target column | Transform |
@@ -265,6 +284,8 @@ These tiers are matching/display categories, not a replacement for investment sn
 ## 11. Expected Naver Land XLSX Contract
 
 The Naver Land XLSX files are treated as external price evidence. The exact workbook columns may vary, so the normalizer must map them into this stable contract.
+
+MVP rule: import only the fields needed for comparison cards and reverse-filter context. Do not store full raw history in the MVP schema unless a later issue explicitly adds a raw evidence table.
 
 Required normalized fields:
 
@@ -308,8 +329,10 @@ Validation output should be machine-readable in later issues, but `MVP-003` only
 
 - The normalized DB contract is the application-facing source of truth.
 - Markdown specs explain interpretation policy; the app should not parse markdown tables at runtime.
+- Zone master data is district-based. Tiers are dynamic runtime classifications, not fixed zone attributes.
 - Money is always stored as integer KRW.
 - `investment_min_krw` is the primary Reverse Filter matching value.
+- `ltv_ratio` is optional until a verified policy source exists.
 - Existing apartment raw history is deferred; MVP uses curated representative reference prices.
 - Missing source files fail loudly.
 - B2B listings, Verified listings, chat, and Admin dashboards remain out of scope for this data contract.
