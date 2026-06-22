@@ -3,6 +3,20 @@
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import {
+  AlertTriangle,
+  BadgeCheck,
+  BarChart3,
+  Building2,
+  Calculator,
+  Clock3,
+  LineChart,
+  RotateCcw,
+  Scale,
+  ShieldCheck,
+  WalletCards,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { BudgetRangeSearch } from "@/components/b2c/BudgetRangeSearch";
 
 /* ───────────────────────── Animated Counter ───────────────────────── */
@@ -40,6 +54,21 @@ function CTAButton({ className = "", children, href = "#budget-search" }: { clas
   );
 }
 
+function LineIcon({ icon: Icon, tone = "blue" }: { icon: LucideIcon; tone?: "blue" | "indigo" | "purple" | "cyan" }) {
+  const toneClass = {
+    blue: "bg-blue-500/10 text-blue-300 ring-blue-400/20",
+    indigo: "bg-indigo-500/10 text-indigo-300 ring-indigo-400/20",
+    purple: "bg-purple-500/10 text-purple-300 ring-purple-400/20",
+    cyan: "bg-cyan-500/10 text-cyan-300 ring-cyan-400/20",
+  }[tone];
+
+  return (
+    <div className={`inline-flex h-12 w-12 items-center justify-center rounded-xl ring-1 ${toneClass}`}>
+      <Icon className="h-6 w-6" strokeWidth={1.8} aria-hidden="true" />
+    </div>
+  );
+}
+
 /* ═══════════════════════════════════════════════════════════════════ */
 /*  LANDING PAGE                                                      */
 /* ═══════════════════════════════════════════════════════════════════ */
@@ -74,7 +103,10 @@ export default function LandingPage() {
 
         <div className="relative z-10 max-w-3xl">
           <span className="mb-5 inline-block rounded-full border border-blue-400/30 bg-blue-500/10 px-4 py-1.5 text-sm font-semibold text-blue-300 backdrop-blur-sm">
-            🏗️ 예산 맞춤 재개발 투자 분석 플랫폼
+            <span className="inline-flex items-center gap-2">
+              <Building2 className="h-4 w-4" strokeWidth={1.8} aria-hidden="true" />
+              예산 맞춤 재개발 투자 분석 플랫폼
+            </span>
           </span>
 
           <h1 className="mb-6 text-4xl font-black leading-[1.15] tracking-tight sm:text-5xl md:text-6xl">
@@ -131,16 +163,18 @@ export default function LandingPage() {
           {/* 3-Step Diagram */}
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
             {[
-              { step: "1", icon: "💰", title: "가용 현금 입력", desc: "내가 쓸 수 있는 현금을 입력합니다.", color: "from-blue-500/20 to-blue-600/5" },
-              { step: "2", icon: "⚡", title: "씨드핏 엔진 분석", desc: "필요 초기투자금을 자동 역산합니다.", color: "from-indigo-500/20 to-indigo-600/5" },
-              { step: "3", icon: "📊", title: "맞춤 구역 리스트", desc: "진입 가능한 구역 + 기축 비교 리포트!", color: "from-purple-500/20 to-purple-600/5" },
+              { step: "1", icon: WalletCards, title: "가용 현금 입력", desc: "내가 쓸 수 있는 현금을 입력합니다.", color: "from-blue-500/20 to-blue-600/5", tone: "blue" as const },
+              { step: "2", icon: Calculator, title: "씨드핏 엔진 분석", desc: "필요 초기투자금을 자동 역산합니다.", color: "from-indigo-500/20 to-indigo-600/5", tone: "indigo" as const },
+              { step: "3", icon: BarChart3, title: "맞춤 구역 리스트", desc: "진입 가능한 구역 + 기축 비교 리포트!", color: "from-purple-500/20 to-purple-600/5", tone: "purple" as const },
             ].map((item, i) => (
               <div key={item.step} className="group relative">
                 {i < 2 && (
                   <div className="absolute right-0 top-1/2 hidden -translate-y-1/2 translate-x-1/2 text-2xl text-gray-600 sm:block">→</div>
                 )}
                 <div className={`rounded-2xl border border-white/5 bg-gradient-to-b ${item.color} p-6 backdrop-blur-sm transition-all duration-300 hover:border-white/10 hover:scale-[1.03]`}>
-                  <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-white/5 text-2xl">{item.icon}</div>
+                  <div className="mb-3">
+                    <LineIcon icon={item.icon} tone={item.tone} />
+                  </div>
                   <div className="mb-1 text-xs font-bold text-blue-400">STEP {item.step}</div>
                   <h3 className="mb-2 text-lg font-bold">{item.title}</h3>
                   <p className="text-sm text-gray-400">{item.desc}</p>
@@ -162,15 +196,17 @@ export default function LandingPage() {
 
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {[
-              { icon: "🔄", title: "역방향 필터링", desc: "구역을 먼저 찾는 게 아니라, 내 예산이 먼저. 진입 가능한 구역만 자동 도출합니다.", highlight: true },
-              { icon: "⚖️", title: "1:1 대조 분석", desc: "재개발 구역 vs 기축 아파트를 동일 예산 기준으로 비교. 기회비용을 명확히 파악하세요." },
-              { icon: "✅", title: "Verified 매물", desc: "현지 파트너 중개사가 교차 검증한 매물만 노출. 허위매물로 인한 헛걸음이 없습니다." },
-              { icon: "📐", title: "오차율 ±5% 이내", desc: "국토부 실거래가 기반의 정밀 역산 엔진. 시세 오차를 최소화했습니다." },
-              { icon: "⏱️", title: "3초 이내 결과", desc: "주 15시간 걸리던 구역 탐색을 3초로. 시간 빈곤한 직장인에게 최적화." },
-              { icon: "🛡️", title: "리스크 시각화", desc: "사업 단계, 분담금 변동, 전고점 회복률까지. 투자 리스크를 숫자로 보여드립니다." },
+              { icon: RotateCcw, title: "역방향 필터링", desc: "구역을 먼저 찾는 게 아니라, 내 예산이 먼저. 진입 가능한 구역만 자동 도출합니다.", highlight: true, tone: "blue" as const },
+              { icon: Scale, title: "1:1 대조 분석", desc: "재개발 구역 vs 기축 아파트를 동일 예산 기준으로 비교. 기회비용을 명확히 파악하세요.", tone: "indigo" as const },
+              { icon: BadgeCheck, title: "Verified 매물", desc: "현지 파트너 중개사가 교차 검증한 매물만 노출. 허위매물로 인한 헛걸음이 없습니다.", tone: "cyan" as const },
+              { icon: LineChart, title: "오차율 ±5% 이내", desc: "국토부 실거래가 기반의 정밀 역산 엔진. 시세 오차를 최소화했습니다.", tone: "purple" as const },
+              { icon: Clock3, title: "3초 이내 결과", desc: "주 15시간 걸리던 구역 탐색을 3초로. 시간 빈곤한 직장인에게 최적화.", tone: "blue" as const },
+              { icon: ShieldCheck, title: "리스크 시각화", desc: "사업 단계, 분담금 변동, 전고점 회복률까지. 투자 리스크를 숫자로 보여드립니다.", tone: "indigo" as const },
             ].map((card) => (
               <div key={card.title} className={`rounded-2xl border p-6 transition-all duration-300 hover:scale-[1.02] ${card.highlight ? "border-blue-500/30 bg-blue-500/5" : "border-white/5 bg-white/[0.02] hover:border-white/10"}`}>
-                <div className="mb-3 text-2xl">{card.icon}</div>
+                <div className="mb-3">
+                  <LineIcon icon={card.icon} tone={card.tone} />
+                </div>
                 <h3 className="mb-2 text-lg font-bold">{card.title}</h3>
                 <p className="text-sm leading-relaxed text-gray-400">{card.desc}</p>
               </div>
@@ -191,8 +227,8 @@ export default function LandingPage() {
               <thead>
                 <tr className="border-b border-white/10 bg-white/5">
                   <th className="px-5 py-4 font-semibold text-gray-400">항목</th>
-                  <th className="px-5 py-4 font-semibold text-red-400">기존 방식 😩</th>
-                  <th className="px-5 py-4 font-semibold text-blue-400">씨드핏 🚀</th>
+                  <th className="px-5 py-4 font-semibold text-red-400">기존 방식</th>
+                  <th className="px-5 py-4 font-semibold text-blue-400">씨드핏</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
@@ -219,8 +255,8 @@ export default function LandingPage() {
       <section className="border-y border-white/5 bg-[#0D1225] py-20 px-5 sm:py-28">
         <div className="mx-auto max-w-5xl text-center">
           <span className="mb-3 inline-block text-sm font-semibold text-blue-400">RESULT PREVIEW</span>
-          <h2 className="mb-4 text-3xl font-extrabold sm:text-4xl">이런 결과를 받아보실 수 있습니다</h2>
-          <p className="mx-auto mb-14 max-w-lg text-gray-400">가용 현금 3억 입력 시 실제 분석 결과 예시</p>
+          <h2 className="mb-4 text-3xl font-extrabold sm:text-4xl">3억 예산 기준 맞춤 구역 3곳</h2>
+          <p className="mx-auto mb-14 max-w-lg text-gray-400">가용 현금 3억 기준으로 진입 가능한 구역을 선별한 결과 예시입니다.</p>
 
           <div className="grid gap-4 sm:grid-cols-3">
             {[
@@ -287,7 +323,10 @@ export default function LandingPage() {
       <footer className="border-t border-white/5 bg-[#070B16] py-8 px-5">
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-3 text-center text-xs text-gray-600">
           <p>© 2026 씨드핏(Seed Fit). All rights reserved.</p>
-          <p>⚠️ 본 서비스의 데이터는 국토부 실거래가 기준이며 현장 호가와 다를 수 있습니다. 투자 판단의 책임은 이용자에게 있습니다.</p>
+          <p className="inline-flex items-center justify-center gap-1.5">
+            <AlertTriangle className="h-3.5 w-3.5" strokeWidth={1.8} aria-hidden="true" />
+            본 서비스의 데이터는 국토부 실거래가 기준이며 현장 호가와 다를 수 있습니다. 투자 판단의 책임은 이용자에게 있습니다.
+          </p>
         </div>
       </footer>
     </div>

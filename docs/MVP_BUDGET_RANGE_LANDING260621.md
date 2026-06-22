@@ -21,6 +21,8 @@
 - `frontend/components/b2c/BudgetRangeSearch.tsx`를 추가했습니다.
 - `frontend/app/(b2c)/page.tsx` 히어로 영역에 범위 입력 위젯을 삽입했습니다.
 - 검색 CTA는 `/app/results?budgetMin=...&budgetMax=...`로 이동합니다.
+- 랜딩 내 이모지 아이콘은 업무용 라인 아이콘으로 교체해 AI 생성물처럼 보이는 인상을 줄였습니다.
+- `RESULT PREVIEW`는 `3억 예산 기준 맞춤 구역 3곳` 메시지로 구체화했습니다.
 
 ## 4. UI 동작
 
