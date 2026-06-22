@@ -32,6 +32,8 @@ import {
 } from "recharts";
 import { BudgetRangeSearch } from "@/components/b2c/BudgetRangeSearch";
 import { scatterData } from "@/app/lib/scatterData";
+import { PROGRESS_DATES } from "@/app/lib/scatterDates";
+import { COMPARISON_APTS } from "@/lib/mockData";
 
 /* ───────────────────────── Animated Counter ───────────────────────── */
 function Counter({ end, suffix = "", duration = 2000 }: { end: number; suffix?: string; duration?: number }) {
@@ -136,12 +138,58 @@ const RESULT_PREVIEW_ZONES = [
 
 const RESULT_PREVIEW_ZONE_BY_SCATTER_NAME = new Map(RESULT_PREVIEW_ZONES.map((zone) => [zone.scatterName, zone]));
 
-const scatterPreviewData = scatterData
+const COMPARISON_PREVIEW_APTS = COMPARISON_APTS.filter((apt) =>
+  ["월계동신", "다산e편한세상자이", "주공뜨란채"].includes(apt.name),
+).sort((left, right) => left.numInvestment - right.numInvestment);
+
+function getScatterCollisionKey(zone: { stage: number; investmentMin: number }) {
+  return `${zone.stage}-${zone.investmentMin}`;
+}
+
+function getProgressAdjustedStages<T extends { id: string; name: string; stage: number; investmentMin: number }>(zones: T[]) {
+  const groups = new Map<string, T[]>();
+
+  zones.forEach((zone) => {
+    const key = getScatterCollisionKey(zone);
+    groups.set(key, [...(groups.get(key) ?? []), zone]);
+  });
+
+  const adjustedStages = new Map<string, number>();
+
+  groups.forEach((group) => {
+    const sorted = [...group].sort((left, right) => {
+      const leftDate = PROGRESS_DATES[left.name] ?? 99999999;
+      const rightDate = PROGRESS_DATES[right.name] ?? 99999999;
+
+      if (leftDate !== rightDate) {
+        return leftDate - rightDate;
+      }
+
+      return left.name.localeCompare(right.name, "ko");
+    });
+
+    const centerIndex = (sorted.length - 1) / 2;
+    sorted.forEach((zone, index) => {
+      // 같은 단계/예산이면 더 빠른 진행일을 오른쪽에 두고, 동일일자도 미세 분산해 겹침을 피합니다.
+      adjustedStages.set(zone.id, zone.stage + (centerIndex - index) * 0.04);
+    });
+  });
+
+  return adjustedStages;
+}
+
+const rawScatterPreviewData = scatterData
+  .filter((zone) => zone.investmentMin <= 3 && zone.investmentMax >= 3);
+
+const adjustedScatterStages = getProgressAdjustedStages(rawScatterPreviewData);
+
+const scatterPreviewData = rawScatterPreviewData
   .filter((zone) => zone.investmentMin <= 3 && zone.investmentMax >= 3)
   .map((zone) => ({
     ...zone,
     previewZone: RESULT_PREVIEW_ZONE_BY_SCATTER_NAME.get(zone.name),
     previewLabel: RESULT_PREVIEW_ZONE_BY_SCATTER_NAME.get(zone.name)?.zone ?? "",
+    adjustedStage: adjustedScatterStages.get(zone.id) ?? zone.stage,
     displayInvestment: `${zone.investmentMin.toFixed(1)}억 ~ ${zone.investmentMax.toFixed(1)}억`,
   }))
   .sort((left, right) => Number(Boolean(left.previewZone)) - Number(Boolean(right.previewZone)));
@@ -358,11 +406,11 @@ export default function LandingPage() {
       </section>
 
       {/* ══════════ SECTION 6 — Outcome Showcase (C유형: 결과물 갤러리) ══════════ */}
-      <section className="border-y border-white/5 bg-[#0D1225] py-20 px-5 sm:py-28">
+      <section className="border-t border-white/5 bg-[#0D1225] pt-20 pb-6 px-5 sm:pt-28">
         <div className="mx-auto max-w-5xl text-center">
           <span className="mb-3 inline-block text-sm font-semibold text-blue-400">RESULT PREVIEW</span>
           <h2 className="mb-4 text-3xl font-extrabold sm:text-4xl">3억 예산 기준 맞춤 구역 3곳</h2>
-          <p className="mx-auto mb-14 max-w-lg text-gray-400">가용 현금 2.5~3억 기준으로 진입 가능한 구역을 선별한 결과 예시입니다.</p>
+          <p className="mx-auto mb-8 max-w-lg text-gray-400">가용 현금 2.5~3억 기준으로 진입 가능한 구역을 선별한 결과 예시입니다.</p>
 
           <div className="grid gap-4 sm:grid-cols-3">
             {RESULT_PREVIEW_ZONES.map((r) => (
@@ -393,7 +441,7 @@ export default function LandingPage() {
             ))}
           </div>
 
-          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <div className="mt-5 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link
               href="/app/results?budgetMin=300000000&budgetMax=300000000"
               className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-black text-slate-950 transition hover:bg-blue-50"
@@ -407,9 +455,9 @@ export default function LandingPage() {
       </section>
 
       {/* ══════════ SECTION 7 — Comparison Preview ══════════ */}
-      <section id="comparison-preview" className="py-20 px-5 sm:py-28">
+      <section id="comparison-preview" className="border-b border-white/5 bg-[#0D1225] pt-0 pb-20 px-5 sm:pb-28">
         <div className="mx-auto max-w-6xl">
-          <div className="mb-10 text-center">
+          <div className="mb-5 text-center">
             <span className="mb-3 inline-block text-sm font-semibold text-cyan-400">ZONE DETAIL PREVIEW</span>
             <h2 className="mb-4 text-3xl font-extrabold sm:text-4xl">구역 정보는 이렇게 비교됩니다</h2>
             <p className="mx-auto max-w-2xl text-gray-400">
@@ -427,10 +475,11 @@ export default function LandingPage() {
               <span className="rounded-full bg-blue-500/10 px-3 py-1 text-xs font-bold text-blue-200">Preview · 1:1 비교 대시보드</span>
             </div>
 
-            <div className="grid gap-5 p-5 lg:grid-cols-[1.05fr_0.95fr] lg:p-7">
+            <div className="space-y-5 p-5 lg:p-7">
+              <div className="grid gap-5 lg:grid-cols-2">
               <div className="rounded-2xl border border-blue-300/20 bg-blue-500/10 p-5">
                 <div className="mb-4 flex items-center justify-between">
-                  <span className="rounded-lg bg-blue-400/20 px-3 py-1 text-xs font-black text-blue-200">재개발 구역</span>
+                  <span className="rounded-lg bg-blue-400/20 px-3 py-1 text-xs font-black text-blue-200">재개발구역</span>
                   <span className="text-xs font-semibold text-gray-400">예산 3.0억 기준</span>
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-slate-950/35 p-5">
@@ -491,6 +540,40 @@ export default function LandingPage() {
                   <ArrowRight className="h-4 w-4" aria-hidden="true" />
                 </Link>
               </div>
+              </div>
+
+              <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+                <div className="mb-4 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+                  <div>
+                    <span className="rounded-lg bg-indigo-400/15 px-3 py-1 text-xs font-black text-indigo-200">기축 아파트 비교군</span>
+                    <p className="mt-3 text-sm text-gray-400">동일 3억 예산으로 검토 가능한 기축 아파트 대조군 예시입니다.</p>
+                  </div>
+                  <span className="text-xs font-semibold text-gray-500">필요 실투자금은 생애최초 LTV 70% 가정</span>
+                </div>
+                <div className="grid gap-3 md:grid-cols-3">
+                  {COMPARISON_PREVIEW_APTS.map((apt) => (
+                    <div key={apt.id} className="rounded-2xl border border-white/10 bg-slate-950/35 p-4">
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <p className="font-black text-white">{apt.name}</p>
+                          <p className="mt-1 text-xs text-gray-500">{apt.aptType}타입</p>
+                        </div>
+                        <span className="rounded-full bg-blue-400/15 px-2.5 py-1 text-xs font-black text-blue-200">LTV</span>
+                      </div>
+                      <div className="mt-4 grid grid-cols-2 gap-2 text-sm">
+                        <div className="rounded-xl bg-white/[0.04] p-3">
+                          <p className="text-xs text-gray-500">필요 실투자금</p>
+                          <p className="mt-1 font-black text-blue-300">{apt.requiredInvestment}</p>
+                        </div>
+                        <div className="rounded-xl bg-white/[0.04] p-3">
+                          <p className="text-xs text-gray-500">최근시세</p>
+                          <p className="mt-1 font-black text-white">{apt.recentPrice}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -529,7 +612,7 @@ export default function LandingPage() {
                     <CartesianGrid stroke="rgba(148, 163, 184, 0.16)" strokeDasharray="3 3" />
                     <XAxis
                       type="number"
-                      dataKey="stage"
+                      dataKey="adjustedStage"
                       name="사업 단계"
                       domain={[1, 4]}
                       ticks={[1.3, 2.1, 3.1]}
