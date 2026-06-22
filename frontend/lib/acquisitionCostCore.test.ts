@@ -19,6 +19,14 @@ assert.equal(
 );
 
 assert.equal(
+  calculateAcquisitionTax({
+    basePriceKrw: krw(999_999_999),
+    taxRateBps: 333,
+  }),
+  krw(33_299_999),
+);
+
+assert.equal(
   sumCostItems([
     {
       label: "중개보수",
@@ -78,6 +86,14 @@ assert.deepEqual(calculateErrorRate(krw(105_000_000), krw(100_000_000)), {
   isWithinTolerance: true,
 });
 
+assert.deepEqual(calculateErrorRate(krw(95_000_000), krw(100_000_000)), {
+  expectedKrw: krw(95_000_000),
+  actualKrw: krw(100_000_000),
+  absoluteErrorKrw: krw(5_000_000),
+  errorRateBps: 500,
+  isWithinTolerance: true,
+});
+
 assert.deepEqual(calculateErrorRate(krw(106_000_000), krw(100_000_000)), {
   expectedKrw: krw(106_000_000),
   actualKrw: krw(100_000_000),
@@ -97,5 +113,6 @@ assert.throws(
 );
 
 assert.throws(() => calculateErrorRate(krw(100_000_000), krw(0)), RangeError);
+assert.throws(() => sumCostItems([{ label: "음수비용", amountKrw: krw(-1) }]), RangeError);
 
 console.log("acquisitionCostCore tests passed");

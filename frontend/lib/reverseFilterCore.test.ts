@@ -146,6 +146,50 @@ assert.equal(grouped.nearZones.length, 1);
 assert.equal(grouped.excludedZones.length, 1);
 assert.equal(grouped.totalMatchedCount, 1);
 
+const highCashNearBoundary = buildReverseFilterZone(
+  {
+    zoneId: "zone-high-near",
+    zoneName: "고액근접구역",
+    district: "마포구",
+    dong: "아현동",
+    stage: "사업시행인가",
+    projectType: "재개발",
+    salePriceMinKrw: null,
+    salePriceMaxKrw: null,
+    investmentMinKrw: krw(550_000_000),
+    investmentMaxKrw: null,
+    sourceDate,
+  },
+  {
+    ...input,
+    availableCashKrw: 500_000_000,
+  },
+);
+
+assert.equal(highCashNearBoundary?.budgetStatus, "near_budget");
+
+const highCashOverBoundary = buildReverseFilterZone(
+  {
+    zoneId: "zone-high-over",
+    zoneName: "고액초과구역",
+    district: "마포구",
+    dong: "아현동",
+    stage: "사업시행인가",
+    projectType: "재개발",
+    salePriceMinKrw: null,
+    salePriceMaxKrw: null,
+    investmentMinKrw: krw(550_000_001),
+    investmentMaxKrw: null,
+    sourceDate,
+  },
+  {
+    ...input,
+    availableCashKrw: 500_000_000,
+  },
+);
+
+assert.equal(highCashOverBoundary?.budgetStatus, "over_budget");
+
 const districtFiltered = buildReverseFilterGroups(
   [
     {
@@ -203,5 +247,42 @@ const limited = buildReverseFilterGroups(
 );
 
 assert.equal(limited.matchedZones.length, REVERSE_FILTER_GROUP_LIMIT);
+
+const investmentSorted = buildReverseFilterGroups(
+  [
+    {
+      zoneId: "zone-expensive",
+      zoneName: "비싼구역",
+      district: "마포구",
+      dong: "공덕동",
+      stage: "조합설립인가",
+      projectType: "재개발",
+      salePriceMinKrw: null,
+      salePriceMaxKrw: null,
+      investmentMinKrw: krw(290_000_000),
+      investmentMaxKrw: null,
+      sourceDate,
+    },
+    {
+      zoneId: "zone-cheap",
+      zoneName: "저렴한구역",
+      district: "마포구",
+      dong: "공덕동",
+      stage: "조합설립인가",
+      projectType: "재개발",
+      salePriceMinKrw: null,
+      salePriceMaxKrw: null,
+      investmentMinKrw: krw(250_000_000),
+      investmentMaxKrw: null,
+      sourceDate,
+    },
+  ],
+  {
+    ...input,
+    sortBy: "investmentMin",
+  },
+);
+
+assert.equal(investmentSorted.matchedZones[0].zoneId, "zone-cheap");
 
 console.log("reverseFilterCore tests passed");
