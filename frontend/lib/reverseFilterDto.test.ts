@@ -3,6 +3,7 @@ import { ZodError } from "zod";
 
 import {
   formatReverseFilterZodError,
+  getReverseFilterNearBudgetLimitKrw,
   parseReverseFilterInput,
   reverseFilterErrorSchema,
   reverseFilterSuccessSchema,
@@ -36,10 +37,30 @@ assert.deepEqual(districtFilteredInput, {
 assert.throws(
   () =>
     parseReverseFilterInput({
-      availableCashKrw: 5_000_000,
+      availableCashKrw: 50_000_000,
     }),
   ZodError,
 );
+
+assert.throws(
+  () =>
+    parseReverseFilterInput({
+      availableCashKrw: 125_000_000,
+    }),
+  ZodError,
+);
+
+assert.throws(
+  () =>
+    parseReverseFilterInput({
+      availableCashKrw: 2_550_000_000,
+    }),
+  ZodError,
+);
+
+assert.equal(getReverseFilterNearBudgetLimitKrw(300_000_000), 50_000_000);
+assert.equal(getReverseFilterNearBudgetLimitKrw(500_000_000), 50_000_000);
+assert.equal(getReverseFilterNearBudgetLimitKrw(1_200_000_000), 120_000_000);
 
 try {
   parseReverseFilterInput({
