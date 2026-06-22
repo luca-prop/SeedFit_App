@@ -87,11 +87,12 @@ Indexes:
 
 ### `reference_apartments`
 
-Curated existing apartment reference prices.
+Curated future-value reference apartment prices for redevelopment zones.
 
 MVP rule:
 
-- store representative price needed for comparison cards
+- store the representative price of a new or near-new benchmark complex used to estimate a zone's completed value
+- do not treat this table as same-budget existing apartment alternatives selected by user cash and LTV
 - do not store full Naver Land raw history in this MVP schema
 
 Natural key:
@@ -100,7 +101,7 @@ Natural key:
 
 ### `zone_reference_apartments`
 
-Join table connecting zones to comparable reference apartments.
+Join table connecting zones to their future-value reference apartment complexes.
 
 Key constraints:
 
@@ -116,6 +117,12 @@ MVP rule:
 - T1~T4 are runtime matching bands, not fixed zone attributes
 - `ltv_ratio` is optional until a verified lending policy source exists
 - policy values must not be hardcoded in application logic
+
+### Same-Budget Comparison Assets
+
+`DATA_CURATION_SPEC.v.2.md` section 3 describes existing apartments that can be bought with the same cash budget under LTV scenarios.
+
+That is a separate dataset from `reference_apartments` and is not modeled in MVP-004.
 
 ## 5. Prisma To Supabase Mapping
 

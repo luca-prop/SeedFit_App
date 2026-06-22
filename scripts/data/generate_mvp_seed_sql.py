@@ -16,6 +16,7 @@ DEFAULT_GOLDEN_PATH = Path("data/normalized/golden_samples260519.normalized.json
 DEFAULT_NAVER_PATH = Path("data/normalized/naver_land_0503.normalized.json")
 DEFAULT_OUTPUT_PATH = Path("data/seed/seed_mvp_data.sql")
 DEFAULT_POLICY_DATE = "2026-06-21"
+FUTURE_VALUE_REFERENCE_REASON = "future value reference benchmark"
 
 
 @dataclass
@@ -248,7 +249,8 @@ def append_zone_reference_links(
         lines.append(
             "INSERT INTO zone_reference_apartments (id, zone_id, reference_apartment_id, priority, reason) "
             f"VALUES ({sql_string(deterministic_uuid('zone_reference_apartment', f'{zone_id}|{reference_id}'))}::uuid, "
-            f"{sql_string(zone_id)}::uuid, {sql_string(reference_id)}::uuid, {int(hint['priority'])}, {sql_string(hint.get('reason'))}) "
+            f"{sql_string(zone_id)}::uuid, {sql_string(reference_id)}::uuid, {int(hint['priority'])}, "
+            f"{sql_string(FUTURE_VALUE_REFERENCE_REASON)}) "
             "ON CONFLICT (zone_id, reference_apartment_id) DO UPDATE SET priority = EXCLUDED.priority, reason = EXCLUDED.reason;"
         )
     lines.append("")

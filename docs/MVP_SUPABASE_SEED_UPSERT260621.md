@@ -6,6 +6,13 @@ This document completes `MVP-007: Supabase seed/upsert 스크립트 작성`.
 
 MVP-007 turns the normalized data outputs from MVP-005 and MVP-006 into a reproducible SQL seed/upsert file for Supabase Postgres.
 
+Important terminology:
+
+- `reference_apartments` in this issue means **future-value reference complexes** attached to each redevelopment zone.
+- These records answer "which new or near-new apartment complex should anchor the completed-zone value benchmark?"
+- They do not mean **same-budget existing apartment alternatives** selected by user cash and LTV.
+- Same-budget comparison assets from `DATA_CURATION_SPEC.v.2.md` section 3 remain a separate, unimplemented dataset.
+
 This issue does not require a Supabase account to be available locally. The generated SQL can be reviewed without DB access and later executed in the Supabase Preview SQL editor or through a controlled `psql` session.
 
 ## 2. Files
@@ -64,12 +71,12 @@ The generator uses deterministic UUIDs so repeated generation produces stable ID
 
 `reference_apartments` uses `id` conflict instead of `apartment_name + area_m2 + is_presale` because Postgres unique constraints treat `NULL` values as distinct. Golden Sample fallback references can have `area_m2 = NULL`, so deterministic IDs are safer for idempotent re-runs.
 
-## 5. Reference Apartment Merge Rule
+## 5. Future-Value Reference Merge Rule
 
 The seed combines two reference sources:
 
 1. Naver Land normalized reference apartments.
-2. Golden Sample comparison hints.
+2. Golden Sample future-value reference hints.
 
 If a Golden hint matches a Naver reference by normalized apartment name and `isPresale`, the Naver reference is used because it has area and listing evidence.
 
@@ -79,7 +86,9 @@ If no Naver reference exists, the Golden hint becomes a fallback `reference_apar
 - `source_file = golden_samples260519.csv.csv`
 - `current_price_krw` from the Golden hint
 
-This allows `zone_reference_apartments` to be fully populated for the MVP comparison flow while preserving which references still need Naver enrichment.
+This allows `zone_reference_apartments` to be fully populated for zone-level future-value benchmarking while preserving which references still need Naver enrichment.
+
+The SQL stores link `reason` as `future value reference benchmark` to avoid confusing this dataset with LTV-based same-budget comparison assets.
 
 ## 6. Supabase Execution
 
@@ -107,3 +116,4 @@ Do not run this SQL against Production during MVP Sprint 1.
 - RLS policy creation.
 - Data quality report after DB import.
 - Vercel Preview DB wiring.
+- Same-budget existing apartment comparison assets based on user cash and LTV.
