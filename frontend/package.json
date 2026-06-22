@@ -11,7 +11,8 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:seed": "prisma db seed",
-    "test:ltv-policy": "tsx lib/ltvPolicyCore.test.ts"
+    "test:ltv-policy": "tsx lib/ltvPolicyCore.test.ts",
+    "test:cost-utils": "tsx lib/acquisitionCostCore.test.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.1",
