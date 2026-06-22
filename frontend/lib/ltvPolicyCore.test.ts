@@ -85,4 +85,32 @@ assert.equal(selectActiveLtvPolicy(policies, krw(300_000_000), asOf)?.ltvRatio, 
 assert.equal(selectActiveLtvPolicy(policies, krw(500_000_000), asOf)?.ltvRatio, 0.4);
 assert.throws(() => selectActiveLtvPolicy(policies, BigInt(-1), asOf), RangeError);
 
+const overlappingPolicies: LtvPolicyLike[] = [
+  {
+    id: "wide",
+    tierName: "wide",
+    cashMinKrw: krw(100_000_000),
+    cashMaxKrw: krw(600_000_000),
+    ltvRatio: null,
+    dsrNote: null,
+    effectiveFrom,
+    effectiveTo: null,
+    isActive: true,
+  },
+  {
+    id: "narrow",
+    tierName: "narrow",
+    cashMinKrw: krw(300_000_000),
+    cashMaxKrw: krw(400_000_000),
+    ltvRatio: null,
+    dsrNote: null,
+    effectiveFrom,
+    effectiveTo: null,
+    isActive: true,
+  },
+];
+
+assert.equal(selectActiveLtvPolicy(overlappingPolicies, krw(350_000_000), asOf)?.tierName, "narrow");
+assert.equal(selectActiveLtvPolicy(policies, krw(350_000_000), new Date("2025-12-31T00:00:00.000Z")), null);
+
 console.log("ltvPolicyCore tests passed");
