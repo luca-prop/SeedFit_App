@@ -185,4 +185,23 @@ assert.equal(districtFiltered.matchedZones.length, 1);
 assert.equal(districtFiltered.matchedZones[0].district, "마포구");
 assert.equal(REVERSE_FILTER_GROUP_LIMIT, 30);
 
+const limited = buildReverseFilterGroups(
+  Array.from({ length: 31 }, (_, index) => ({
+    zoneId: `zone-limit-${index}`,
+    zoneName: `제한테스트${index}`,
+    district: "마포구",
+    dong: "공덕동",
+    stage: "조합설립인가",
+    projectType: "재개발",
+    salePriceMinKrw: null,
+    salePriceMaxKrw: null,
+    investmentMinKrw: krw(280_000_000 + index),
+    investmentMaxKrw: null,
+    sourceDate,
+  })),
+  input,
+);
+
+assert.equal(limited.matchedZones.length, REVERSE_FILTER_GROUP_LIMIT);
+
 console.log("reverseFilterCore tests passed");
