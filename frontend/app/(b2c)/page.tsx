@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import {
   AlertTriangle,
+  ArrowRight,
   BadgeCheck,
   BarChart3,
   Building2,
@@ -17,7 +18,19 @@ import {
   WalletCards,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import {
+  CartesianGrid,
+  Cell,
+  ReferenceLine,
+  ResponsiveContainer,
+  Scatter,
+  ScatterChart,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 import { BudgetRangeSearch } from "@/components/b2c/BudgetRangeSearch";
+import { scatterData } from "@/app/lib/scatterData";
 
 /* ───────────────────────── Animated Counter ───────────────────────── */
 function Counter({ end, suffix = "", duration = 2000 }: { end: number; suffix?: string; duration?: number }) {
@@ -67,6 +80,65 @@ function LineIcon({ icon: Icon, tone = "blue" }: { icon: LucideIcon; tone?: "blu
       <Icon className="h-6 w-6" strokeWidth={1.8} aria-hidden="true" />
     </div>
   );
+}
+
+const RESULT_PREVIEW_BUDGET_KRW = 300_000_000;
+
+const RESULT_PREVIEW_ZONES = [
+  {
+    id: "zone-9",
+    zone: "청파3구역",
+    scatterName: "청파 3구역",
+    district: "용산구",
+    stage: "신속통합기획 대상지 선정",
+    match: "100%",
+    price: "3.0억",
+    futureValue: "30.2억",
+    referenceApt: "이촌한가람 / 마포자이힐스테이트라첼스",
+    stageColor: "bg-blue-500/20 text-blue-300",
+  },
+  {
+    id: "zone-73",
+    zone: "신정1구역",
+    scatterName: "신정 1구역",
+    district: "양천구",
+    stage: "신속통합기획 대상지 선정",
+    match: "100%",
+    price: "3.0억",
+    futureValue: "21.3억",
+    referenceApt: "목동힐스테이트",
+    stageColor: "bg-blue-500/20 text-blue-300",
+  },
+  {
+    id: "zone-71",
+    zone: "수택2구역",
+    scatterName: "수택 2구역",
+    district: "구리시",
+    stage: "조합설립인가",
+    match: "87%",
+    price: "2.6억",
+    futureValue: "13.5억",
+    referenceApt: "e편한세상인창어반포레",
+    stageColor: "bg-purple-500/20 text-purple-300",
+  },
+];
+
+const RESULT_PREVIEW_ZONE_NAMES = new Set(RESULT_PREVIEW_ZONES.map((zone) => zone.scatterName));
+
+const scatterPreviewData = scatterData
+  .filter((zone) => zone.investmentMin <= 3 && zone.investmentMax >= 3)
+  .map((zone) => ({
+    ...zone,
+    isPreviewMatch: RESULT_PREVIEW_ZONE_NAMES.has(zone.name),
+  }))
+  .sort((left, right) => Number(left.isPreviewMatch) - Number(right.isPreviewMatch));
+
+function formatComparisonHref(zoneId: string) {
+  return `/app/comparison/${zoneId}?budget=${RESULT_PREVIEW_BUDGET_KRW}`;
+}
+
+function formatScatterHref() {
+  return `/app/scatter?budgetMin=${RESULT_PREVIEW_BUDGET_KRW}&budgetMax=${RESULT_PREVIEW_BUDGET_KRW}`;
 }
 
 /* ═══════════════════════════════════════════════════════════════════ */
@@ -259,11 +331,7 @@ export default function LandingPage() {
           <p className="mx-auto mb-14 max-w-lg text-gray-400">가용 현금 3억 기준으로 진입 가능한 구역을 선별한 결과 예시입니다.</p>
 
           <div className="grid gap-4 sm:grid-cols-3">
-            {[
-              { zone: "청파3구역", district: "용산구", stage: "신속통합기획 대상지 선정", match: "100%", price: "3.0억", stageColor: "bg-blue-500/20 text-blue-300" },
-              { zone: "신정1구역", district: "양천구", stage: "신속통합기획 대상지 선정", match: "100%", price: "3.0억", stageColor: "bg-blue-500/20 text-blue-300" },
-              { zone: "수택2구역", district: "구리시", stage: "조합설립인가", match: "87%", price: "2.6억", stageColor: "bg-purple-500/20 text-purple-300" },
-            ].map((r) => (
+            {RESULT_PREVIEW_ZONES.map((r) => (
               <div key={r.zone} className="group rounded-2xl border border-white/5 bg-white/[0.02] p-5 text-left transition-all hover:border-white/10 hover:bg-white/[0.04]">
                 <div className="mb-3 flex items-center justify-between">
                   <span className={`rounded-lg px-2.5 py-1 text-xs font-bold ${r.stageColor}`}>{r.stage}</span>
@@ -277,13 +345,233 @@ export default function LandingPage() {
                   </div>
                   <span className="text-sm font-bold text-blue-400">{r.match}</span>
                 </div>
+                <Link
+                  href={formatComparisonHref(r.id)}
+                  className="mt-4 inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-xl border border-blue-300/20 bg-blue-400/10 px-3 py-2 text-sm font-bold text-blue-200 transition hover:border-blue-200/40 hover:bg-blue-400/15"
+                >
+                  구역 vs 기축 비교 보기
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                </Link>
               </div>
             ))}
+          </div>
+
+          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <Link
+              href="/app/results?budgetMin=300000000&budgetMax=300000000"
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-black text-slate-950 transition hover:bg-blue-50"
+            >
+              3억 검색 결과 전체 보기
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </Link>
+            <Link
+              href="#comparison-preview"
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl border border-white/10 px-5 py-3 text-sm font-bold text-white transition hover:border-white/20 hover:bg-white/[0.04]"
+            >
+              아래 비교 프리뷰 보기
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* ══════════ SECTION 7 — Mid CTA ══════════ */}
+      {/* ══════════ SECTION 7 — Comparison Preview ══════════ */}
+      <section id="comparison-preview" className="py-20 px-5 sm:py-28">
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-10 text-center">
+            <span className="mb-3 inline-block text-sm font-semibold text-cyan-400">ZONE DETAIL PREVIEW</span>
+            <h2 className="mb-4 text-3xl font-extrabold sm:text-4xl">구역 정보는 이렇게 비교됩니다</h2>
+            <p className="mx-auto max-w-2xl text-gray-400">
+              3억 예산으로 선택한 구역을 실제 상세 화면에서 재개발 구역과 기축 레퍼런스 기준으로 나란히 확인합니다.
+            </p>
+          </div>
+
+          <div className="overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.03] shadow-2xl shadow-blue-950/20">
+            <div className="flex items-center justify-between border-b border-white/10 bg-white/[0.04] px-5 py-4">
+              <div className="flex items-center gap-2">
+                <span className="h-3 w-3 rounded-full bg-red-400/70" />
+                <span className="h-3 w-3 rounded-full bg-amber-300/70" />
+                <span className="h-3 w-3 rounded-full bg-emerald-400/70" />
+              </div>
+              <span className="rounded-full bg-blue-500/10 px-3 py-1 text-xs font-bold text-blue-200">Preview · 1:1 비교 대시보드</span>
+            </div>
+
+            <div className="grid gap-5 p-5 lg:grid-cols-[1.05fr_0.95fr] lg:p-7">
+              <div className="rounded-2xl border border-blue-300/20 bg-blue-500/10 p-5">
+                <div className="mb-4 flex items-center justify-between">
+                  <span className="rounded-lg bg-blue-400/20 px-3 py-1 text-xs font-black text-blue-200">재개발 구역</span>
+                  <span className="text-xs font-semibold text-gray-400">예산 3.0억 기준</span>
+                </div>
+                <div className="space-y-4">
+                  {RESULT_PREVIEW_ZONES.map((zone) => (
+                    <Link
+                      key={zone.id}
+                      href={formatComparisonHref(zone.id)}
+                      className="block rounded-2xl border border-white/10 bg-slate-950/35 p-4 transition hover:border-blue-300/40 hover:bg-slate-950/50"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <h3 className="text-lg font-black text-white">{zone.zone}</h3>
+                          <p className="mt-1 text-sm text-gray-400">{zone.district} · {zone.stage}</p>
+                        </div>
+                        <span className="rounded-full bg-blue-400/15 px-3 py-1 text-sm font-black text-blue-200">{zone.match}</span>
+                      </div>
+                      <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
+                        <div className="rounded-xl bg-white/[0.04] p-3">
+                          <p className="text-xs text-gray-500">초기투자금</p>
+                          <p className="mt-1 font-black text-white">{zone.price}</p>
+                        </div>
+                        <div className="rounded-xl bg-white/[0.04] p-3">
+                          <p className="text-xs text-gray-500">예상 신축 가치</p>
+                          <p className="mt-1 font-black text-white">{zone.futureValue}</p>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-white/10 bg-slate-950/35 p-5">
+                <div className="mb-4 flex items-center justify-between">
+                  <span className="rounded-lg bg-cyan-400/15 px-3 py-1 text-xs font-black text-cyan-200">기축 레퍼런스</span>
+                  <Scale className="h-5 w-5 text-cyan-200" strokeWidth={1.8} aria-hidden="true" />
+                </div>
+                <div className="space-y-3">
+                  {RESULT_PREVIEW_ZONES.map((zone) => (
+                    <div key={zone.referenceApt} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                      <p className="text-xs font-semibold text-gray-500">{zone.zone} 비교 기준</p>
+                      <p className="mt-1 text-base font-black text-white">{zone.referenceApt}</p>
+                      <p className="mt-2 text-sm text-gray-400">
+                        재개발 후 예상 가치와 주변 기축·신축 레퍼런스를 함께 확인합니다.
+                      </p>
+                    </div>
+                  ))}
+                </div>
+                <Link
+                  href={formatComparisonHref("zone-9")}
+                  className="mt-5 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-blue-500 to-indigo-600 px-5 py-3 text-sm font-black text-white transition hover:from-blue-400 hover:to-indigo-500"
+                >
+                  청파3구역 비교 페이지로 이동
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════ SECTION 8 — Scatter Preview ══════════ */}
+      <section id="scatter-preview" className="border-y border-white/5 bg-[#0D1225] py-20 px-5 sm:py-28">
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-10 text-center">
+            <span className="mb-3 inline-block text-sm font-semibold text-purple-400">SCATTER CHART PREVIEW</span>
+            <h2 className="mb-4 text-3xl font-extrabold sm:text-4xl">3억 예산 구역을 한눈에 보기</h2>
+            <p className="mx-auto max-w-2xl text-gray-400">
+              실제 스캐터 데이터에서 3억 예산선에 걸리는 구역을 사업 단계와 초기투자금 기준으로 표시합니다.
+            </p>
+          </div>
+
+          <div className="grid gap-5 lg:grid-cols-[1.35fr_0.65fr]">
+            <div className="rounded-[2rem] border border-white/10 bg-white/[0.03] p-4 sm:p-6">
+              <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="text-sm font-bold text-white">사업 단계 × 예상 초기투자금</p>
+                  <p className="text-xs text-gray-500">강조점: 청파3구역, 신정1구역, 수택2구역</p>
+                </div>
+                <Link
+                  href={formatScatterHref()}
+                  className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-purple-300/20 bg-purple-400/10 px-4 py-2 text-sm font-bold text-purple-100 transition hover:border-purple-200/40 hover:bg-purple-400/15"
+                >
+                  전체 스캐터 차트 보기
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                </Link>
+              </div>
+
+              <div className="h-72 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <ScatterChart margin={{ top: 16, right: 16, bottom: 20, left: 0 }}>
+                    <CartesianGrid stroke="rgba(148, 163, 184, 0.16)" strokeDasharray="3 3" />
+                    <XAxis
+                      type="number"
+                      dataKey="stage"
+                      name="사업 단계"
+                      domain={[1, 4]}
+                      ticks={[1.3, 2.1, 3.1]}
+                      tick={{ fill: "#94a3b8", fontSize: 12 }}
+                      tickFormatter={(value) => {
+                        if (value === 1.3) return "신통기획";
+                        if (value === 2.1) return "정비구역";
+                        if (value === 3.1) return "조합인가";
+                        return String(value);
+                      }}
+                    />
+                    <YAxis
+                      type="number"
+                      dataKey="investmentMin"
+                      name="초기투자금"
+                      domain={[0, 5]}
+                      ticks={[1, 2, 3, 4, 5]}
+                      tick={{ fill: "#94a3b8", fontSize: 12 }}
+                      tickFormatter={(value) => `${value}억`}
+                    />
+                    <Tooltip
+                      cursor={{ strokeDasharray: "3 3" }}
+                      contentStyle={{
+                        background: "#0f172a",
+                        border: "1px solid rgba(255,255,255,0.12)",
+                        borderRadius: "12px",
+                        color: "#fff",
+                      }}
+                      formatter={(value, name) => [
+                        name === "초기투자금" ? `${value}억` : value,
+                        name,
+                      ]}
+                    />
+                    <ReferenceLine y={3} stroke="#f8fafc" strokeDasharray="4 4" label={{ value: "3억", fill: "#e2e8f0", fontSize: 12 }} />
+                    <Scatter data={scatterPreviewData} name="3억 예산 후보" dataKey="investmentMin">
+                      {scatterPreviewData.map((zone) => (
+                        <Cell
+                          key={zone.id}
+                          fill={zone.isPreviewMatch ? "#60a5fa" : "rgba(148, 163, 184, 0.28)"}
+                          stroke={zone.isPreviewMatch ? "#e0f2fe" : "rgba(148, 163, 184, 0.18)"}
+                          strokeWidth={zone.isPreviewMatch ? 2 : 1}
+                        />
+                      ))}
+                    </Scatter>
+                  </ScatterChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            <div className="rounded-[2rem] border border-white/10 bg-white/[0.03] p-5">
+              <p className="text-sm font-black text-white">3억 예산 매칭 구역</p>
+              <div className="mt-4 space-y-3">
+                {RESULT_PREVIEW_ZONES.map((zone) => (
+                  <Link
+                    key={zone.id}
+                    href={formatComparisonHref(zone.id)}
+                    className="flex items-center justify-between rounded-2xl border border-white/10 bg-slate-950/35 p-4 transition hover:border-blue-300/40"
+                  >
+                    <div>
+                      <p className="font-black text-white">{zone.zone}</p>
+                      <p className="mt-1 text-xs text-gray-500">{zone.stage}</p>
+                    </div>
+                    <span className="text-sm font-black text-blue-300">{zone.price}</span>
+                  </Link>
+                ))}
+              </div>
+              <Link
+                href={formatScatterHref()}
+                className="mt-5 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-black text-slate-950 transition hover:bg-purple-50"
+              >
+                스캐터 차트로 이동
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════ SECTION 9 — Mid CTA ══════════ */}
       <section className="py-20 px-5">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="mb-4 text-3xl font-extrabold sm:text-4xl">지금 바로 확인해 보세요</h2>
@@ -292,7 +580,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ══════════ SECTION 8 — Partner Logos ══════════ */}
+      {/* ══════════ SECTION 10 — Partner Logos ══════════ */}
       <section className="border-y border-white/5 bg-[#0D1225] py-14 px-5">
         <div className="mx-auto max-w-4xl text-center">
           <p className="mb-8 text-sm font-medium text-gray-500">데이터 파트너 & 신뢰 기반</p>
@@ -304,7 +592,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ══════════ SECTION 9 — Final CTA ══════════ */}
+      {/* ══════════ SECTION 11 — Final CTA ══════════ */}
       <section className="relative py-24 px-5 sm:py-32">
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           <div className="absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-600/15 blur-[120px]" />

@@ -12,10 +12,10 @@ import {
   REVERSE_FILTER_MIN_CASH_KRW,
 } from "@/lib/reverseFilterDto";
 
-const DEFAULT_RANGE = [250_000_000, 350_000_000] as const;
+const DEFAULT_RANGE = [100_000_000, 300_000_000] as const;
 
 const QUICK_RANGES = [
-  { label: "2.5~3.5억", min: 250_000_000, max: 350_000_000 },
+  { label: "1~3억", min: 100_000_000, max: 300_000_000 },
   { label: "3~5억", min: 300_000_000, max: 500_000_000 },
   { label: "5~10억", min: 500_000_000, max: 1_000_000_000 },
   { label: "10~15억", min: 1_000_000_000, max: 1_500_000_000 },
