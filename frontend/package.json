@@ -12,7 +12,8 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:seed": "prisma db seed",
     "test:ltv-policy": "tsx lib/ltvPolicyCore.test.ts",
-    "test:cost-utils": "tsx lib/acquisitionCostCore.test.ts"
+    "test:cost-utils": "tsx lib/acquisitionCostCore.test.ts",
+    "test:reverse-filter-dto": "tsx lib/reverseFilterDto.test.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.1",
