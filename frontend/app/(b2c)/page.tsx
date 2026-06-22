@@ -260,9 +260,9 @@ export default function LandingPage() {
 
           <div className="grid gap-4 sm:grid-cols-3">
             {[
-              { zone: "수택 2구역", district: "구리시", stage: "조합설립인가", match: "95%", price: "5.6억", stageColor: "bg-purple-500/20 text-purple-300" },
-              { zone: "전농 10구역", district: "동대문구", stage: "연번 부여", match: "82%", price: "6.3억", stageColor: "bg-blue-500/20 text-blue-300" },
-              { zone: "장위 15구역", district: "성북구", stage: "시공사선정", match: "65%", price: "9.0억", stageColor: "bg-amber-500/20 text-amber-300" },
+              { zone: "청파3구역", district: "용산구", stage: "신속통합기획 대상지 선정", match: "100%", price: "3.0억", stageColor: "bg-blue-500/20 text-blue-300" },
+              { zone: "신정1구역", district: "양천구", stage: "신속통합기획 대상지 선정", match: "100%", price: "3.0억", stageColor: "bg-blue-500/20 text-blue-300" },
+              { zone: "수택2구역", district: "구리시", stage: "조합설립인가", match: "87%", price: "2.6억", stageColor: "bg-purple-500/20 text-purple-300" },
             ].map((r) => (
               <div key={r.zone} className="group rounded-2xl border border-white/5 bg-white/[0.02] p-5 text-left transition-all hover:border-white/10 hover:bg-white/[0.04]">
                 <div className="mb-3 flex items-center justify-between">
