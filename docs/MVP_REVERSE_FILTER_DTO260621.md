@@ -22,8 +22,9 @@ The contract fixes the Server Action input/output shape before implementing the 
 Rules:
 
 - `availableCashKrw` is integer KRW.
-- Minimum accepted cash is `10,000,000 KRW`.
-- Maximum accepted cash is `20,000,000,000 KRW`.
+- Minimum accepted cash is `100,000,000 KRW`.
+- Maximum accepted cash is `2,500,000,000 KRW`.
+- Cash input moves in `50,000,000 KRW` slider steps.
 - `interestedDistricts` defaults to `[]`.
 - `sortBy` defaults to `budgetFit`.
 - `sortDirection` defaults to `asc`.
@@ -71,7 +72,20 @@ Rules:
 
 All Server Action DTO money values are serializable `number` values. Internal calculation utilities may use `bigint`, but the Server Action boundary must convert before returning to Client Components.
 
-## 5. Error Output
+## 5. Budget Status Rule
+
+Result groups stay separated as:
+
+- `matchedZones`: budget status `within_budget`
+- `nearZones`: budget status `near_budget`
+- `excludedZones`: budget status `over_budget`
+
+`near_budget` means:
+
+- If available cash is below `500,000,000 KRW`, over-budget gap is within `50,000,000 KRW`.
+- If available cash is `500,000,000 KRW` or higher, over-budget gap is within `10%` of available cash.
+
+## 6. Error Output
 
 `ReverseFilterError`
 
@@ -89,7 +103,17 @@ All Server Action DTO money values are serializable `number` values. Internal ca
 }
 ```
 
-## 6. Verification
+## 7. User Review Decisions
+
+Confirmed after MVP-011 review:
+
+- Money values remain `number KRW` at the Server Action boundary.
+- Input range is `100,000,000 KRW` to `2,500,000,000 KRW`.
+- Slider movement unit is `50,000,000 KRW`.
+- Result grouping keeps `matchedZones`, `nearZones`, and `excludedZones`.
+- Default sort remains `budgetFit asc`.
+
+## 8. Verification
 
 Commands used:
 
@@ -99,7 +123,7 @@ npx tsc --noEmit
 npx eslint lib/reverseFilterDto.ts lib/reverseFilterDto.test.ts
 ```
 
-## 7. Next Consumers
+## 9. Next Consumers
 
 - `MVP-012`: Reverse Filter Server Action must return this contract.
 - `MVP-014`: B2C landing input must produce this input shape.

@@ -1,7 +1,11 @@
 import { z } from "zod";
 
-export const REVERSE_FILTER_MIN_CASH_KRW = 10_000_000;
-export const REVERSE_FILTER_MAX_CASH_KRW = 20_000_000_000;
+export const REVERSE_FILTER_MIN_CASH_KRW = 100_000_000;
+export const REVERSE_FILTER_MAX_CASH_KRW = 2_500_000_000;
+export const REVERSE_FILTER_CASH_STEP_KRW = 50_000_000;
+export const REVERSE_FILTER_NEAR_BUDGET_THRESHOLD_KRW = 500_000_000;
+export const REVERSE_FILTER_NEAR_BUDGET_FIXED_LIMIT_KRW = 50_000_000;
+export const REVERSE_FILTER_NEAR_BUDGET_RATIO_BPS = 1_000;
 
 const safeKrwNumberSchema = z
   .number()
@@ -32,7 +36,10 @@ export const reverseFilterErrorCodeSchema = z.enum([
 export const reverseFilterInputSchema = z.object({
   availableCashKrw: safeKrwNumberSchema
     .min(REVERSE_FILTER_MIN_CASH_KRW)
-    .max(REVERSE_FILTER_MAX_CASH_KRW),
+    .max(REVERSE_FILTER_MAX_CASH_KRW)
+    .refine((value) => value % REVERSE_FILTER_CASH_STEP_KRW === 0, {
+      message: "availableCashKrw must move in 50,000,000 KRW slider steps.",
+    }),
   interestedDistricts: z.array(z.string().trim().min(1).max(40)).max(10).optional().default([]),
   sortBy: reverseFilterSortBySchema.optional().default("budgetFit"),
   sortDirection: reverseFilterSortDirectionSchema.optional().default("asc"),
@@ -97,6 +104,16 @@ export type ReverseFilterResult = z.infer<typeof reverseFilterResultSchema>;
 
 export function parseReverseFilterInput(input: unknown): ReverseFilterInput {
   return reverseFilterInputSchema.parse(input);
+}
+
+export function getReverseFilterNearBudgetLimitKrw(availableCashKrw: number): number {
+  const parsedCash = safeKrwNumberSchema.parse(availableCashKrw);
+
+  if (parsedCash < REVERSE_FILTER_NEAR_BUDGET_THRESHOLD_KRW) {
+    return REVERSE_FILTER_NEAR_BUDGET_FIXED_LIMIT_KRW;
+  }
+
+  return Math.floor((parsedCash * REVERSE_FILTER_NEAR_BUDGET_RATIO_BPS) / 10_000);
 }
 
 export function formatReverseFilterZodError(error: z.ZodError): ReverseFilterError {
