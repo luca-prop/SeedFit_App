@@ -11,10 +11,11 @@ Server Action은 Supabase/Prisma에서 구역별 최신 투자금 snapshot을 �
 구현 전에 사용자가 확정한 기준입니다.
 
 - MVP-012는 MVP-011 보정 PR을 먼저 머지한 뒤 시작합니다.
-- `within_budget`은 최소 필요 현금 기준으로 판정합니다. 즉 `requiredCashMinKrw <= availableCashKrw`이면 진입 가능 후보로 봅니다.
+- `within_budget`은 최소 필요 현금이 사용자가 선택한 예산 범위 안에 들어오는지로 판정합니다.
+  - `budgetMinKrw <= requiredCashMinKrw <= budgetMaxKrw`
 - `near_budget`은 MVP-011에서 확정한 규칙을 사용합니다.
-  - 가용 현금 `500,000,000 KRW` 미만: 예산 초과액이 `50,000,000 KRW` 이내
-  - 가용 현금 `500,000,000 KRW` 이상: 예산 초과액이 가용 현금의 `10%` 이내
+  - 예산 상한 `500,000,000 KRW` 미만: 예산 초과액이 `50,000,000 KRW` 이내
+  - 예산 상한 `500,000,000 KRW` 이상: 예산 초과액이 예산 상한의 `10%` 이내
 - `matchScore`는 MVP 단계에서 상태 기반 단순 점수로 둡니다.
   - `within_budget`: `100`
   - `near_budget`: `70`
@@ -44,6 +45,7 @@ Server Action은 Supabase/Prisma에서 구역별 최신 투자금 snapshot을 �
 - 내부 계산에서는 `bigint`를 사용할 수 있습니다.
 - 최신 snapshot이 없는 구역은 결과에서 제외합니다.
 - 최신 snapshot에 `investmentMinKrw`가 없는 구역은 현재 매물이 큐레이션될 때까지 결과에서 제외합니다.
+- 예산 범위보다 낮은 구역은 `excludedZones`에 포함하고 `예산 범위 미만` 사유를 표시합니다.
 - 이 Action은 DB를 읽기만 하며 쓰기 작업을 하지 않습니다.
 
 ## 6. 검증

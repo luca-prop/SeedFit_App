@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { BudgetRangeSearch } from "@/components/b2c/BudgetRangeSearch";
 
 /* ───────────────────────── Animated Counter ───────────────────────── */
 function Counter({ end, suffix = "", duration = 2000 }: { end: number; suffix?: string; duration?: number }) {
@@ -27,10 +28,10 @@ function Counter({ end, suffix = "", duration = 2000 }: { end: number; suffix?: 
 }
 
 /* ───────────────────────── CTA Button ───────────────────────── */
-function CTAButton({ className = "", children }: { className?: string; children: React.ReactNode }) {
+function CTAButton({ className = "", children, href = "#budget-search" }: { className?: string; children: React.ReactNode; href?: string }) {
   return (
     <Link
-      href="/app"
+      href={href}
       className={`group relative inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-blue-500 to-indigo-600 px-8 py-4 text-lg font-bold text-white shadow-lg shadow-blue-500/25 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/40 hover:-translate-y-0.5 hover:scale-[1.02] active:scale-[0.98] ${className}`}
     >
       {children}
@@ -88,7 +89,7 @@ export default function LandingPage() {
             씨드핏이 <strong className="text-white">3초 안에</strong> 내 예산으로 진입 가능한 재개발 구역을 찾아드립니다.
           </p>
 
-          <CTAButton className="mb-8">내 예산으로 구역 찾기</CTAButton>
+          <BudgetRangeSearch />
 
           <p className="text-xs text-gray-500">가입 없이 무료로 시작 · 30초 만에 결과 확인</p>
         </div>

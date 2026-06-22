@@ -5,7 +5,8 @@ import type { ReverseFilterInput } from "./reverseFilterDto";
 
 const krw = (value: number) => BigInt(value);
 const input: ReverseFilterInput = {
-  availableCashKrw: 300_000_000,
+  budgetMinKrw: 250_000_000,
+  budgetMaxKrw: 350_000_000,
   interestedDistricts: [],
   sortBy: "budgetFit",
   sortDirection: "asc",
@@ -32,7 +33,7 @@ const withinZone = buildReverseFilterZone(
 
 assert.equal(withinZone?.budgetStatus, "within_budget");
 assert.equal(withinZone?.matchScore, 100);
-assert.equal(withinZone?.budgetGapKrw, 20_000_000);
+assert.equal(withinZone?.budgetGapKrw, 0);
 assert.equal(withinZone?.requiredCashMinKrw, 280_000_000);
 
 const nearZone = buildReverseFilterZone(
@@ -45,8 +46,8 @@ const nearZone = buildReverseFilterZone(
     projectType: "재개발",
     salePriceMinKrw: null,
     salePriceMaxKrw: null,
-    investmentMinKrw: krw(340_000_000),
-    investmentMaxKrw: krw(400_000_000),
+    investmentMinKrw: krw(390_000_000),
+    investmentMaxKrw: krw(420_000_000),
     sourceDate,
   },
   input,
@@ -120,8 +121,8 @@ const grouped = buildReverseFilterGroups(
       projectType: "재개발",
       salePriceMinKrw: null,
       salePriceMaxKrw: null,
-      investmentMinKrw: krw(340_000_000),
-      investmentMaxKrw: krw(400_000_000),
+    investmentMinKrw: krw(390_000_000),
+    investmentMaxKrw: krw(420_000_000),
       sourceDate,
     },
     {
@@ -162,7 +163,8 @@ const highCashNearBoundary = buildReverseFilterZone(
   },
   {
     ...input,
-    availableCashKrw: 500_000_000,
+    budgetMinKrw: 500_000_000,
+    budgetMaxKrw: 500_000_000,
   },
 );
 
@@ -184,7 +186,8 @@ const highCashOverBoundary = buildReverseFilterZone(
   },
   {
     ...input,
-    availableCashKrw: 500_000_000,
+    budgetMinKrw: 500_000_000,
+    budgetMaxKrw: 500_000_000,
   },
 );
 
@@ -228,6 +231,26 @@ const districtFiltered = buildReverseFilterGroups(
 assert.equal(districtFiltered.matchedZones.length, 1);
 assert.equal(districtFiltered.matchedZones[0].district, "마포구");
 assert.equal(REVERSE_FILTER_GROUP_LIMIT, 30);
+
+const belowRangeZone = buildReverseFilterZone(
+  {
+    zoneId: "zone-below",
+    zoneName: "하한미만구역",
+    district: "마포구",
+    dong: "공덕동",
+    stage: "조합설립인가",
+    projectType: "재개발",
+    salePriceMinKrw: null,
+    salePriceMaxKrw: null,
+    investmentMinKrw: krw(200_000_000),
+    investmentMaxKrw: null,
+    sourceDate,
+  },
+  input,
+);
+
+assert.equal(belowRangeZone?.budgetStatus, "over_budget");
+assert.equal(belowRangeZone?.excludedReason, "예산 범위 미만");
 
 const limited = buildReverseFilterGroups(
   Array.from({ length: 31 }, (_, index) => ({

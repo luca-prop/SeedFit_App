@@ -49,11 +49,14 @@ npm run test:core-business
 
 ### Reverse Filter DTO/분류
 
+- `budgetMinKrw` / `budgetMaxKrw` 예산 범위 입력
 - 1억~25억 입력 범위
 - 5천만 원 slider step
+- 단일 금액은 `budgetMinKrw = budgetMaxKrw`로 표현 가능
 - `within_budget`, `near_budget`, `over_budget` 분류
 - 5억 미만 근접 기준 5천만 원
 - 5억 이상 근접 기준 10%
+- 예산 범위보다 낮은 구역 제외 사유
 - 관심 지역 필터
 - 그룹별 최대 30개 제한
 - `investmentMin` 정렬

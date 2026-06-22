@@ -1,0 +1,69 @@
+# SeedFit MVP 예산 범위 랜딩 260621
+
+## 1. 목적
+
+이 문서는 `MVP-014: B2C 단일 입력 랜딩 구현`을 사용자 결정에 따라 재정의한 결과를 정리합니다.
+
+사용자 결정으로 MVP 검색 입력은 단일 금액이 아니라 기본적으로 예산 범위 입력을 사용합니다.
+
+## 2. 사용자 확정 결정
+
+- 현재 메인 랜딩은 `frontend/app/(b2c)/page.tsx`입니다.
+- MVP-014 방식은 랜딩 히어로 영역에 예산 입력 UI를 직접 추가하는 방식입니다.
+- 예산 검색은 기본적으로 `2.5억 ~ 3.5억`처럼 범위로 입력합니다.
+- 단일 `3억` 검색도 가능하지만, 기본 UX와 내부 계약은 범위 입력입니다.
+- 범위는 `1억 ~ 25억`, 이동 단위는 `5천만 원`입니다.
+
+## 3. 변경 내용
+
+- `.cursor/rules/007-mvp-budget-range-rules.mdc`를 추가해 MVP 전체 예산 입력 규칙을 고정했습니다.
+- `ReverseFilterInput`을 `budgetMinKrw` / `budgetMaxKrw` 범위 계약으로 변경했습니다.
+- `frontend/components/b2c/BudgetRangeSearch.tsx`를 추가했습니다.
+- `frontend/app/(b2c)/page.tsx` 히어로 영역에 범위 입력 위젯을 삽입했습니다.
+- 검색 CTA는 `/app/results?budgetMin=...&budgetMax=...`로 이동합니다.
+
+## 4. UI 동작
+
+랜딩 사용자는 다음을 할 수 있습니다.
+
+- 슬라이더로 최소/최대 예산 범위 선택
+- 선택된 예산 범위는 밝은 색, 선택되지 않은 트랙은 어두운 색으로 표시해 현재 선택 구간을 강조
+- 빠른 선택 버튼으로 대표 범위 선택
+- `3억 단일` 버튼으로 단일 금액 검색 표현
+- 검색 CTA 클릭으로 결과 흐름 시작
+
+## 5. Reverse Filter 계약 영향
+
+기존 단일 입력:
+
+```ts
+availableCashKrw: number
+```
+
+변경된 범위 입력:
+
+```ts
+budgetMinKrw: number
+budgetMaxKrw: number
+```
+
+`within_budget`은 `budgetMinKrw <= requiredCashMinKrw <= budgetMaxKrw`일 때 적용합니다.
+
+`near_budget`은 예산 상한 `budgetMaxKrw`를 기준으로 계산합니다.
+
+## 6. 검증
+
+실행한 검증 명령입니다.
+
+```bash
+npm run test:reverse-filter-dto
+npm run test:reverse-filter-core
+npm run test:core-business
+npx tsc --noEmit
+npx eslint app/(b2c)/page.tsx components/b2c/BudgetRangeSearch.tsx lib/reverseFilterDto.ts lib/reverseFilterDto.test.ts lib/reverseFilterCore.ts lib/reverseFilterCore.test.ts
+```
+
+## 7. 후속 범위
+
+- MVP-015에서 `/app/results`가 범위 입력을 받아 실제 Server Action 결과 카드로 렌더링해야 합니다.
+- 기존 `/app/page.tsx` range 입력 화면은 현재 유지하지만, 추후 같은 range contract로 정리할 수 있습니다.
