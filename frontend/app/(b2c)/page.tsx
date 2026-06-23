@@ -235,8 +235,8 @@ function ScatterPreviewLabel({ x, y, index }: { x?: number | string; y?: number 
   }
 
   const labelPosition = {
-    "zone-9": { dx: -24, dy: -18, textAnchor: "end" as const },
-    "zone-73": { dx: 24, dy: -18, textAnchor: "start" as const },
+    "zone-9": { dx: -8, dy: -18, textAnchor: "end" as const },
+    "zone-73": { dx: 8, dy: -18, textAnchor: "start" as const },
     "zone-71": { dx: 0, dy: -18, textAnchor: "middle" as const },
   }[point.previewZone.id] ?? { dx: 0, dy: -18, textAnchor: "middle" as const };
 
