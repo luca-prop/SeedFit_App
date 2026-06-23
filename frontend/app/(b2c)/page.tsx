@@ -324,10 +324,10 @@ export default function LandingPage() {
       <section className="relative border-y border-white/5 bg-[#0D1225] py-16">
         <div className="mx-auto grid max-w-5xl grid-cols-2 gap-6 px-5 sm:grid-cols-4">
           {[
-            { value: 1247, suffix: "개", label: "분석 대상 구역" },
+            { value: 81, suffix: "개", label: "검증된 구역 우선 공개" },
             { value: 15, suffix: "시간→30초", label: "탐색 시간 단축" },
             { value: 5, suffix: "%", label: "실투자금 오차 이내" },
-            { value: 0, suffix: "%", label: "허위매물 노출률" },
+            { value: 100, suffix: "%", label: "큐레이션 데이터 기반" },
           ].map((s) => (
             <div key={s.label} className="text-center">
               <p className="text-3xl font-black text-white sm:text-4xl">
@@ -386,7 +386,7 @@ export default function LandingPage() {
             {[
               { icon: RotateCcw, title: "역방향 필터링", desc: "구역을 먼저 찾는 게 아니라, 내 예산이 먼저. 진입 가능한 구역만 자동 도출합니다.", highlight: true, tone: "blue" as const },
               { icon: Scale, title: "1:1 대조 분석", desc: "재개발 구역 vs 기축 아파트를 동일 예산 기준으로 비교. 기회비용을 명확히 파악하세요.", tone: "indigo" as const },
-              { icon: BadgeCheck, title: "Verified 매물", desc: "현지 파트너 중개사가 교차 검증한 매물만 노출. 허위매물로 인한 헛걸음이 없습니다.", tone: "cyan" as const },
+              { icon: BadgeCheck, title: "검증된 데이터 출처", desc: "Golden Sample과 Naver LAND 기준가를 운영 기준에 맞춰 큐레이션해 구역 비교의 출처를 명확히 합니다.", tone: "cyan" as const },
               { icon: LineChart, title: "오차율 ±5% 이내", desc: "국토부 실거래가 기반의 정밀 역산 엔진. 시세 오차를 최소화했습니다.", tone: "purple" as const },
               { icon: Clock3, title: "3초 이내 결과", desc: "주 15시간 걸리던 구역 탐색을 3초로. 시간 빈곤한 직장인에게 최적화.", tone: "blue" as const },
               { icon: ShieldCheck, title: "리스크 시각화", desc: "사업 단계, 분담금 변동, 전고점 회복률까지. 투자 리스크를 숫자로 보여드립니다.", tone: "indigo" as const },
@@ -423,7 +423,7 @@ export default function LandingPage() {
                 {[
                   ["타겟 구역 탐색", "주 15시간 (엑셀 수작업)", "30초 (자동 역산)"],
                   ["기축 vs 재개발 비교", "직접 조사·계산 (3일+)", "원클릭 리포트 (즉시)"],
-                  ["매물 신뢰도", "찌라시·허위매물 60%", "Verified 검증 100%"],
+                  ["데이터 신뢰도", "찌라시·수작업 출처 혼재", "Curated DB 기반 비교"],
                   ["초기투자금 오차", "감으로 추정 (±30%)", "데이터 기반 (±5%)"],
                   ["LTV·취득세 반영", "수동 계산 (오류 빈번)", "자동 역산 (정책 실시간 반영)"],
                 ].map(([item, before, after]) => (
