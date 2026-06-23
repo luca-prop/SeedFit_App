@@ -1,16 +1,18 @@
 import Link from "next/link";
-import { AlertTriangle, ArrowLeft, BarChart3, Search } from "lucide-react";
+import { AlertTriangle, ArrowLeft, Search } from "lucide-react";
 
 import { reverseFilterAction } from "@/app/actions/reverseFilter";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ResultsScatterExplorer } from "@/components/b2c/ResultsScatterExplorer";
+import { Card, CardContent } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import {
   REVERSE_FILTER_CASH_STEP_KRW,
   REVERSE_FILTER_MAX_CASH_KRW,
   REVERSE_FILTER_MIN_CASH_KRW,
   type ReverseFilterBudgetStatus,
+  type ReverseFilterSortBy,
+  type ReverseFilterSortDirection,
   type ReverseFilterZone,
 } from "@/lib/reverseFilterDto";
 
@@ -62,6 +64,18 @@ const GROUP_CONFIG: Record<
 
 type SearchParams = Record<string, string | string[] | undefined>;
 
+const SORT_OPTIONS = [
+  { value: "budgetFitAsc", label: "예산 적합도 높은 순", sortBy: "budgetFit", sortDirection: "asc" },
+  { value: "investmentMinAsc", label: "최소 실투자금 낮은 순", sortBy: "investmentMin", sortDirection: "asc" },
+  { value: "investmentMaxAsc", label: "최대 실투자금 낮은 순", sortBy: "investmentMax", sortDirection: "asc" },
+  { value: "zoneNameAsc", label: "구역명 가나다순", sortBy: "zoneName", sortDirection: "asc" },
+] satisfies Array<{
+  value: string;
+  label: string;
+  sortBy: ReverseFilterSortBy;
+  sortDirection: ReverseFilterSortDirection;
+}>;
+
 function firstParam(value: string | string[] | undefined): string | undefined {
   return Array.isArray(value) ? value[0] : value;
 }
@@ -91,6 +105,31 @@ function parseBudgetRange(searchParams: SearchParams) {
     budgetMinKrw,
     budgetMaxKrw,
   };
+}
+
+function parseFilterValue(searchParams: SearchParams, key: string) {
+  const value = firstParam(searchParams[key]);
+
+  return value && value.trim().length > 0 ? value.trim() : "all";
+}
+
+function parseCsvFilter(searchParams: SearchParams, key: string) {
+  const value = firstParam(searchParams[key]);
+
+  if (!value) {
+    return [];
+  }
+
+  return value
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function parseSortOption(searchParams: SearchParams) {
+  const sortParam = firstParam(searchParams.sort);
+
+  return SORT_OPTIONS.find((option) => option.value === sortParam) ?? SORT_OPTIONS[0];
 }
 
 function formatBudget(value: number) {
@@ -125,58 +164,75 @@ function formatDateTime(value: string) {
   }).format(new Date(value));
 }
 
+function stageAxisLabelFor(stage: string) {
+  const normalized = stage.replace(/\s+/g, "");
+
+  if (normalized.includes("착공")) return "착공";
+  if (normalized.includes("이주") || normalized.includes("철거")) return "이주철거";
+  if (normalized.includes("관리처분")) return "관리처분";
+  if (normalized.includes("사업시행")) return "사업시행";
+  if (normalized.includes("시공사") || normalized.includes("건축심의")) return "시공사";
+  if (normalized.includes("조합설립") || normalized.includes("사업시행자지정")) return "조합설립";
+  if (normalized.includes("구역지정") || normalized.includes("관리계획고시") || normalized.includes("추진위")) {
+    return "구역지정";
+  }
+
+  return "추진준비";
+}
+
+function filterZones(zones: ReverseFilterZone[], selectedDistricts: string[], selectedStageLabels: string[]) {
+  return zones.filter((zone) => {
+    const districtMatched = selectedDistricts.length === 0 || selectedDistricts.includes(zone.district);
+    const stageMatched = selectedStageLabels.length === 0 || selectedStageLabels.includes(stageAxisLabelFor(zone.stage));
+
+    return districtMatched && stageMatched;
+  });
+}
+
 function ResultZoneCard({ zone }: { zone: ReverseFilterZone }) {
   const config = GROUP_CONFIG[zone.budgetStatus];
 
   return (
-    <Card className="border-slate-200 bg-white shadow-sm transition hover:border-blue-200 hover:shadow-md">
-      <CardHeader className="pb-3">
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <CardTitle className="text-base md:text-lg">{zone.zoneName}</CardTitle>
-            <div className="mt-2 flex flex-wrap gap-2">
-              <Badge variant="secondary" className="text-xs">
+    <Card
+      id={`zone-card-${zone.zoneId}`}
+      className="scroll-mt-6 border-slate-200 bg-white shadow-sm transition hover:border-blue-200 hover:shadow-md"
+    >
+      <CardContent className="p-3 md:p-4">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <div className="min-w-0 space-y-2">
+            <div className="flex flex-wrap items-center gap-2">
+              <h3 className="text-sm font-black text-slate-950 md:text-base">{zone.zoneName}</h3>
+              <Badge variant="secondary" className="text-[11px]">
                 {zone.district} {zone.dong}
               </Badge>
-              <Badge className={`text-xs ${STAGE_COLORS[zone.stage] || "bg-gray-100 text-gray-700"}`}>
-                {zone.stage}
+              <Badge className={`text-[11px] ${config.badgeClassName}`}>{config.title}</Badge>
+            </div>
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-500">
+              <span>
+                필요 현금 <strong className="text-blue-700">{formatBudgetRange(zone.requiredCashMinKrw, zone.requiredCashMaxKrw)}</strong>
+              </span>
+              <span>
+                X축 단계 <strong className="text-slate-800">{stageAxisLabelFor(zone.stage)}</strong>
+              </span>
+              <span>
+                적합도 <strong className="text-slate-800">{zone.matchScore}%</strong>
+              </span>
+              <span>{formatBudgetGap(zone.budgetGapKrw)}</span>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <Badge className={`text-[11px] ${STAGE_COLORS[zone.stage] || "bg-gray-100 text-gray-700"}`}>
+                세부: {zone.stage}
               </Badge>
+              <span className="text-[11px] text-slate-400">데이터 기준일 {zone.sourceDate}</span>
             </div>
           </div>
-          <Badge className={`whitespace-nowrap text-xs ${config.badgeClassName}`}>
-            {config.title}
-          </Badge>
+          <Link
+            href={`/app/comparison/${zone.zoneId}`}
+            className="inline-flex min-h-10 shrink-0 items-center justify-center rounded-xl bg-indigo-600 px-3 py-2 text-xs font-bold text-white transition hover:bg-indigo-700"
+          >
+            같은 예산 기축단지 비교
+          </Link>
         </div>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="grid grid-cols-2 gap-3 text-sm">
-          <div className="rounded-xl bg-slate-50 p-3">
-            <p className="text-xs text-slate-500">실투자금 범위</p>
-            <p className="mt-1 font-bold text-slate-950">
-              {formatBudgetRange(zone.investmentMinKrw, zone.investmentMaxKrw)}
-            </p>
-          </div>
-          <div className="rounded-xl bg-blue-50 p-3">
-            <p className="text-xs text-slate-500">필요 현금 범위</p>
-            <p className="mt-1 font-bold text-blue-700">
-              {formatBudgetRange(zone.requiredCashMinKrw, zone.requiredCashMaxKrw)}
-            </p>
-          </div>
-        </div>
-        <div>
-          <div className="mb-1.5 flex items-end justify-between text-sm">
-            <span className="text-slate-500">예산 적합도</span>
-            <span className="font-semibold text-blue-700">{zone.matchScore}%</span>
-          </div>
-          <Progress value={zone.matchScore} className="h-1.5" />
-        </div>
-        <div className="flex flex-col gap-2 border-t border-slate-100 pt-3 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
-          <span>{formatBudgetGap(zone.budgetGapKrw)}</span>
-          <span>데이터 기준일 {zone.sourceDate}</span>
-        </div>
-        {zone.excludedReason ? (
-          <p className="rounded-lg bg-slate-50 px-3 py-2 text-xs text-slate-500">{zone.excludedReason}</p>
-        ) : null}
       </CardContent>
     </Card>
   );
@@ -200,7 +256,7 @@ function ResultGroupSection({
         </p>
       </div>
       {zones.length > 0 ? (
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+        <div className="space-y-2">
           {zones.map((zone) => (
             <ResultZoneCard key={`${status}-${zone.zoneId}`} zone={zone} />
           ))}
@@ -217,13 +273,24 @@ function ResultGroupSection({
 export default async function ResultsPage({ searchParams }: { searchParams?: Promise<SearchParams> }) {
   const resolvedSearchParams = searchParams ? await searchParams : {};
   const { budgetMinKrw, budgetMaxKrw } = parseBudgetRange(resolvedSearchParams);
+  const legacyDistrict = parseFilterValue(resolvedSearchParams, "district");
+  const legacyStage = parseFilterValue(resolvedSearchParams, "stage");
+  const selectedDistricts = parseCsvFilter(resolvedSearchParams, "districts");
+  const selectedStageGroups = parseCsvFilter(resolvedSearchParams, "stageGroups");
+  const selectedSort = parseSortOption(resolvedSearchParams);
   const result = await reverseFilterAction({
     budgetMinKrw,
     budgetMaxKrw,
-    sortBy: "budgetFit",
-    sortDirection: "asc",
+    sortBy: selectedSort.sortBy,
+    sortDirection: selectedSort.sortDirection,
   });
-  const scatterHref = `/app/scatter?budgetMin=${budgetMinKrw}&budgetMax=${budgetMaxKrw}`;
+  const visibleZones = result.ok ? [...result.matchedZones, ...result.nearZones] : [];
+  const effectiveDistricts = selectedDistricts.length > 0 ? selectedDistricts : legacyDistrict !== "all" ? [legacyDistrict] : [];
+  const effectiveStageGroups =
+    selectedStageGroups.length > 0 ? selectedStageGroups : legacyStage !== "all" ? [stageAxisLabelFor(legacyStage)] : [];
+  const filteredMatchedZones = result.ok ? filterZones(result.matchedZones, effectiveDistricts, effectiveStageGroups) : [];
+  const filteredNearZones = result.ok ? filterZones(result.nearZones, effectiveDistricts, effectiveStageGroups) : [];
+  const visibleResultCount = filteredMatchedZones.length + filteredNearZones.length;
 
   return (
     <div className="container mx-auto max-w-5xl px-4 py-6 md:py-8">
@@ -246,13 +313,6 @@ export default async function ResultsPage({ searchParams }: { searchParams?: Pro
               기준
             </p>
           </div>
-          <Link
-            href={scatterHref}
-            className="inline-flex min-h-11 items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700"
-          >
-            <BarChart3 className="mr-2 h-4 w-4" />
-            스캐터 차트로 비교
-          </Link>
         </div>
       </div>
 
@@ -266,30 +326,39 @@ export default async function ResultsPage({ searchParams }: { searchParams?: Pro
             </AlertDescription>
           </Alert>
 
+          <ResultsScatterExplorer
+            zones={visibleZones}
+            budgetMinKrw={budgetMinKrw}
+            budgetMaxKrw={budgetMaxKrw}
+            selectedDistricts={effectiveDistricts}
+            selectedStageGroups={effectiveStageGroups}
+            selectedSort={selectedSort.value}
+            sortOptions={SORT_OPTIONS.map(({ value, label }) => ({ value, label }))}
+          />
+
           <div className="grid gap-3 sm:grid-cols-3">
             <Card>
               <CardContent className="p-4">
                 <p className="text-xs text-slate-500">예산 내</p>
-                <p className="mt-1 text-2xl font-black text-emerald-700">{result.matchedZones.length}개</p>
+                <p className="mt-1 text-2xl font-black text-emerald-700">{filteredMatchedZones.length}개</p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-4">
                 <p className="text-xs text-slate-500">예산 근접</p>
-                <p className="mt-1 text-2xl font-black text-amber-700">{result.nearZones.length}개</p>
+                <p className="mt-1 text-2xl font-black text-amber-700">{filteredNearZones.length}개</p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-4">
-                <p className="text-xs text-slate-500">예산 초과</p>
-                <p className="mt-1 text-2xl font-black text-slate-700">{result.excludedZones.length}개</p>
+                <p className="text-xs text-slate-500">표시 결과</p>
+                <p className="mt-1 text-2xl font-black text-blue-700">{visibleResultCount}개</p>
               </CardContent>
             </Card>
           </div>
 
-          <ResultGroupSection status="within_budget" zones={result.matchedZones} />
-          <ResultGroupSection status="near_budget" zones={result.nearZones} />
-          <ResultGroupSection status="over_budget" zones={result.excludedZones} />
+          <ResultGroupSection status="within_budget" zones={filteredMatchedZones} />
+          <ResultGroupSection status="near_budget" zones={filteredNearZones} />
         </div>
       ) : (
         <Card className="flex flex-col items-center justify-center border-dashed bg-white p-8 text-center md:p-12">
@@ -306,12 +375,6 @@ export default async function ResultsPage({ searchParams }: { searchParams?: Pro
               className="inline-flex min-h-11 items-center justify-center rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
             >
               예산 다시 입력하기
-            </Link>
-            <Link
-              href={scatterHref}
-              className="inline-flex min-h-11 items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700"
-            >
-              스캐터 차트 보기
             </Link>
           </div>
         </Card>
