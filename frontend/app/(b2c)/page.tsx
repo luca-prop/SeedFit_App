@@ -220,6 +220,40 @@ function ScatterPreviewTooltip({ active, payload }: { active?: boolean; payload?
   );
 }
 
+function ScatterPreviewLabel({ x, y, index }: { x?: number | string; y?: number | string; index?: number }) {
+  const point = typeof index === "number" ? scatterPreviewData[index] : null;
+
+  if (!point?.previewZone || !point.previewLabel) {
+    return null;
+  }
+
+  const numericX = Number(x);
+  const numericY = Number(y);
+
+  if (!Number.isFinite(numericX) || !Number.isFinite(numericY)) {
+    return null;
+  }
+
+  const labelPosition = {
+    "zone-9": { dx: -24, dy: -18, textAnchor: "end" as const },
+    "zone-73": { dx: 24, dy: -18, textAnchor: "start" as const },
+    "zone-71": { dx: 0, dy: -18, textAnchor: "middle" as const },
+  }[point.previewZone.id] ?? { dx: 0, dy: -18, textAnchor: "middle" as const };
+
+  return (
+    <text
+      x={numericX + labelPosition.dx}
+      y={numericY + labelPosition.dy}
+      textAnchor={labelPosition.textAnchor}
+      fill="#e2e8f0"
+      fontSize={12}
+      fontWeight={800}
+    >
+      {point.previewLabel}
+    </text>
+  );
+}
+
 /* ═══════════════════════════════════════════════════════════════════ */
 /*  LANDING PAGE                                                      */
 /* ═══════════════════════════════════════════════════════════════════ */
@@ -649,10 +683,7 @@ export default function LandingPage() {
                       ))}
                       <LabelList
                         dataKey="previewLabel"
-                        position="top"
-                        fill="#e2e8f0"
-                        fontSize={12}
-                        fontWeight={800}
+                        content={<ScatterPreviewLabel />}
                       />
                     </Scatter>
                   </ScatterChart>
