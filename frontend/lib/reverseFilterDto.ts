@@ -34,15 +34,24 @@ export const reverseFilterErrorCodeSchema = z.enum([
 ]);
 
 export const reverseFilterInputSchema = z.object({
-  availableCashKrw: safeKrwNumberSchema
+  budgetMinKrw: safeKrwNumberSchema
     .min(REVERSE_FILTER_MIN_CASH_KRW)
     .max(REVERSE_FILTER_MAX_CASH_KRW)
     .refine((value) => value % REVERSE_FILTER_CASH_STEP_KRW === 0, {
-      message: "availableCashKrw must move in 50,000,000 KRW slider steps.",
+      message: "budgetMinKrw must move in 50,000,000 KRW slider steps.",
+    }),
+  budgetMaxKrw: safeKrwNumberSchema
+    .min(REVERSE_FILTER_MIN_CASH_KRW)
+    .max(REVERSE_FILTER_MAX_CASH_KRW)
+    .refine((value) => value % REVERSE_FILTER_CASH_STEP_KRW === 0, {
+      message: "budgetMaxKrw must move in 50,000,000 KRW slider steps.",
     }),
   interestedDistricts: z.array(z.string().trim().min(1).max(40)).max(10).optional().default([]),
   sortBy: reverseFilterSortBySchema.optional().default("budgetFit"),
   sortDirection: reverseFilterSortDirectionSchema.optional().default("asc"),
+}).refine((value) => value.budgetMinKrw <= value.budgetMaxKrw, {
+  message: "budgetMinKrw must be less than or equal to budgetMaxKrw.",
+  path: ["budgetMaxKrw"],
 });
 
 export const reverseFilterZoneSchema = z.object({
@@ -106,8 +115,8 @@ export function parseReverseFilterInput(input: unknown): ReverseFilterInput {
   return reverseFilterInputSchema.parse(input);
 }
 
-export function getReverseFilterNearBudgetLimitKrw(availableCashKrw: number): number {
-  const parsedCash = safeKrwNumberSchema.parse(availableCashKrw);
+export function getReverseFilterNearBudgetLimitKrw(budgetMaxKrw: number): number {
+  const parsedCash = safeKrwNumberSchema.parse(budgetMaxKrw);
 
   if (parsedCash < REVERSE_FILTER_NEAR_BUDGET_THRESHOLD_KRW) {
     return REVERSE_FILTER_NEAR_BUDGET_FIXED_LIMIT_KRW;

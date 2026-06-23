@@ -61,15 +61,15 @@ function calculateRequiredCashKrw(
   }).totalRequiredCashKrw;
 }
 
-function classifyBudgetStatus(availableCashKrw: number, requiredCashMinKrw: number): ReverseFilterBudgetStatus {
-  if (requiredCashMinKrw <= availableCashKrw) {
+function classifyBudgetStatus(input: ReverseFilterInput, requiredCashMinKrw: number): ReverseFilterBudgetStatus {
+  if (requiredCashMinKrw >= input.budgetMinKrw && requiredCashMinKrw <= input.budgetMaxKrw) {
     return "within_budget";
   }
 
-  const nearLimitKrw = getReverseFilterNearBudgetLimitKrw(availableCashKrw);
-  const overBudgetGapKrw = requiredCashMinKrw - availableCashKrw;
+  const nearLimitKrw = getReverseFilterNearBudgetLimitKrw(input.budgetMaxKrw);
+  const overBudgetGapKrw = requiredCashMinKrw - input.budgetMaxKrw;
 
-  return overBudgetGapKrw <= nearLimitKrw ? "near_budget" : "over_budget";
+  return overBudgetGapKrw > 0 && overBudgetGapKrw <= nearLimitKrw ? "near_budget" : "over_budget";
 }
 
 function matchScoreForStatus(status: ReverseFilterBudgetStatus): number {
@@ -119,6 +119,17 @@ function compareZones(left: ReverseFilterZone, right: ReverseFilterZone, sortBy:
   return Math.abs(left.budgetGapKrw) - Math.abs(right.budgetGapKrw);
 }
 
+function calculateBudgetGapKrw(input: ReverseFilterInput, requiredCashMinKrw: number): number {
+  if (requiredCashMinKrw < input.budgetMinKrw) {
+    return input.budgetMinKrw - requiredCashMinKrw;
+  }
+  if (requiredCashMinKrw > input.budgetMaxKrw) {
+    return input.budgetMaxKrw - requiredCashMinKrw;
+  }
+
+  return 0;
+}
+
 function sortZones(
   zones: ReverseFilterZone[],
   sortBy: ReverseFilterSortBy,
@@ -145,7 +156,7 @@ export function buildReverseFilterZone(
     return null;
   }
 
-  // MVP-012는 사용자가 확정한 최소 실투자금 기준으로 진입 가능성을 판정합니다.
+  // MVP-014부터 예산 검색은 최소~최대 범위에 들어오는 실투자금을 우선 매칭합니다.
   const requiredCashMinKrw = calculateRequiredCashKrw(
     candidate.investmentMinKrw,
     candidate.salePriceMinKrw,
@@ -156,8 +167,8 @@ export function buildReverseFilterZone(
       ? null
       : calculateRequiredCashKrw(candidate.investmentMaxKrw, candidate.salePriceMaxKrw, options);
   const requiredCashMinNumber = bigintToSafeNumber(requiredCashMinKrw);
-  const budgetStatus = classifyBudgetStatus(input.availableCashKrw, requiredCashMinNumber);
-  const budgetGapKrw = input.availableCashKrw - requiredCashMinNumber;
+  const budgetStatus = classifyBudgetStatus(input, requiredCashMinNumber);
+  const budgetGapKrw = calculateBudgetGapKrw(input, requiredCashMinNumber);
 
   return {
     zoneId: candidate.zoneId,
@@ -174,7 +185,12 @@ export function buildReverseFilterZone(
     budgetStatus,
     matchScore: matchScoreForStatus(budgetStatus),
     sourceDate: dateToIsoDate(candidate.sourceDate),
-    excludedReason: budgetStatus === "over_budget" ? "예산 초과" : null,
+    excludedReason:
+      budgetStatus === "over_budget"
+        ? requiredCashMinNumber < input.budgetMinKrw
+          ? "예산 범위 미만"
+          : "예산 초과"
+        : null,
   };
 }
 

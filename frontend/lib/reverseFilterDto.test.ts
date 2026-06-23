@@ -10,25 +10,29 @@ import {
 } from "./reverseFilterDto";
 
 const parsedInput = parseReverseFilterInput({
-  availableCashKrw: 300_000_000,
+  budgetMinKrw: 250_000_000,
+  budgetMaxKrw: 350_000_000,
 });
 
 assert.deepEqual(parsedInput, {
-  availableCashKrw: 300_000_000,
+  budgetMinKrw: 250_000_000,
+  budgetMaxKrw: 350_000_000,
   interestedDistricts: [],
   sortBy: "budgetFit",
   sortDirection: "asc",
 });
 
 const districtFilteredInput = parseReverseFilterInput({
-  availableCashKrw: 500_000_000,
+  budgetMinKrw: 500_000_000,
+  budgetMaxKrw: 700_000_000,
   interestedDistricts: ["마포구", "용산구"],
   sortBy: "investmentMin",
   sortDirection: "desc",
 });
 
 assert.deepEqual(districtFilteredInput, {
-  availableCashKrw: 500_000_000,
+  budgetMinKrw: 500_000_000,
+  budgetMaxKrw: 700_000_000,
   interestedDistricts: ["마포구", "용산구"],
   sortBy: "investmentMin",
   sortDirection: "desc",
@@ -37,7 +41,8 @@ assert.deepEqual(districtFilteredInput, {
 assert.throws(
   () =>
     parseReverseFilterInput({
-      availableCashKrw: 50_000_000,
+      budgetMinKrw: 50_000_000,
+      budgetMaxKrw: 150_000_000,
     }),
   ZodError,
 );
@@ -45,7 +50,8 @@ assert.throws(
 assert.throws(
   () =>
     parseReverseFilterInput({
-      availableCashKrw: 125_000_000,
+      budgetMinKrw: 125_000_000,
+      budgetMaxKrw: 350_000_000,
     }),
   ZodError,
 );
@@ -53,7 +59,17 @@ assert.throws(
 assert.throws(
   () =>
     parseReverseFilterInput({
-      availableCashKrw: 2_550_000_000,
+      budgetMinKrw: 2_450_000_000,
+      budgetMaxKrw: 2_550_000_000,
+    }),
+  ZodError,
+);
+
+assert.throws(
+  () =>
+    parseReverseFilterInput({
+      budgetMinKrw: 400_000_000,
+      budgetMaxKrw: 300_000_000,
     }),
   ZodError,
 );
@@ -64,7 +80,8 @@ assert.equal(getReverseFilterNearBudgetLimitKrw(1_200_000_000), 120_000_000);
 
 try {
   parseReverseFilterInput({
-    availableCashKrw: "3억",
+    budgetMinKrw: "2.5억",
+    budgetMaxKrw: 350_000_000,
   });
   assert.fail("Expected invalid string cash input to throw");
 } catch (error) {
@@ -73,7 +90,7 @@ try {
 
   assert.equal(formatted.ok, false);
   assert.equal(formatted.errorCode, "INVALID_INPUT");
-  assert.ok(formatted.fieldErrors?.availableCashKrw?.length);
+  assert.ok(formatted.fieldErrors?.budgetMinKrw?.length);
 }
 
 const success = reverseFilterSuccessSchema.parse({

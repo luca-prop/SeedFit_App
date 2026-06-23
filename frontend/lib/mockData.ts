@@ -8,6 +8,9 @@ export interface ZoneData {
   data: Record<UnitType, { unitPrice: string; premium: string; totalInvestment: string; futureValue: string; refAptName?: string }>;
 }
 
+const YONGSAN_REFERENCE_VALUE = "30.2억 / 30.6억(분양권)";
+const YONGSAN_REFERENCE_APTS = "이촌한가람 / 마포자이힐스테이트라첼스";
+
 export const ZONE_DATA: Record<string, ZoneData> = {
   "zone-1": {
     name: "청파 1구역",
@@ -15,8 +18,8 @@ export const ZONE_DATA: Record<string, ZoneData> = {
     stage: "시공사선정",
     minBudget: 1170000000,
     data: {
-      "59": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억 (분양권)", refAptName: "이촌한가람  / 마포자이힐스테이트라첼스 30.6억" },
-      "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억 (분양권)", refAptName: "이촌한가람  / 마포자이힐스테이트라첼스 30.6억" },
+      "59": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: YONGSAN_REFERENCE_VALUE, refAptName: YONGSAN_REFERENCE_APTS },
+      "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: YONGSAN_REFERENCE_VALUE, refAptName: YONGSAN_REFERENCE_APTS },
     },
   },
   "zone-2": {
@@ -25,8 +28,8 @@ export const ZONE_DATA: Record<string, ZoneData> = {
     stage: "추진위 승인",
     minBudget: 1330000000,
     data: {
-      "59": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억 (분양권)", refAptName: "이촌한가람  / 마포자이힐스테이트라첼스 30.6억" },
-      "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억 (분양권)", refAptName: "이촌한가람  / 마포자이힐스테이트라첼스 30.6억" },
+      "59": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: YONGSAN_REFERENCE_VALUE, refAptName: YONGSAN_REFERENCE_APTS },
+      "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: YONGSAN_REFERENCE_VALUE, refAptName: YONGSAN_REFERENCE_APTS },
     },
   },
   "zone-3": {
@@ -35,8 +38,8 @@ export const ZONE_DATA: Record<string, ZoneData> = {
     stage: "추진위 승인",
     minBudget: 670000000,
     data: {
-      "59": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억 (분양권)", refAptName: "이촌한가람  / 마포자이힐스테이트라첼스 30.6억" },
-      "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억 (분양권)", refAptName: "이촌한가람  / 마포자이힐스테이트라첼스 30.6억" },
+      "59": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: YONGSAN_REFERENCE_VALUE, refAptName: YONGSAN_REFERENCE_APTS },
+      "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: YONGSAN_REFERENCE_VALUE, refAptName: YONGSAN_REFERENCE_APTS },
     },
   },
   "zone-4": {
@@ -45,8 +48,8 @@ export const ZONE_DATA: Record<string, ZoneData> = {
     stage: "정비구역지정",
     minBudget: 550000000,
     data: {
-      "59": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억 (분양권)", refAptName: "이촌한가람  / 마포자이힐스테이트라첼스 30.6억" },
-      "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억 (분양권)", refAptName: "이촌한가람  / 마포자이힐스테이트라첼스 30.6억" },
+      "59": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: YONGSAN_REFERENCE_VALUE, refAptName: YONGSAN_REFERENCE_APTS },
+      "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: YONGSAN_REFERENCE_VALUE, refAptName: YONGSAN_REFERENCE_APTS },
     },
   },
   "zone-5": {
@@ -55,8 +58,8 @@ export const ZONE_DATA: Record<string, ZoneData> = {
     stage: "정비구역지정",
     minBudget: 1150000000,
     data: {
-      "59": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억 (분양권)", refAptName: "이촌한가람  / 마포자이힐스테이트라첼스 30.6억" },
-      "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억 (분양권)", refAptName: "이촌한가람  / 마포자이힐스테이트라첼스 30.6억" },
+      "59": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: YONGSAN_REFERENCE_VALUE, refAptName: YONGSAN_REFERENCE_APTS },
+      "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: YONGSAN_REFERENCE_VALUE, refAptName: YONGSAN_REFERENCE_APTS },
     },
   },
   "zone-6": {
@@ -65,8 +68,8 @@ export const ZONE_DATA: Record<string, ZoneData> = {
     stage: "신속통합기획 대상지 선정",
     minBudget: 459999999,
     data: {
-      "59": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억 (분양권)", refAptName: "이촌한가람  / 마포자이힐스테이트라첼스 30.6억" },
-      "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억 (분양권)", refAptName: "이촌한가람  / 마포자이힐스테이트라첼스 30.6억" },
+      "59": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: YONGSAN_REFERENCE_VALUE, refAptName: YONGSAN_REFERENCE_APTS },
+      "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: YONGSAN_REFERENCE_VALUE, refAptName: YONGSAN_REFERENCE_APTS },
     },
   },
   "zone-7": {
@@ -75,8 +78,8 @@ export const ZONE_DATA: Record<string, ZoneData> = {
     stage: "신속통합기획 대상지 선정",
     minBudget: 600000000,
     data: {
-      "59": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억 (분양권)", refAptName: "이촌한가람  / 마포자이힐스테이트라첼스 30.6억" },
-      "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억 (분양권)", refAptName: "이촌한가람  / 마포자이힐스테이트라첼스 30.6억" },
+      "59": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: YONGSAN_REFERENCE_VALUE, refAptName: YONGSAN_REFERENCE_APTS },
+      "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: YONGSAN_REFERENCE_VALUE, refAptName: YONGSAN_REFERENCE_APTS },
     },
   },
   "zone-8": {
@@ -95,8 +98,8 @@ export const ZONE_DATA: Record<string, ZoneData> = {
     stage: "신속통합기획 대상지 선정",
     minBudget: 300000000,
     data: {
-      "59": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억 (분양권)", refAptName: "이촌한가람  / 마포자이힐스테이트라첼스 30.6억" },
-      "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억 (분양권)", refAptName: "이촌한가람  / 마포자이힐스테이트라첼스 30.6억" },
+      "59": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: YONGSAN_REFERENCE_VALUE, refAptName: YONGSAN_REFERENCE_APTS },
+      "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: YONGSAN_REFERENCE_VALUE, refAptName: YONGSAN_REFERENCE_APTS },
     },
   },
   "zone-10": {
@@ -115,8 +118,8 @@ export const ZONE_DATA: Record<string, ZoneData> = {
     stage: "신속통합기획 대상지 선정",
     minBudget: 980000000,
     data: {
-      "59": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억 (분양권)", refAptName: "이촌한가람  / 마포자이힐스테이트라첼스 30.6억" },
-      "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억 (분양권)", refAptName: "이촌한가람  / 마포자이힐스테이트라첼스 30.6억" },
+      "59": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: YONGSAN_REFERENCE_VALUE, refAptName: YONGSAN_REFERENCE_APTS },
+      "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: YONGSAN_REFERENCE_VALUE, refAptName: YONGSAN_REFERENCE_APTS },
     },
   },
   "zone-12": {
@@ -125,8 +128,8 @@ export const ZONE_DATA: Record<string, ZoneData> = {
     stage: "신속통합기획 대상지 선정",
     minBudget: 620000000,
     data: {
-      "59": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억 (분양권)", refAptName: "이촌한가람  / 마포자이힐스테이트라첼스 30.6억" },
-      "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억 (분양권)", refAptName: "이촌한가람  / 마포자이힐스테이트라첼스 30.6억" },
+      "59": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: YONGSAN_REFERENCE_VALUE, refAptName: YONGSAN_REFERENCE_APTS },
+      "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: YONGSAN_REFERENCE_VALUE, refAptName: YONGSAN_REFERENCE_APTS },
     },
   },
   "zone-13": {
@@ -135,8 +138,8 @@ export const ZONE_DATA: Record<string, ZoneData> = {
     stage: "신속통합기획 대상지 선정",
     minBudget: 660000000,
     data: {
-      "59": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억 (분양권)", refAptName: "이촌한가람  / 마포자이힐스테이트라첼스 30.6억" },
-      "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억 (분양권)", refAptName: "이촌한가람  / 마포자이힐스테이트라첼스 30.6억" },
+      "59": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: YONGSAN_REFERENCE_VALUE, refAptName: YONGSAN_REFERENCE_APTS },
+      "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: YONGSAN_REFERENCE_VALUE, refAptName: YONGSAN_REFERENCE_APTS },
     },
   },
   "zone-14": {
@@ -145,8 +148,8 @@ export const ZONE_DATA: Record<string, ZoneData> = {
     stage: "신속통합기획 대상지 선정",
     minBudget: 1000000000,
     data: {
-      "59": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억 (분양권)", refAptName: "이촌한가람  / 마포자이힐스테이트라첼스 30.6억" },
-      "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억 (분양권)", refAptName: "이촌한가람  / 마포자이힐스테이트라첼스 30.6억" },
+      "59": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: YONGSAN_REFERENCE_VALUE, refAptName: YONGSAN_REFERENCE_APTS },
+      "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: YONGSAN_REFERENCE_VALUE, refAptName: YONGSAN_REFERENCE_APTS },
     },
   },
   "zone-15": {
@@ -155,8 +158,8 @@ export const ZONE_DATA: Record<string, ZoneData> = {
     stage: "연번 부여",
     minBudget: 400000000,
     data: {
-      "59": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억 (분양권)", refAptName: "이촌한가람  / 마포자이힐스테이트라첼스 30.6억" },
-      "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억 (분양권)", refAptName: "이촌한가람  / 마포자이힐스테이트라첼스 30.6억" },
+      "59": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: YONGSAN_REFERENCE_VALUE, refAptName: YONGSAN_REFERENCE_APTS },
+      "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: YONGSAN_REFERENCE_VALUE, refAptName: YONGSAN_REFERENCE_APTS },
     },
   },
   "zone-16": {
@@ -165,8 +168,8 @@ export const ZONE_DATA: Record<string, ZoneData> = {
     stage: "연번 부여",
     minBudget: 380000000,
     data: {
-      "59": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억 (분양권)", refAptName: "이촌한가람  / 마포자이힐스테이트라첼스 30.6억" },
-      "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억 (분양권)", refAptName: "이촌한가람  / 마포자이힐스테이트라첼스 30.6억" },
+      "59": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: YONGSAN_REFERENCE_VALUE, refAptName: YONGSAN_REFERENCE_APTS },
+      "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: YONGSAN_REFERENCE_VALUE, refAptName: YONGSAN_REFERENCE_APTS },
     },
   },
   "zone-17": {
@@ -175,8 +178,8 @@ export const ZONE_DATA: Record<string, ZoneData> = {
     stage: "연변 부여",
     minBudget: 450000000,
     data: {
-      "59": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억 (분양권)", refAptName: "이촌한가람  / 마포자이힐스테이트라첼스 30.6억" },
-      "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억 (분양권)", refAptName: "이촌한가람  / 마포자이힐스테이트라첼스 30.6억" },
+      "59": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: YONGSAN_REFERENCE_VALUE, refAptName: YONGSAN_REFERENCE_APTS },
+      "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: YONGSAN_REFERENCE_VALUE, refAptName: YONGSAN_REFERENCE_APTS },
     },
   },
   "zone-18": {
@@ -185,8 +188,8 @@ export const ZONE_DATA: Record<string, ZoneData> = {
     stage: "연번 부여",
     minBudget: 400000000,
     data: {
-      "59": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억 (분양권)", refAptName: "이촌한가람  / 마포자이힐스테이트라첼스 30.6억" },
-      "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: "30.2억 (분양권)", refAptName: "이촌한가람  / 마포자이힐스테이트라첼스 30.6억" },
+      "59": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: YONGSAN_REFERENCE_VALUE, refAptName: YONGSAN_REFERENCE_APTS },
+      "84": { unitPrice: "추후 업데이트", premium: "추후 업데이트", totalInvestment: "추후 업데이트", futureValue: YONGSAN_REFERENCE_VALUE, refAptName: YONGSAN_REFERENCE_APTS },
     },
   },
   "zone-19": {
