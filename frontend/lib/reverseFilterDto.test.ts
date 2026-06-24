@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { ZodError } from "zod";
 
+import { MVP_DATA_DISCLOSURE } from "./dataDisclosure";
 import {
   formatReverseFilterZodError,
   getReverseFilterNearBudgetLimitKrw,
@@ -136,7 +137,7 @@ const success = reverseFilterSuccessSchema.parse({
   ],
   totalMatchedCount: 1,
   dataSyncedAt: "2026-06-22T00:00:00.000Z",
-  disclaimer: "본 데이터는 국토부 실거래가 기준이며, 현장 호가와 다를 수 있습니다.",
+  disclaimer: MVP_DATA_DISCLOSURE.disclaimer,
 });
 
 assert.equal(success.ok, true);
