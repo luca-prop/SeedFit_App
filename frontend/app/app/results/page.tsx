@@ -76,6 +76,8 @@ const SORT_OPTIONS = [
   sortDirection: ReverseFilterSortDirection;
 }>;
 
+const EMPTY_STATE_PREVIEW_LIMIT = 3;
+
 function firstParam(value: string | string[] | undefined): string | undefined {
   return Array.isArray(value) ? value[0] : value;
 }
@@ -162,6 +164,36 @@ function formatDateTime(value: string) {
     month: "2-digit",
     day: "2-digit",
   }).format(new Date(value));
+}
+
+function buildResultsHref({
+  budgetMinKrw,
+  budgetMaxKrw,
+  sort,
+}: {
+  budgetMinKrw: number;
+  budgetMaxKrw: number;
+  sort: string;
+}) {
+  const params = new URLSearchParams({
+    budgetMin: String(budgetMinKrw),
+    budgetMax: String(budgetMaxKrw),
+    sort,
+  });
+
+  return `/app/results?${params.toString()}`;
+}
+
+function buildRaisedBudgetHref(budgetMinKrw: number, budgetMaxKrw: number, sort: string) {
+  const nextBudgetMaxKrw = normalizeBudgetValue(
+    Math.min(REVERSE_FILTER_MAX_CASH_KRW, budgetMaxKrw + REVERSE_FILTER_CASH_STEP_KRW),
+  );
+
+  return buildResultsHref({
+    budgetMinKrw,
+    budgetMaxKrw: nextBudgetMaxKrw,
+    sort,
+  });
 }
 
 function stageAxisLabelFor(stage: string) {
@@ -270,6 +302,82 @@ function ResultGroupSection({
   );
 }
 
+function EmptyResultsState({
+  budgetMinKrw,
+  budgetMaxKrw,
+  selectedSort,
+  hasActiveFilters,
+  nearestZones,
+}: {
+  budgetMinKrw: number;
+  budgetMaxKrw: number;
+  selectedSort: string;
+  hasActiveFilters: boolean;
+  nearestZones: ReverseFilterZone[];
+}) {
+  const resetHref = buildResultsHref({ budgetMinKrw, budgetMaxKrw, sort: selectedSort });
+  const raisedBudgetHref = buildRaisedBudgetHref(budgetMinKrw, budgetMaxKrw, selectedSort);
+
+  return (
+    <Card className="border-dashed border-blue-200 bg-gradient-to-br from-white to-blue-50">
+      <CardContent className="p-6 md:p-8">
+        <div className="mx-auto max-w-3xl text-center">
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-blue-100">
+            <Search className="h-6 w-6 text-blue-700" />
+          </div>
+          <h2 className="text-xl font-black text-slate-950">현재 조건에서는 바로 보여줄 후보가 없습니다</h2>
+          <p className="mt-2 text-sm text-slate-500">
+            예산 범위를 조금 올리거나 필터를 풀면 가까운 후보를 다시 확인할 수 있습니다. 알림 신청은 MVP에서는 목업 CTA로
+            제공합니다.
+          </p>
+          <div className="mt-5 flex flex-col justify-center gap-2 sm:flex-row">
+            <Link
+              href={raisedBudgetHref}
+              className="inline-flex min-h-11 items-center justify-center rounded-xl bg-indigo-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-indigo-700"
+            >
+              예산 상한 5천만 원 올려보기
+            </Link>
+            {hasActiveFilters ? (
+              <Link
+                href={resetHref}
+                className="inline-flex min-h-11 items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700 transition hover:bg-slate-50"
+              >
+                필터 초기화
+              </Link>
+            ) : null}
+            <button
+              type="button"
+              className="inline-flex min-h-11 items-center justify-center rounded-xl border border-blue-200 bg-white px-4 py-2 text-sm font-bold text-blue-700"
+            >
+              조건 알림 신청
+            </button>
+          </div>
+        </div>
+
+        {nearestZones.length > 0 ? (
+          <div className="mt-6 rounded-2xl border border-white/80 bg-white/80 p-4">
+            <p className="text-sm font-bold text-slate-950">가장 가까운 후보</p>
+            <p className="mt-1 text-xs text-slate-500">현재는 예산 초과라 기본 결과에서는 숨겼지만, 예산 조정 판단용으로만 보여줍니다.</p>
+            <div className="mt-3 space-y-2">
+              {nearestZones.map((zone) => (
+                <div key={zone.zoneId} className="flex flex-col gap-2 rounded-xl border border-slate-100 bg-white p-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <p className="text-sm font-bold text-slate-950">{zone.zoneName}</p>
+                    <p className="mt-1 text-xs text-slate-500">
+                      필요 현금 {formatBudgetRange(zone.requiredCashMinKrw, zone.requiredCashMaxKrw)} · {zone.district} {zone.dong}
+                    </p>
+                  </div>
+                  <span className="text-xs font-bold text-amber-700">{formatBudgetGap(zone.budgetGapKrw)}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : null}
+      </CardContent>
+    </Card>
+  );
+}
+
 export default async function ResultsPage({ searchParams }: { searchParams?: Promise<SearchParams> }) {
   const resolvedSearchParams = searchParams ? await searchParams : {};
   const { budgetMinKrw, budgetMaxKrw } = parseBudgetRange(resolvedSearchParams);
@@ -291,6 +399,9 @@ export default async function ResultsPage({ searchParams }: { searchParams?: Pro
   const filteredMatchedZones = result.ok ? filterZones(result.matchedZones, effectiveDistricts, effectiveStageGroups) : [];
   const filteredNearZones = result.ok ? filterZones(result.nearZones, effectiveDistricts, effectiveStageGroups) : [];
   const visibleResultCount = filteredMatchedZones.length + filteredNearZones.length;
+  const hasActiveFilters =
+    selectedDistricts.length > 0 || selectedStageGroups.length > 0 || legacyDistrict !== "all" || legacyStage !== "all";
+  const nearestZones = result.ok ? result.excludedZones.slice(0, EMPTY_STATE_PREVIEW_LIMIT) : [];
 
   return (
     <div className="container mx-auto max-w-5xl px-4 py-6 md:py-8">
@@ -357,8 +468,20 @@ export default async function ResultsPage({ searchParams }: { searchParams?: Pro
             </Card>
           </div>
 
-          <ResultGroupSection status="within_budget" zones={filteredMatchedZones} />
-          <ResultGroupSection status="near_budget" zones={filteredNearZones} />
+          {visibleResultCount > 0 ? (
+            <>
+              <ResultGroupSection status="within_budget" zones={filteredMatchedZones} />
+              <ResultGroupSection status="near_budget" zones={filteredNearZones} />
+            </>
+          ) : (
+            <EmptyResultsState
+              budgetMinKrw={budgetMinKrw}
+              budgetMaxKrw={budgetMaxKrw}
+              selectedSort={selectedSort.value}
+              hasActiveFilters={hasActiveFilters}
+              nearestZones={nearestZones}
+            />
+          )}
         </div>
       ) : (
         <Card className="flex flex-col items-center justify-center border-dashed bg-white p-8 text-center md:p-12">
