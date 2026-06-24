@@ -109,12 +109,12 @@ export function ReferenceApartmentComparisonCard({
           <div className="rounded-xl bg-slate-50 p-3">
             <p className="text-xs text-slate-500">현재 기준가</p>
             <p className="mt-1 font-black text-slate-950">{formatKrw(currentPriceKrw)}</p>
-            <p className="mt-1 text-[11px] text-slate-500">가정 대출 {formatKrw(loanKrw)}</p>
+            <p className="mt-1 text-[11px] text-slate-500">대출 Max {formatKrw(loanKrw)}</p>
           </div>
           <div className="rounded-xl bg-indigo-50 p-3">
             <p className="text-xs text-indigo-700">기축 필요 현금</p>
             <p className="mt-1 font-black text-indigo-900">{formatKrw(referenceRequiredCashKrw)}</p>
-            <p className="mt-1 text-[11px] text-indigo-700/80">기준가 - 금액대별 가정 대출</p>
+            <p className="mt-1 text-[11px] text-indigo-700/80">기준가 - 대출 Max {formatKrw(loanKrw)}</p>
           </div>
           <div className="rounded-xl bg-blue-50 p-3">
             <p className="text-xs text-blue-700">구역 실투자금</p>
