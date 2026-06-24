@@ -10,6 +10,12 @@ type ReferenceApartmentComparisonCardProps = {
   zoneInvestmentMaxKrw: bigint | null;
 };
 
+const LOAN_LIMIT_15EOK_KRW = BigInt(1_500_000_000);
+const LOAN_LIMIT_25EOK_KRW = BigInt(2_500_000_000);
+const MAX_LOAN_UNDER_15EOK_KRW = BigInt(600_000_000);
+const MAX_LOAN_UNDER_25EOK_KRW = BigInt(400_000_000);
+const MAX_LOAN_OVER_25EOK_KRW = BigInt(200_000_000);
+
 function formatKrw(value: bigint | null | undefined) {
   if (value === null || value === undefined) {
     return "업데이트 예정";
@@ -31,19 +37,46 @@ function formatKrwRange(minKrw: bigint | null | undefined, maxKrw: bigint | null
   return `${formatKrw(minKrw)} ~ ${formatKrw(maxKrw)}`;
 }
 
-function formatPriceGap(currentPriceKrw: bigint | null, zoneInvestmentMinKrw: bigint | null) {
-  if (currentPriceKrw === null || zoneInvestmentMinKrw === null) {
+function assumedLoanKrw(currentPriceKrw: bigint | null) {
+  if (currentPriceKrw === null) {
+    return null;
+  }
+
+  if (currentPriceKrw <= LOAN_LIMIT_15EOK_KRW) {
+    return MAX_LOAN_UNDER_15EOK_KRW;
+  }
+  if (currentPriceKrw <= LOAN_LIMIT_25EOK_KRW) {
+    return MAX_LOAN_UNDER_25EOK_KRW;
+  }
+
+  return MAX_LOAN_OVER_25EOK_KRW;
+}
+
+function requiredCashKrw(currentPriceKrw: bigint | null) {
+  const loanKrw = assumedLoanKrw(currentPriceKrw);
+
+  if (currentPriceKrw === null || loanKrw === null) {
+    return null;
+  }
+
+  const requiredCash = currentPriceKrw - loanKrw;
+
+  return requiredCash > BigInt(0) ? requiredCash : BigInt(0);
+}
+
+function formatCashGap(referenceRequiredCashKrw: bigint | null, zoneInvestmentMinKrw: bigint | null) {
+  if (referenceRequiredCashKrw === null || zoneInvestmentMinKrw === null) {
     return "비교 대기";
   }
 
-  const difference = currentPriceKrw - zoneInvestmentMinKrw;
+  const difference = referenceRequiredCashKrw - zoneInvestmentMinKrw;
   const absolute = formatKrw(difference < BigInt(0) ? -difference : difference);
 
   if (difference === BigInt(0)) {
     return "동일";
   }
 
-  return difference > BigInt(0) ? `기축이 ${absolute} 높음` : `기축이 ${absolute} 낮음`;
+  return difference > BigInt(0) ? `기축 필요 현금이 ${absolute} 높음` : `기축 필요 현금이 ${absolute} 낮음`;
 }
 
 export function ReferenceApartmentComparisonCard({
@@ -54,6 +87,9 @@ export function ReferenceApartmentComparisonCard({
   zoneInvestmentMinKrw,
   zoneInvestmentMaxKrw,
 }: ReferenceApartmentComparisonCardProps) {
+  const loanKrw = assumedLoanKrw(currentPriceKrw);
+  const referenceRequiredCashKrw = requiredCashKrw(currentPriceKrw);
+
   return (
     <Card className="border-slate-200 bg-white">
       <CardContent className="p-4">
@@ -69,21 +105,27 @@ export function ReferenceApartmentComparisonCard({
           </div>
         </div>
 
-        <div className="mt-4 grid gap-2 sm:grid-cols-3">
+        <div className="mt-4 grid gap-2 sm:grid-cols-2">
           <div className="rounded-xl bg-slate-50 p-3">
             <p className="text-xs text-slate-500">현재 기준가</p>
             <p className="mt-1 font-black text-slate-950">{formatKrw(currentPriceKrw)}</p>
+            <p className="mt-1 text-[11px] text-slate-500">가정 대출 {formatKrw(loanKrw)}</p>
+          </div>
+          <div className="rounded-xl bg-indigo-50 p-3">
+            <p className="text-xs text-indigo-700">기축 필요 현금</p>
+            <p className="mt-1 font-black text-indigo-900">{formatKrw(referenceRequiredCashKrw)}</p>
+            <p className="mt-1 text-[11px] text-indigo-700/80">기준가 - 금액대별 가정 대출</p>
           </div>
           <div className="rounded-xl bg-blue-50 p-3">
             <p className="text-xs text-blue-700">구역 실투자금</p>
             <p className="mt-1 font-black text-blue-900">{formatKrwRange(zoneInvestmentMinKrw, zoneInvestmentMaxKrw)}</p>
           </div>
           <div className="rounded-xl bg-amber-50 p-3">
-            <p className="text-xs text-amber-700">기준가-실투자금 차이</p>
+            <p className="text-xs text-amber-700">기축 필요 현금 차이</p>
             <p className="mt-1 font-black text-amber-900">
-              {formatPriceGap(currentPriceKrw, zoneInvestmentMinKrw)}
+              {formatCashGap(referenceRequiredCashKrw, zoneInvestmentMinKrw)}
             </p>
-            <p className="mt-1 text-[11px] text-amber-700/80">기축 기준가 - 구역 최소 실투자금</p>
+            <p className="mt-1 text-[11px] text-amber-700/80">기축 필요 현금 - 구역 최소 실투자금</p>
           </div>
         </div>
       </CardContent>
