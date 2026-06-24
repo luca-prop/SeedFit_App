@@ -4,6 +4,7 @@ import { ArrowLeft, Building2, CalendarDays, FileText, Landmark, TrendingUp } fr
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ReferenceApartmentComparisonCard } from "@/components/domain/ReferenceApartmentComparisonCard";
 import { MVP_DATA_DISCLOSURE } from "@/lib/dataDisclosure";
 import { prisma } from "@/lib/prisma";
 
@@ -182,14 +183,15 @@ export default async function ZoneDetailLitePage({ params }: ZoneDetailPageProps
             {zone.referenceApartments.length > 0 ? (
               <div className="space-y-3">
                 {zone.referenceApartments.map(({ id: relationId, referenceApartment, reason }) => (
-                  <div key={relationId} className="rounded-xl border border-slate-100 bg-slate-50 p-3">
-                    <p className="font-bold text-slate-950">{referenceApartment.apartmentName}</p>
-                    <p className="mt-1 text-xs text-slate-500">
-                      기준가 {formatKrw(referenceApartment.currentPriceKrw)}
-                      {referenceApartment.isPresale ? " · 분양권" : ""}
-                    </p>
-                    {reason ? <p className="mt-1 text-xs text-slate-400">{reason}</p> : null}
-                  </div>
+                  <ReferenceApartmentComparisonCard
+                    key={relationId}
+                    apartmentName={referenceApartment.apartmentName}
+                    currentPriceKrw={referenceApartment.currentPriceKrw}
+                    isPresale={referenceApartment.isPresale}
+                    reason={reason}
+                    zoneInvestmentMinKrw={snapshot?.investmentMinKrw ?? null}
+                    zoneInvestmentMaxKrw={snapshot?.investmentMaxKrw ?? null}
+                  />
                 ))}
               </div>
             ) : (
