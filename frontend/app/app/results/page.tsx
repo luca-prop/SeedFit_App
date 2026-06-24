@@ -258,12 +258,20 @@ function ResultZoneCard({ zone }: { zone: ReverseFilterZone }) {
               <span className="text-[11px] text-slate-400">데이터 기준일 {zone.sourceDate}</span>
             </div>
           </div>
-          <Link
-            href={`/app/comparison/${zone.zoneId}`}
-            className="inline-flex min-h-10 shrink-0 items-center justify-center rounded-xl bg-indigo-600 px-3 py-2 text-xs font-bold text-white transition hover:bg-indigo-700"
-          >
-            같은 예산 기축단지 비교
-          </Link>
+          <div className="flex shrink-0 flex-col gap-2 sm:flex-row lg:flex-col">
+            <Link
+              href={`/app/zones/${zone.zoneId}`}
+              className="inline-flex min-h-10 items-center justify-center rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 transition hover:bg-slate-50"
+            >
+              구역 상세 보기
+            </Link>
+            <Link
+              href={`/app/comparison/${zone.zoneId}`}
+              className="inline-flex min-h-10 items-center justify-center rounded-xl bg-indigo-600 px-3 py-2 text-xs font-bold text-white transition hover:bg-indigo-700"
+            >
+              같은 예산 기축단지 비교
+            </Link>
+          </div>
         </div>
       </CardContent>
     </Card>

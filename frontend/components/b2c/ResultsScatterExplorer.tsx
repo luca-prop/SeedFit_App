@@ -283,12 +283,20 @@ function ScatterTooltip({ active, payload }: { active?: boolean; payload?: Array
           </span>
         </p>
       </div>
-      <a
-        href={`/app/comparison/${zone.zoneId}`}
-        className="mt-3 inline-flex min-h-9 w-full items-center justify-center rounded-xl bg-indigo-600 px-3 py-2 text-xs font-bold text-white transition hover:bg-indigo-700"
-      >
-        같은 예산 기축단지 비교 보기
-      </a>
+      <div className="mt-3 grid gap-2">
+        <a
+          href={`/app/zones/${zone.zoneId}`}
+          className="inline-flex min-h-9 w-full items-center justify-center rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 transition hover:bg-slate-50"
+        >
+          구역 상세 보기
+        </a>
+        <a
+          href={`/app/comparison/${zone.zoneId}`}
+          className="inline-flex min-h-9 w-full items-center justify-center rounded-xl bg-indigo-600 px-3 py-2 text-xs font-bold text-white transition hover:bg-indigo-700"
+        >
+          같은 예산 기축단지 비교 보기
+        </a>
+      </div>
     </div>
   );
 }
@@ -330,12 +338,20 @@ function PinnedTooltip({ zone, onClear }: { zone: ChartPoint; onClear: () => voi
           </span>
         </p>
       </div>
-      <a
-        href={`/app/comparison/${zone.zoneId}`}
-        className="mt-3 inline-flex min-h-9 w-full items-center justify-center rounded-xl bg-indigo-600 px-3 py-2 text-xs font-bold text-white transition hover:bg-indigo-700"
-      >
-        같은 예산 기축단지 비교 보기
-      </a>
+      <div className="mt-3 grid gap-2">
+        <a
+          href={`/app/zones/${zone.zoneId}`}
+          className="inline-flex min-h-9 w-full items-center justify-center rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 transition hover:bg-slate-50"
+        >
+          구역 상세 보기
+        </a>
+        <a
+          href={`/app/comparison/${zone.zoneId}`}
+          className="inline-flex min-h-9 w-full items-center justify-center rounded-xl bg-indigo-600 px-3 py-2 text-xs font-bold text-white transition hover:bg-indigo-700"
+        >
+          같은 예산 기축단지 비교 보기
+        </a>
+      </div>
     </div>
   );
 }
