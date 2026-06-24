@@ -184,6 +184,14 @@ function buildResultsHref({
   return `/app/results?${params.toString()}`;
 }
 
+function buildZoneHref(path: string, zone: ReverseFilterZone, params: URLSearchParams) {
+  const nextParams = new URLSearchParams(params);
+
+  nextParams.set("zoneName", zone.zoneName);
+
+  return `${path}?${nextParams.toString()}`;
+}
+
 function buildRaisedBudgetHref(budgetMinKrw: number, budgetMaxKrw: number, sort: string) {
   const nextBudgetMaxKrw = normalizeBudgetValue(
     Math.min(REVERSE_FILTER_MAX_CASH_KRW, budgetMaxKrw + REVERSE_FILTER_CASH_STEP_KRW),
@@ -221,8 +229,10 @@ function filterZones(zones: ReverseFilterZone[], selectedDistricts: string[], se
   });
 }
 
-function ResultZoneCard({ zone }: { zone: ReverseFilterZone }) {
+function ResultZoneCard({ zone, continuityParams }: { zone: ReverseFilterZone; continuityParams: URLSearchParams }) {
   const config = GROUP_CONFIG[zone.budgetStatus];
+  const zoneDetailHref = buildZoneHref(`/app/zones/${zone.zoneId}`, zone, continuityParams);
+  const comparisonHref = buildZoneHref(`/app/comparison/${zone.zoneId}`, zone, continuityParams);
 
   return (
     <Card
@@ -260,13 +270,13 @@ function ResultZoneCard({ zone }: { zone: ReverseFilterZone }) {
           </div>
           <div className="flex shrink-0 flex-col gap-2 sm:flex-row lg:flex-col">
             <Link
-              href={`/app/zones/${zone.zoneId}`}
+              href={zoneDetailHref}
               className="inline-flex min-h-10 items-center justify-center rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 transition hover:bg-slate-50"
             >
               구역 상세 보기
             </Link>
             <Link
-              href={`/app/comparison/${zone.zoneId}`}
+              href={comparisonHref}
               className="inline-flex min-h-10 items-center justify-center rounded-xl bg-indigo-600 px-3 py-2 text-xs font-bold text-white transition hover:bg-indigo-700"
             >
               같은 예산 기축단지 비교
@@ -281,9 +291,11 @@ function ResultZoneCard({ zone }: { zone: ReverseFilterZone }) {
 function ResultGroupSection({
   status,
   zones,
+  continuityParams,
 }: {
   status: ReverseFilterBudgetStatus;
   zones: ReverseFilterZone[];
+  continuityParams: URLSearchParams;
 }) {
   const config = GROUP_CONFIG[status];
 
@@ -298,7 +310,7 @@ function ResultGroupSection({
       {zones.length > 0 ? (
         <div className="space-y-2">
           {zones.map((zone) => (
-            <ResultZoneCard key={`${status}-${zone.zoneId}`} zone={zone} />
+            <ResultZoneCard key={`${status}-${zone.zoneId}`} zone={zone} continuityParams={continuityParams} />
           ))}
         </div>
       ) : (
@@ -410,6 +422,14 @@ export default async function ResultsPage({ searchParams }: { searchParams?: Pro
   const hasActiveFilters =
     selectedDistricts.length > 0 || selectedStageGroups.length > 0 || legacyDistrict !== "all" || legacyStage !== "all";
   const nearestZones = result.ok ? result.excludedZones.slice(0, EMPTY_STATE_PREVIEW_LIMIT) : [];
+  const continuityParams = new URLSearchParams({
+    budgetMin: String(budgetMinKrw),
+    budgetMax: String(budgetMaxKrw),
+    sort: selectedSort.value,
+  });
+
+  if (selectedDistricts.length > 0) continuityParams.set("districts", selectedDistricts.join(","));
+  if (selectedStageGroups.length > 0) continuityParams.set("stageGroups", selectedStageGroups.join(","));
 
   return (
     <div className="container mx-auto max-w-5xl px-4 py-6 md:py-8">
@@ -478,8 +498,12 @@ export default async function ResultsPage({ searchParams }: { searchParams?: Pro
 
           {visibleResultCount > 0 ? (
             <>
-              <ResultGroupSection status="within_budget" zones={filteredMatchedZones} />
-              <ResultGroupSection status="near_budget" zones={filteredNearZones} />
+              <ResultGroupSection
+                status="within_budget"
+                zones={filteredMatchedZones}
+                continuityParams={continuityParams}
+              />
+              <ResultGroupSection status="near_budget" zones={filteredNearZones} continuityParams={continuityParams} />
             </>
           ) : (
             <EmptyResultsState

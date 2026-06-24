@@ -2,7 +2,7 @@
 
 import React, { Suspense, useState } from "react";
 import { useRouter, useSearchParams, useParams } from "next/navigation";
-import { ArrowLeft, Info, AlertTriangle, RefreshCw } from "lucide-react";
+import { ArrowLeft, AlertTriangle, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -17,6 +17,47 @@ import { ZONE_DATA, COMPARISON_APTS, type UnitType } from "@/lib/mockData";
 
 const formatBudget = (n: number) =>
   n >= 100000000 ? `${(n / 100000000).toFixed(1)}억 원` : `${(n / 10000).toLocaleString()}만 원`;
+
+function firstFiniteNumber(...values: Array<string | null>) {
+  for (const value of values) {
+    const parsed = Number(value);
+
+    if (Number.isFinite(parsed)) {
+      return parsed;
+    }
+  }
+
+  return null;
+}
+
+function resolveMockZoneId(zoneId: string, zoneName: string | null) {
+  if (ZONE_DATA[zoneId]) {
+    return zoneId;
+  }
+
+  if (!zoneName) {
+    return zoneId;
+  }
+
+  return Object.entries(ZONE_DATA).find(([, zone]) => zone.name === zoneName)?.[0] ?? zoneId;
+}
+
+function buildResultsHref(searchParams: URLSearchParams) {
+  const budgetMin = searchParams.get("budgetMin");
+  const budgetMax = searchParams.get("budgetMax");
+  const budget = searchParams.get("budget");
+  const sort = searchParams.get("sort");
+  const params = new URLSearchParams();
+
+  if (budgetMin) params.set("budgetMin", budgetMin);
+  if (budgetMax) params.set("budgetMax", budgetMax);
+  if (!budgetMin && !budgetMax && budget) params.set("budget", budget);
+  if (sort) params.set("sort", sort);
+
+  const query = params.toString();
+
+  return query ? `/app/results?${query}` : "/app/results";
+}
 
 /**
  * 1:1 대조 분석 대시보드 페이지 — Mobile-First
@@ -46,8 +87,11 @@ function ComparisonContent() {
   const params = useParams();
   const searchParams = useSearchParams();
   const zoneId = params.id as string;
-  const budget = Number(searchParams.get("budget") || "300000000");
-  const zone = ZONE_DATA[zoneId] ?? ZONE_DATA["zone-1"];
+  const zoneName = searchParams.get("zoneName");
+  const resolvedZoneId = resolveMockZoneId(zoneId, zoneName);
+  const budget = firstFiniteNumber(searchParams.get("budgetMax"), searchParams.get("budget")) ?? 300000000;
+  const resultsHref = buildResultsHref(searchParams);
+  const zone = ZONE_DATA[resolvedZoneId] ?? ZONE_DATA["zone-1"];
 
   const [adjustedBudget, setAdjustedBudget] = useState(budget);
   const [showReport, setShowReport] = useState(false);
@@ -76,7 +120,7 @@ function ComparisonContent() {
     <div className="container mx-auto px-4 py-6 md:py-8 max-w-6xl">
       {/* Header */}
       <div className="mb-5 md:mb-6">
-        <Button variant="ghost" size="sm" onClick={() => router.push(`/app/results?budget=${budget}`)} className="mb-3 md:mb-4 -ml-2 min-h-[44px]">
+        <Button variant="ghost" size="sm" onClick={() => router.push(resultsHref)} className="mb-3 md:mb-4 -ml-2 min-h-[44px]">
           <ArrowLeft className="h-4 w-4 mr-2" />
           검색 결과로 돌아가기
         </Button>
@@ -186,7 +230,7 @@ function ComparisonContent() {
               </div>
               {/* 이 구역 매물 보기 버튼 */}
               <Button
-                onClick={() => router.push(`/app/listings/${zoneId}`)}
+                onClick={() => router.push(`/app/listings/${resolvedZoneId}`)}
                 variant="outline"
                 className="w-full mt-2 min-h-[44px]"
               >
@@ -204,7 +248,7 @@ function ComparisonContent() {
           </h2>
           <div className={`space-y-3 transition-opacity duration-300 ${isRefreshing ? 'opacity-50' : 'opacity-100'}`}>
             {closestApts.slice(0, 3).map((apt) => (
-              <ComparisonAptCard key={apt.id} apt={apt as any} />
+              <ComparisonAptCard key={apt.id} apt={apt} />
             ))}
           </div>
         </div>

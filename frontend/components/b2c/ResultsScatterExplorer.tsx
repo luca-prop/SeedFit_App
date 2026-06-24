@@ -73,6 +73,17 @@ function formatBudget(value: number) {
   return Number.isInteger(eok) ? `${eok}억` : `${eok.toFixed(1)}억`;
 }
 
+function buildZoneHref(path: string, zone: ChartPoint, budgetMinKrw: number, budgetMaxKrw: number, selectedSort: string) {
+  const params = new URLSearchParams({
+    budgetMin: String(budgetMinKrw),
+    budgetMax: String(budgetMaxKrw),
+    sort: selectedSort,
+    zoneName: zone.zoneName,
+  });
+
+  return `${path}?${params.toString()}`;
+}
+
 function stageAxisFor(stage: string): StageAxis {
   const normalized = stage.replace(/\s+/g, "");
 
@@ -255,10 +266,24 @@ function ZoneDumbbellShape(props: {
   );
 }
 
-function ScatterTooltip({ active, payload }: { active?: boolean; payload?: Array<{ payload: ChartPoint }> }) {
+function ScatterTooltip({
+  active,
+  payload,
+  budgetMinKrw,
+  budgetMaxKrw,
+  selectedSort,
+}: {
+  active?: boolean;
+  payload?: Array<{ payload: ChartPoint }>;
+  budgetMinKrw: number;
+  budgetMaxKrw: number;
+  selectedSort: string;
+}) {
   if (!active || !payload?.length) return null;
 
   const zone = payload[0].payload;
+  const zoneDetailHref = buildZoneHref(`/app/zones/${zone.zoneId}`, zone, budgetMinKrw, budgetMaxKrw, selectedSort);
+  const comparisonHref = buildZoneHref(`/app/comparison/${zone.zoneId}`, zone, budgetMinKrw, budgetMaxKrw, selectedSort);
 
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-4 text-sm shadow-xl">
@@ -285,13 +310,13 @@ function ScatterTooltip({ active, payload }: { active?: boolean; payload?: Array
       </div>
       <div className="mt-3 grid gap-2">
         <a
-          href={`/app/zones/${zone.zoneId}`}
+          href={zoneDetailHref}
           className="inline-flex min-h-9 w-full items-center justify-center rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 transition hover:bg-slate-50"
         >
           구역 상세 보기
         </a>
         <a
-          href={`/app/comparison/${zone.zoneId}`}
+          href={comparisonHref}
           className="inline-flex min-h-9 w-full items-center justify-center rounded-xl bg-indigo-600 px-3 py-2 text-xs font-bold text-white transition hover:bg-indigo-700"
         >
           같은 예산 기축단지 비교 보기
@@ -301,7 +326,22 @@ function ScatterTooltip({ active, payload }: { active?: boolean; payload?: Array
   );
 }
 
-function PinnedTooltip({ zone, onClear }: { zone: ChartPoint; onClear: () => void }) {
+function PinnedTooltip({
+  zone,
+  onClear,
+  budgetMinKrw,
+  budgetMaxKrw,
+  selectedSort,
+}: {
+  zone: ChartPoint;
+  onClear: () => void;
+  budgetMinKrw: number;
+  budgetMaxKrw: number;
+  selectedSort: string;
+}) {
+  const zoneDetailHref = buildZoneHref(`/app/zones/${zone.zoneId}`, zone, budgetMinKrw, budgetMaxKrw, selectedSort);
+  const comparisonHref = buildZoneHref(`/app/comparison/${zone.zoneId}`, zone, budgetMinKrw, budgetMaxKrw, selectedSort);
+
   return (
     <div
       className="absolute right-3 top-3 z-10 w-[min(21rem,calc(100%-1.5rem))] rounded-2xl border border-indigo-100 bg-white p-4 text-sm shadow-xl"
@@ -340,13 +380,13 @@ function PinnedTooltip({ zone, onClear }: { zone: ChartPoint; onClear: () => voi
       </div>
       <div className="mt-3 grid gap-2">
         <a
-          href={`/app/zones/${zone.zoneId}`}
+          href={zoneDetailHref}
           className="inline-flex min-h-9 w-full items-center justify-center rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 transition hover:bg-slate-50"
         >
           구역 상세 보기
         </a>
         <a
-          href={`/app/comparison/${zone.zoneId}`}
+          href={comparisonHref}
           className="inline-flex min-h-9 w-full items-center justify-center rounded-xl bg-indigo-600 px-3 py-2 text-xs font-bold text-white transition hover:bg-indigo-700"
         >
           같은 예산 기축단지 비교 보기
@@ -521,7 +561,15 @@ export function ResultsScatterExplorer({
         className="relative h-[430px] rounded-[1.5rem] border border-slate-100 bg-white p-2 md:h-[540px] md:p-4"
         onClick={() => setSelectedZoneId(null)}
       >
-        {selectedPoint ? <PinnedTooltip zone={selectedPoint} onClear={() => setSelectedZoneId(null)} /> : null}
+        {selectedPoint ? (
+          <PinnedTooltip
+            zone={selectedPoint}
+            onClear={() => setSelectedZoneId(null)}
+            budgetMinKrw={budgetMinKrw}
+            budgetMaxKrw={budgetMaxKrw}
+            selectedSort={selectedSort}
+          />
+        ) : null}
         <ResponsiveContainer width="100%" height="100%">
           <ScatterChart margin={{ top: 28, right: 24, bottom: 28, left: 0 }}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
@@ -545,7 +593,13 @@ export function ResultsScatterExplorer({
               tickLine={false}
             />
             <ZAxis type="number" range={[64, 64]} />
-            <Tooltip content={<ScatterTooltip />} cursor={false} wrapperStyle={{ outline: "none" }} />
+            <Tooltip
+              content={
+                <ScatterTooltip budgetMinKrw={budgetMinKrw} budgetMaxKrw={budgetMaxKrw} selectedSort={selectedSort} />
+              }
+              cursor={false}
+              wrapperStyle={{ outline: "none" }}
+            />
             <Scatter
               data={chartData}
               shape={<ZoneDumbbellShape onSelect={handleSelectZone} selectedZoneId={selectedZoneId} />}
