@@ -31,7 +31,7 @@ function formatKrwRange(minKrw: bigint | null | undefined, maxKrw: bigint | null
   return `${formatKrw(minKrw)} ~ ${formatKrw(maxKrw)}`;
 }
 
-function formatDifference(currentPriceKrw: bigint | null, zoneInvestmentMinKrw: bigint | null) {
+function formatPriceGap(currentPriceKrw: bigint | null, zoneInvestmentMinKrw: bigint | null) {
   if (currentPriceKrw === null || zoneInvestmentMinKrw === null) {
     return "비교 대기";
   }
@@ -79,10 +79,11 @@ export function ReferenceApartmentComparisonCard({
             <p className="mt-1 font-black text-blue-900">{formatKrwRange(zoneInvestmentMinKrw, zoneInvestmentMaxKrw)}</p>
           </div>
           <div className="rounded-xl bg-amber-50 p-3">
-            <p className="text-xs text-amber-700">실투자금 대비 차이</p>
+            <p className="text-xs text-amber-700">기준가-실투자금 차이</p>
             <p className="mt-1 font-black text-amber-900">
-              {formatDifference(currentPriceKrw, zoneInvestmentMinKrw)}
+              {formatPriceGap(currentPriceKrw, zoneInvestmentMinKrw)}
             </p>
+            <p className="mt-1 text-[11px] text-amber-700/80">기축 기준가 - 구역 최소 실투자금</p>
           </div>
         </div>
       </CardContent>

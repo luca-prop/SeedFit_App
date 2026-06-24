@@ -12,7 +12,64 @@ type ZoneDetailPageProps = {
   params: Promise<{
     id: string;
   }>;
+  searchParams?: Promise<SearchParams>;
 };
+
+type SearchParams = Record<string, string | string[] | undefined>;
+
+function firstParam(value: string | string[] | undefined) {
+  return Array.isArray(value) ? value[0] : value;
+}
+
+function appendIfPresent(params: URLSearchParams, key: string, value: string | undefined) {
+  if (value && value.trim().length > 0) {
+    params.set(key, value);
+  }
+}
+
+function buildResultsHref(searchParams: SearchParams) {
+  const params = new URLSearchParams();
+
+  appendIfPresent(params, "budgetMin", firstParam(searchParams.budgetMin));
+  appendIfPresent(params, "budgetMax", firstParam(searchParams.budgetMax));
+  appendIfPresent(params, "budget", firstParam(searchParams.budget));
+  appendIfPresent(params, "sort", firstParam(searchParams.sort));
+  appendIfPresent(params, "districts", firstParam(searchParams.districts));
+  appendIfPresent(params, "stageGroups", firstParam(searchParams.stageGroups));
+
+  const query = params.toString();
+
+  return query ? `/app/results?${query}` : "/app/results";
+}
+
+function buildComparisonHref(zoneId: string, zoneName: string, searchParams: SearchParams) {
+  const params = new URLSearchParams();
+
+  appendIfPresent(params, "budgetMin", firstParam(searchParams.budgetMin));
+  appendIfPresent(params, "budgetMax", firstParam(searchParams.budgetMax));
+  appendIfPresent(params, "budget", firstParam(searchParams.budget));
+  appendIfPresent(params, "sort", firstParam(searchParams.sort));
+  params.set("zoneName", zoneName);
+
+  return `/app/comparison/${zoneId}?${params.toString()}`;
+}
+
+function formatProjectType(value: string | null) {
+  if (!value) {
+    return "정비사업";
+  }
+
+  const normalized = value.toLowerCase();
+
+  if (normalized === "redevelopment" || value === "재개발") {
+    return "재개발";
+  }
+  if (normalized === "reconstruction" || value === "재건축") {
+    return "재건축";
+  }
+
+  return value;
+}
 
 function formatKrw(value: bigint | null | undefined) {
   if (value === null || value === undefined) {
@@ -47,8 +104,9 @@ function formatDate(value: Date | null | undefined) {
   }).format(value);
 }
 
-export default async function ZoneDetailLitePage({ params }: ZoneDetailPageProps) {
+export default async function ZoneDetailLitePage({ params, searchParams }: ZoneDetailPageProps) {
   const { id } = await params;
+  const resolvedSearchParams = searchParams ? await searchParams : {};
   const zone = await prisma.zone.findUnique({
     where: {
       id,
@@ -77,9 +135,12 @@ export default async function ZoneDetailLitePage({ params }: ZoneDetailPageProps
 
   const snapshot = zone.investmentSnapshots[0];
   const investmentRange = formatKrwRange(snapshot?.investmentMinKrw, snapshot?.investmentMaxKrw);
+  const projectTypeLabel = formatProjectType(zone.projectType);
+  const resultsHref = buildResultsHref(resolvedSearchParams);
+  const comparisonHref = buildComparisonHref(zone.id, zone.zoneName, resolvedSearchParams);
   const featureNotes = [
     zone.notes,
-    `${zone.district} ${zone.dong}의 ${zone.projectType ?? "정비사업"} 후보입니다.`,
+    `${zone.district} ${zone.dong}의 ${projectTypeLabel} 구역입니다.`,
     `${zone.stage} 단계 기준으로 후속 인허가와 사업 속도를 함께 확인해야 합니다.`,
     `운영팀 큐레이션 기준 실투자금 범위는 ${investmentRange}입니다.`,
   ].filter((note): note is string => Boolean(note));
@@ -88,7 +149,7 @@ export default async function ZoneDetailLitePage({ params }: ZoneDetailPageProps
     <div className="container mx-auto max-w-5xl px-4 py-6 md:py-8">
       <div className="mb-6">
         <Link
-          href="/app/results"
+          href={resultsHref}
           className="mb-3 inline-flex min-h-10 items-center rounded-lg px-1 text-sm font-medium text-slate-500 transition hover:text-slate-900"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
@@ -99,13 +160,13 @@ export default async function ZoneDetailLitePage({ params }: ZoneDetailPageProps
             <div className="mb-2 flex flex-wrap items-center gap-2">
               <Badge className="bg-blue-100 text-blue-800">{zone.district}</Badge>
               <Badge variant="secondary">{zone.dong}</Badge>
-              {zone.projectType ? <Badge variant="outline">{zone.projectType}</Badge> : null}
+              {zone.projectType ? <Badge variant="outline">{projectTypeLabel}</Badge> : null}
             </div>
             <h1 className="text-2xl font-black text-slate-950 md:text-3xl">{zone.zoneName}</h1>
             <p className="mt-2 text-sm text-slate-500">구역 기본 정보와 최신 실투자금 범위를 빠르게 확인하는 Lite 화면입니다.</p>
           </div>
           <Link
-            href={`/app/comparison/${zone.id}`}
+            href={comparisonHref}
             className="inline-flex min-h-11 items-center justify-center rounded-xl bg-indigo-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-indigo-700"
           >
             같은 예산 기축단지 비교
