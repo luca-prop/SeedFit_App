@@ -1,4 +1,5 @@
 import { calculateEntryCost } from "@/lib/acquisitionCostCore";
+import { MVP_DATA_DISCLOSURE } from "@/lib/dataDisclosure";
 import {
   getReverseFilterNearBudgetLimitKrw,
   type ReverseFilterBudgetStatus,
@@ -9,8 +10,7 @@ import {
 } from "@/lib/reverseFilterDto";
 
 export const REVERSE_FILTER_GROUP_LIMIT = 30;
-export const REVERSE_FILTER_DISCLAIMER =
-  "본 데이터는 국토부 실거래가 기준이며, 현장 호가와 다를 수 있습니다.";
+export const REVERSE_FILTER_DISCLAIMER = MVP_DATA_DISCLOSURE.disclaimer;
 
 export type ReverseFilterSnapshotCandidate = {
   zoneId: string;
