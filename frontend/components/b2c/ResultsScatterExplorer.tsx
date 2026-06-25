@@ -4,6 +4,8 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   CartesianGrid,
+  ReferenceArea,
+  ReferenceLine,
   ResponsiveContainer,
   Scatter,
   ScatterChart,
@@ -71,6 +73,10 @@ function formatBudget(value: number) {
   const eok = value / 100_000_000;
 
   return Number.isInteger(eok) ? `${eok}억` : `${eok.toFixed(1)}억`;
+}
+
+function formatBudgetEok(value: number) {
+  return Number.isInteger(value) ? `${value}억` : `${value.toFixed(1)}억`;
 }
 
 function buildZoneHref(path: string, zone: ChartPoint, budgetMinKrw: number, budgetMaxKrw: number, selectedSort: string) {
@@ -418,6 +424,9 @@ export function ResultsScatterExplorer({
   );
   const chartData = buildChartData(filteredZones);
   const selectedPoint = chartData.find((point) => point.zoneId === selectedZoneId) ?? null;
+  const budgetMinEok = budgetMinKrw / 100_000_000;
+  const budgetMaxEok = budgetMaxKrw / 100_000_000;
+  const isSingleBudget = budgetMinKrw === budgetMaxKrw;
 
   function pushFilters(nextDistricts: string[], nextStages: string[], nextSort = selectedSort) {
     const params = new URLSearchParams({
@@ -471,7 +480,7 @@ export function ResultsScatterExplorer({
             예산 맞춤 구역 분포
           </p>
           <p className="mt-1 text-sm text-slate-500">
-            X축은 재개발 8단계, Y축은 필요 현금입니다. 진행이 완료될수록 파란색에 가까워집니다.
+            X축은 사업 단계, Y축은 구역별 최소~최대 실투자금입니다. 파란 예산선 안에 가까울수록 현재 예산과 맞습니다.
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -587,11 +596,38 @@ export function ResultsScatterExplorer({
               type="number"
               dataKey="avgEok"
               unit="억"
-              domain={[Math.max(0, budgetMinKrw / 100_000_000 - 0.5), Math.max(budgetMaxKrw / 100_000_000 + 1, 5)]}
+              domain={[Math.max(0, budgetMinEok - 0.5), Math.max(budgetMaxEok + 1, 5)]}
               tick={{ fontSize: 12, fill: "#94a3b8", fontWeight: 600 }}
               axisLine={false}
               tickLine={false}
             />
+            {isSingleBudget ? (
+              <ReferenceLine
+                y={budgetMinEok}
+                stroke="#2563eb"
+                strokeDasharray="5 5"
+                strokeWidth={1.5}
+                label={{ value: `예산 ${formatBudgetEok(budgetMinEok)}`, fill: "#2563eb", fontSize: 11, fontWeight: 700 }}
+              />
+            ) : (
+              <>
+                <ReferenceArea y1={budgetMinEok} y2={budgetMaxEok} fill="#dbeafe" fillOpacity={0.38} strokeOpacity={0} />
+                <ReferenceLine
+                  y={budgetMinEok}
+                  stroke="#2563eb"
+                  strokeDasharray="5 5"
+                  strokeWidth={1.2}
+                  label={{ value: `최소 ${formatBudgetEok(budgetMinEok)}`, fill: "#2563eb", fontSize: 11, fontWeight: 700 }}
+                />
+                <ReferenceLine
+                  y={budgetMaxEok}
+                  stroke="#2563eb"
+                  strokeDasharray="5 5"
+                  strokeWidth={1.2}
+                  label={{ value: `최대 ${formatBudgetEok(budgetMaxEok)}`, fill: "#2563eb", fontSize: 11, fontWeight: 700 }}
+                />
+              </>
+            )}
             <ZAxis type="number" range={[64, 64]} />
             <Tooltip
               content={
@@ -624,7 +660,7 @@ export function ResultsScatterExplorer({
       </div>
 
       <p className="text-center text-xs text-slate-400">
-        예산 초과 구역은 기본 결과에서 제외했습니다. 현재 차트는 예산 내/근접 후보만 보여줍니다.
+        파란 영역은 입력한 예산 범위입니다. 각 덤벨의 아래쪽은 최소 실투자금, 위쪽은 최대 실투자금을 의미합니다.
       </p>
     </section>
   );
