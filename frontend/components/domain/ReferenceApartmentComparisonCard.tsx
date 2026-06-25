@@ -1,32 +1,31 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  calculateReferenceAssumedLoanKrw,
+  calculateReferenceCashGapKrw,
+  calculateReferenceRequiredCashKrw,
+} from "@/lib/referenceApartmentCash";
 
 type ReferenceApartmentComparisonCardProps = {
   apartmentName: string;
-  currentPriceKrw: bigint | null;
+  currentPriceKrw: number | null;
   isPresale: boolean;
   reason: string | null;
-  zoneInvestmentMinKrw: bigint | null;
-  zoneInvestmentMaxKrw: bigint | null;
+  zoneInvestmentMinKrw: number | null;
+  zoneInvestmentMaxKrw: number | null;
 };
 
-const LOAN_LIMIT_15EOK_KRW = BigInt(1_500_000_000);
-const LOAN_LIMIT_25EOK_KRW = BigInt(2_500_000_000);
-const MAX_LOAN_UNDER_15EOK_KRW = BigInt(600_000_000);
-const MAX_LOAN_UNDER_25EOK_KRW = BigInt(400_000_000);
-const MAX_LOAN_OVER_25EOK_KRW = BigInt(200_000_000);
-
-function formatKrw(value: bigint | null | undefined) {
+function formatKrw(value: number | null | undefined) {
   if (value === null || value === undefined) {
     return "업데이트 예정";
   }
 
-  const eok = Number(value) / 100_000_000;
+  const eok = value / 100_000_000;
 
   return Number.isInteger(eok) ? `${eok}억` : `${eok.toFixed(1)}억`;
 }
 
-function formatKrwRange(minKrw: bigint | null | undefined, maxKrw: bigint | null | undefined) {
+function formatKrwRange(minKrw: number | null | undefined, maxKrw: number | null | undefined) {
   if (minKrw === null || minKrw === undefined) {
     return "업데이트 예정";
   }
@@ -37,46 +36,20 @@ function formatKrwRange(minKrw: bigint | null | undefined, maxKrw: bigint | null
   return `${formatKrw(minKrw)} ~ ${formatKrw(maxKrw)}`;
 }
 
-function assumedLoanKrw(currentPriceKrw: bigint | null) {
-  if (currentPriceKrw === null) {
-    return null;
-  }
+function formatCashGap(referenceRequiredCashKrw: number | null, zoneInvestmentMinKrw: number | null) {
+  const difference = calculateReferenceCashGapKrw(referenceRequiredCashKrw, zoneInvestmentMinKrw);
 
-  if (currentPriceKrw <= LOAN_LIMIT_15EOK_KRW) {
-    return MAX_LOAN_UNDER_15EOK_KRW;
-  }
-  if (currentPriceKrw <= LOAN_LIMIT_25EOK_KRW) {
-    return MAX_LOAN_UNDER_25EOK_KRW;
-  }
-
-  return MAX_LOAN_OVER_25EOK_KRW;
-}
-
-function requiredCashKrw(currentPriceKrw: bigint | null) {
-  const loanKrw = assumedLoanKrw(currentPriceKrw);
-
-  if (currentPriceKrw === null || loanKrw === null) {
-    return null;
-  }
-
-  const requiredCash = currentPriceKrw - loanKrw;
-
-  return requiredCash > BigInt(0) ? requiredCash : BigInt(0);
-}
-
-function formatCashGap(referenceRequiredCashKrw: bigint | null, zoneInvestmentMinKrw: bigint | null) {
-  if (referenceRequiredCashKrw === null || zoneInvestmentMinKrw === null) {
+  if (difference === null) {
     return "비교 대기";
   }
 
-  const difference = referenceRequiredCashKrw - zoneInvestmentMinKrw;
-  const absolute = formatKrw(difference < BigInt(0) ? -difference : difference);
+  const absolute = formatKrw(Math.abs(difference));
 
-  if (difference === BigInt(0)) {
+  if (difference === 0) {
     return "동일";
   }
 
-  return difference > BigInt(0) ? `기축 필요 현금이 ${absolute} 높음` : `기축 필요 현금이 ${absolute} 낮음`;
+  return difference > 0 ? `기축 필요 현금이 ${absolute} 높음` : `기축 필요 현금이 ${absolute} 낮음`;
 }
 
 export function ReferenceApartmentComparisonCard({
@@ -87,8 +60,8 @@ export function ReferenceApartmentComparisonCard({
   zoneInvestmentMinKrw,
   zoneInvestmentMaxKrw,
 }: ReferenceApartmentComparisonCardProps) {
-  const loanKrw = assumedLoanKrw(currentPriceKrw);
-  const referenceRequiredCashKrw = requiredCashKrw(currentPriceKrw);
+  const loanKrw = calculateReferenceAssumedLoanKrw(currentPriceKrw);
+  const referenceRequiredCashKrw = calculateReferenceRequiredCashKrw(currentPriceKrw);
 
   return (
     <Card className="border-slate-200 bg-white">

@@ -13,9 +13,11 @@
     "prisma:seed": "prisma db seed",
     "test:ltv-policy": "tsx lib/ltvPolicyCore.test.ts",
     "test:cost-utils": "tsx lib/acquisitionCostCore.test.ts",
+    "test:comparison-assets": "tsx lib/comparisonAssets.test.ts",
+    "test:reference-apartment-cash": "tsx lib/referenceApartmentCash.test.ts",
     "test:reverse-filter-dto": "tsx lib/reverseFilterDto.test.ts",
     "test:reverse-filter-core": "tsx lib/reverseFilterCore.test.ts",
-    "test:core-business": "npm run test:cost-utils && npm run test:ltv-policy && npm run test:reverse-filter-dto && npm run test:reverse-filter-core"
+    "test:core-business": "npm run test:cost-utils && npm run test:ltv-policy && npm run test:comparison-assets && npm run test:reference-apartment-cash && npm run test:reverse-filter-dto && npm run test:reverse-filter-core"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.1",

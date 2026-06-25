@@ -104,6 +104,20 @@ function formatDate(value: Date | null | undefined) {
   }).format(value);
 }
 
+function toSafeKrwNumber(value: bigint | null | undefined) {
+  if (value === null || value === undefined) {
+    return null;
+  }
+
+  const converted = Number(value);
+
+  if (!Number.isSafeInteger(converted)) {
+    throw new RangeError("KRW value exceeds Number.MAX_SAFE_INTEGER");
+  }
+
+  return converted;
+}
+
 export default async function ZoneDetailLitePage({ params, searchParams }: ZoneDetailPageProps) {
   const { id } = await params;
   const resolvedSearchParams = searchParams ? await searchParams : {};
@@ -247,11 +261,11 @@ export default async function ZoneDetailLitePage({ params, searchParams }: ZoneD
                   <ReferenceApartmentComparisonCard
                     key={relationId}
                     apartmentName={referenceApartment.apartmentName}
-                    currentPriceKrw={referenceApartment.currentPriceKrw}
+                    currentPriceKrw={toSafeKrwNumber(referenceApartment.currentPriceKrw)}
                     isPresale={referenceApartment.isPresale}
                     reason={reason}
-                    zoneInvestmentMinKrw={snapshot?.investmentMinKrw ?? null}
-                    zoneInvestmentMaxKrw={snapshot?.investmentMaxKrw ?? null}
+                    zoneInvestmentMinKrw={toSafeKrwNumber(snapshot?.investmentMinKrw)}
+                    zoneInvestmentMaxKrw={toSafeKrwNumber(snapshot?.investmentMaxKrw)}
                   />
                 ))}
               </div>
