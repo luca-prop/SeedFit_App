@@ -5,17 +5,106 @@
 
 generator client {
   provider = "prisma-client"
-  output   = "../node_modules/.prisma/client"
+  output   = "../generated/prisma"
 }
 
 datasource db {
-  // 로컬 개발 시에는 sqlite를 사용합니다.
-  // 배포 시(Supabase)에는 provider = "postgresql" 로 변경하고 DATABASE_URL 환경 변수를 설정합니다.
-  provider = "sqlite"
+  // Supabase Postgres를 기준 DB로 사용합니다.
+  // Prisma 7에서는 연결 URL을 prisma.config.ts에서 관리합니다.
+  provider = "postgresql"
 }
 
 model User {
   id    String @id @default(uuid())
   email String @unique
   name  String?
+}
+
+model Zone {
+  id        String   @id @default(uuid())
+  district  String
+  dong      String
+  zoneName  String   @map("zone_name")
+  stage     String
+  // DATA_CURATION_SPEC.v.2: 구역은 티어에 고정하지 않고 행정구 SSOT로 관리합니다.
+  projectType String?  @map("project_type")
+  notes     String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  investmentSnapshots ZoneInvestmentSnapshot[]
+  referenceApartments  ZoneReferenceApartment[]
+
+  @@unique([district, dong, zoneName])
+  @@index([district])
+  @@index([stage])
+  @@map("zones")
+}
+
+model ZoneInvestmentSnapshot {
+  id               String   @id @default(uuid())
+  zoneId           String   @map("zone_id")
+  salePriceMinKrw  BigInt?  @map("sale_price_min_krw")
+  salePriceMaxKrw  BigInt?  @map("sale_price_max_krw")
+  investmentMinKrw BigInt?  @map("investment_min_krw")
+  investmentMaxKrw BigInt?  @map("investment_max_krw")
+  sourceFile       String   @map("source_file")
+  sourceDate       DateTime @db.Date @map("source_date")
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  zone Zone @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+
+  @@index([zoneId, sourceDate])
+  @@index([investmentMinKrw])
+  @@map("zone_investment_snapshots")
+}
+
+model ReferenceApartment {
+  id               String    @id @default(uuid())
+  apartmentName    String    @map("apartment_name")
+  district         String?
+  dong             String?
+  areaM2           Decimal?  @map("area_m2") @db.Decimal(8, 2)
+  currentPriceKrw  BigInt?   @map("current_price_krw")
+  isPresale        Boolean   @default(false) @map("is_presale")
+  sourceFile       String    @map("source_file")
+  sourceCapturedAt DateTime? @map("source_captured_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+
+  zones ZoneReferenceApartment[]
+
+  @@unique([apartmentName, areaM2, isPresale])
+  @@index([apartmentName])
+  @@map("reference_apartments")
+}
+
+model ZoneReferenceApartment {
+  id                   String  @id @default(uuid())
+  zoneId               String  @map("zone_id")
+  referenceApartmentId String  @map("reference_apartment_id")
+  priority             Int
+  reason               String?
+
+  zone               Zone               @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+  referenceApartment ReferenceApartment @relation(fields: [referenceApartmentId], references: [id], onDelete: Cascade)
+
+  @@unique([zoneId, referenceApartmentId])
+  @@index([zoneId, priority])
+  @@map("zone_reference_apartments")
+}
+
+model LtvPolicy {
+  id            String    @id @default(uuid())
+  tierName      String    @map("tier_name")
+  cashMinKrw    BigInt    @map("cash_min_krw")
+  cashMaxKrw    BigInt?   @map("cash_max_krw")
+  // 검증된 정책 출처가 생기기 전까지 LTV 값은 optional입니다.
+  ltvRatio      Decimal?  @map("ltv_ratio") @db.Decimal(5, 4)
+  dsrNote       String?   @map("dsr_note")
+  effectiveFrom DateTime  @db.Date @map("effective_from")
+  effectiveTo   DateTime? @db.Date @map("effective_to")
+  isActive      Boolean   @default(true) @map("is_active")
+
+  @@index([isActive, cashMinKrw, cashMaxKrw])
+  @@map("ltv_policies")
 }

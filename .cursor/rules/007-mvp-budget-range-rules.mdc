@@ -1,0 +1,13 @@
+---
+description: SeedFit MVP budget input must use a cash range by default
+alwaysApply: true
+---
+
+# MVP Budget Range Rule
+
+- SeedFit MVP 검색 입력은 기본적으로 단일 금액이 아니라 `예산 범위`입니다.
+- 기본 UX는 예: `2.5억 ~ 3.5억`처럼 사용자가 최소/최대 가용 현금 범위를 지정하는 방식입니다.
+- 단일 금액 검색은 허용할 수 있지만, 내부적으로는 `min = max` 또는 빠른 선택 범위로 변환합니다.
+- DTO, Server Action, URL query, UI 컴포넌트는 `budgetMinKrw` / `budgetMaxKrw` 범위 계약을 우선 사용합니다.
+- 범위 제한은 MVP-011 결정값을 따릅니다: 최소 `1억`, 최대 `25억`, 이동 단위 `5천만 원`.
+- 새로운 랜딩/결과/테스트 문서는 한국어로 작성합니다.

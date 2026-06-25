@@ -1,0 +1,30 @@
+---
+description: SeedFit MVP 데이터 큐레이션, 동적 티어 매칭, 금액 단위 규칙
+globs: "docs/**/*.md, frontend/**/*.ts, frontend/**/*.tsx, frontend/prisma/schema.prisma"
+alwaysApply: true
+---
+# MVP Data Curation Rules
+
+## District-Based Zone Master
+- 구역 마스터 데이터는 `DATA_CURATION_SPEC.v.2.md` 기준으로 행정구(`district`) 단위 SSOT로 관리한다.
+- 구역을 물리적으로 T1~T4 티어에 고정 저장하지 않는다.
+- `zones` 테이블 또는 구역 마스터 모델에 persistent `tier` 컬럼을 추가하지 않는다.
+
+## Runtime Tier Matching
+- T1~T4는 사용자 가용 예산과 구역의 최신 `investment_min_krw`를 비교해 앱 내부에서 동적으로 계산한다.
+- `investment_min_krw`가 Reverse Filter의 1차 매칭 기준이다.
+- 티어는 표시/매칭 결과이지 구역의 정적 속성이 아니다.
+
+## Money Storage
+- 모든 금액은 DB와 정규화된 데이터 계약에서 원 단위 integer KRW로 저장한다.
+- 원천 파일의 `억` 표현은 import/normalization 단계에서만 허용한다.
+- 빈 금액은 `0`이 아니라 `null`로 다룬다.
+
+## LTV Policy
+- `ltv_policies`는 MVP에서 예산 구간과 optional LTV/DSR 정책값을 저장하는 정책 테이블이다.
+- 검증된 정책 출처가 없으면 `ltv_ratio`를 임의로 채우지 않는다.
+- LTV/DSR 정책값은 하드코딩하지 않는다.
+
+## Naver Land Data
+- MVP에서는 Naver Land XLSX에서 비교 카드에 필요한 대표 기축 가격만 정규화한다.
+- 원본 raw history 저장은 Phase 2 또는 별도 이슈에서 명시적으로 추가될 때만 도입한다.
