@@ -660,7 +660,7 @@ export function ResultsScatterExplorer({
       </div>
 
       <p className="text-center text-xs text-slate-400">
-        파란 영역은 입력한 예산 범위입니다. 각 덤벨의 아래쪽은 최소 실투자금, 위쪽은 최대 실투자금을 의미합니다.
+        파란 영역은 입력한 예산 범위입니다. 각 점은 구역 실투자금 범위의 대표 위치이며, 상세 금액은 툴팁과 구역 상세에서 확인할 수 있습니다.
       </p>
     </section>
   );
