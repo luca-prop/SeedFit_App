@@ -40,6 +40,21 @@ function buildResultsHref(searchParams: SearchParams) {
   return query ? `/app/results?${query}` : "/app/results";
 }
 
+function buildZoneDetailHref(zoneId: string, searchParams: SearchParams) {
+  const params = new URLSearchParams();
+
+  appendIfPresent(params, "budgetMin", firstParam(searchParams.budgetMin));
+  appendIfPresent(params, "budgetMax", firstParam(searchParams.budgetMax));
+  appendIfPresent(params, "budget", firstParam(searchParams.budget));
+  appendIfPresent(params, "sort", firstParam(searchParams.sort));
+  appendIfPresent(params, "districts", firstParam(searchParams.districts));
+  appendIfPresent(params, "stageGroups", firstParam(searchParams.stageGroups));
+
+  const query = params.toString();
+
+  return query ? `/app/zones/${zoneId}?${query}` : `/app/zones/${zoneId}`;
+}
+
 function buildLtvModelHref(zoneId: string, searchParams: SearchParams, ltvModel: "firstHome70" | "general40") {
   const params = new URLSearchParams();
 
@@ -136,16 +151,22 @@ export default async function ComparisonPage({ params, searchParams }: Compariso
   }
 
   const { zone, ltvModel, comparisonAssets, summary } = result;
+  const zoneDetailHref = buildZoneDetailHref(id, resolvedSearchParams);
   const firstHomeHref = buildLtvModelHref(id, resolvedSearchParams, "firstHome70");
   const generalHref = buildLtvModelHref(id, resolvedSearchParams, "general40");
 
   return (
     <div className="container mx-auto max-w-6xl px-4 py-6 md:py-8">
       <div className="mb-5 md:mb-6">
-        <Link href={resultsHref} className="mb-3 inline-flex min-h-10 items-center rounded-lg px-1 text-sm font-medium text-slate-500 transition hover:text-slate-900">
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          검색 결과로 돌아가기
-        </Link>
+        <div className="mb-3 flex flex-wrap gap-2">
+          <Link href={resultsHref} className="inline-flex min-h-10 items-center rounded-lg px-1 text-sm font-medium text-slate-500 transition hover:text-slate-900">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            검색 결과로 돌아가기
+          </Link>
+          <Link href={zoneDetailHref} className="inline-flex min-h-10 items-center rounded-lg px-2 text-sm font-medium text-indigo-600 transition hover:bg-indigo-50">
+            구역 상세 보기
+          </Link>
+        </div>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <div className="mb-2 flex flex-wrap items-center gap-2">
@@ -153,9 +174,10 @@ export default async function ComparisonPage({ params, searchParams }: Compariso
               <Badge variant="secondary">{zone.dong}</Badge>
               {zone.projectType ? <Badge variant="outline">{formatProjectType(zone.projectType)}</Badge> : null}
             </div>
-            <h1 className="text-2xl font-black text-slate-950 md:text-3xl">같은 실투자금 기축단지 비교</h1>
+            <h1 className="text-2xl font-black text-slate-950 md:text-3xl">{zone.zoneName}</h1>
+            <p className="mt-2 text-base font-black text-indigo-700">같은 실투자금 기축단지 비교</p>
             <p className="mt-2 text-sm text-slate-500">
-              <span className="font-bold text-slate-900">{zone.zoneName}</span>의 최소 실투자금으로 진입 가능한 기축 대조군을 비교합니다.
+              이 구역의 최소 실투자금으로 진입 가능한 기축 대조군을 비교합니다.
             </p>
           </div>
           <div className="flex rounded-xl border border-slate-200 bg-white p-1 text-xs font-bold shadow-sm">
@@ -230,22 +252,32 @@ export default async function ComparisonPage({ params, searchParams }: Compariso
               비교 요약
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3 text-sm text-slate-600">
-            <p>
-              {zone.zoneName}의 최소 실투자금은{" "}
-              <span className="font-bold text-slate-950">{formatKrw(zone.investmentMinKrw)}</span>입니다.
+          <CardContent>
+            <dl className="divide-y divide-slate-100 text-sm">
+              <div className="flex items-center justify-between gap-4 py-3">
+                <dt className="text-slate-500">구역 실투자금</dt>
+                <dd className="text-right font-black text-slate-950">{formatKrwRange(zone.investmentMinKrw, zone.investmentMaxKrw)}</dd>
+              </div>
+              <div className="flex items-center justify-between gap-4 py-3">
+                <dt className="text-slate-500">가장 가까운 기축 후보 필요 현금</dt>
+                <dd className="text-right font-black text-slate-950">{formatKrw(summary.closestRequiredCashKrw)}</dd>
+              </div>
+              <div className="flex items-center justify-between gap-4 py-3">
+                <dt className="text-slate-500">구역 최소 실투자금 대비</dt>
+                <dd className="text-right font-black text-slate-950">{formatCashDelta(summary.closestCashDeltaKrw)}</dd>
+              </div>
+              <div className="flex items-center justify-between gap-4 py-3">
+                <dt className="text-slate-500">기축 대조군 대출 가정</dt>
+                <dd className="text-right font-black text-slate-950">{formatLtvModel(ltvModel)}</dd>
+              </div>
+            </dl>
+            <p className="mt-4 border-t border-slate-100 pt-3 text-xs leading-5 text-slate-500">
+              이 비교는 MVP 큐레이션 데이터와 기축 대조군 LTV 가정으로 만든 참고 정보이며, 실제 대출 승인액·세금·매물
+              상태는 별도 확인이 필요합니다.
             </p>
-            <p>
-              적용 시나리오는{" "}
-              <span className="font-bold text-slate-950">{formatLtvModel(ltvModel)}</span>입니다.
-            </p>
-            <p>
-              가장 가까운 대조군의 필요 실투자금은{" "}
-              <span className="font-bold text-slate-950">{formatKrw(summary.closestRequiredCashKrw)}</span>이고,{" "}
-              <span className="font-bold text-slate-950">{formatCashDelta(summary.closestCashDeltaKrw)}</span>
-              입니다.
-            </p>
-            <Badge className="bg-indigo-100 text-indigo-800">DATA_CURATION_SPEC 3. Comparison Assets 기준</Badge>
+            <Badge variant="secondary" className="mt-2 text-[11px]">
+              DATA_CURATION_SPEC 3. Comparison Assets 기준
+            </Badge>
           </CardContent>
         </Card>
 
