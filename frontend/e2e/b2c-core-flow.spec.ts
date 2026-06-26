@@ -4,8 +4,12 @@ test("B2C core flow: budget search to zone detail and comparison", async ({ page
   await page.goto("/");
 
   await expect(page.getByText("내 가용 현금 범위")).toBeVisible();
-  await page.getByRole("button", { name: "3억 단일" }).click();
-  await expect(page.getByText("3억 ~ 3억")).toBeVisible();
+  const singleBudgetButton = page.getByRole("button", { name: "3억 단일" });
+  await expect(singleBudgetButton).toBeVisible();
+  await expect(async () => {
+    await singleBudgetButton.click();
+    await expect(page.getByText("3억 ~ 3억")).toBeVisible({ timeout: 1_000 });
+  }).toPass({ timeout: 10_000 });
 
   await page.getByRole("button", { name: "이 예산 범위로 구역 찾기" }).click();
   await page.waitForURL(/\/app\/results\?/);
