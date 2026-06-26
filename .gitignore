@@ -12,3 +12,7 @@ temp_issue_body.md
 sync_github_project.py
 update_local_md.py
 skills
+
+# 🧪 E2E Test Artifacts
+frontend/playwright-report/
+frontend/test-results/
