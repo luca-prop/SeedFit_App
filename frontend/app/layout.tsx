@@ -3,6 +3,8 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 
+const isVercelRuntime = Boolean(process.env.VERCEL);
+
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
@@ -35,9 +37,9 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         {children}
         {/* Vercel Analytics: 페이지뷰 및 사용자 행동 트래킹 */}
-        <Analytics />
+        {isVercelRuntime ? <Analytics /> : null}
         {/* Vercel Speed Insights: Core Web Vitals (LCP, FID, CLS) 수집 */}
-        <SpeedInsights />
+        {isVercelRuntime ? <SpeedInsights /> : null}
       </body>
     </html>
   );

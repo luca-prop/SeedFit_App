@@ -72,6 +72,13 @@ This is the cross-tool global rules file (AGENTS.md) supported by Google Antigra
 - Monitoring: Amplitude, Vercel Analytics, Datadog
 - Version Control: Git
 
+**Vercel Preview Operations:**
+
+- MVP 검수와 사용자 공유는 최신 Preview alias URL을 기준으로 한다.
+- Vercel 해시 Preview URL은 생성 시점의 스냅샷이므로, 이전 해시 URL을 재검수 기준으로 쓰지 않는다.
+- Preview DB/env를 바꾼 뒤에는 새 Preview 배포를 만들고 alias를 최신 배포로 옮긴 다음 `/app/preview-health`와 핵심 B2C flow를 확인해야 완료로 본다.
+- 현재 B2C Prisma flow의 필수 DB env는 서버 전용 `DATABASE_URL`/`DIRECT_URL`이다. `NEXT_PUBLIC_SUPABASE_URL`/`NEXT_PUBLIC_SUPABASE_ANON_KEY`는 브라우저에서 Supabase SDK를 직접 사용할 때만 추가한다.
+
 ---
 
 ## 📋 003. Development Guidelines

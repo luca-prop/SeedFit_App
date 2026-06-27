@@ -22,6 +22,8 @@
 - 핵심 비즈니스 로직(역산 엔진, LTV 계산기)은 Server Action으로 캡슐화
 - LTV/DSR 정책값 하드코딩 절대 금지 (DB Parameterization)
 - 민감 데이터 보안: Supabase RLS (Row Level Security) 적용
+- Vercel Preview 검수는 최신 alias URL 기준으로 한다. 해시 Preview URL은 과거 스냅샷이므로 폐기된 URL을 완료 판단 기준으로 쓰지 않는다.
+- Preview DB/env 변경 후에는 새 배포 → alias 갱신 → `/app/preview-health` 및 핵심 B2C flow 확인까지 완료해야 한다.
 
 ## Key Documents
 - PRD: `SeedFit_app/docs/00_PRD_v0.1.md`

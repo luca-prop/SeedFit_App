@@ -16,3 +16,6 @@ skills
 # 🧪 E2E Test Artifacts
 frontend/playwright-report/
 frontend/test-results/
+.vercel/
+.env.local
+.env*.local
