@@ -27,4 +27,11 @@ alwaysApply: true
 
 ## Naver Land Data
 - MVP에서는 Naver Land XLSX에서 비교 카드에 필요한 대표 기축 가격만 정규화한다.
+- 기준 XLSX는 하나의 파일 세트로 교체한다. 일부 파일만 단독 교체하지 않는다.
+- 새 파일 세트를 반영할 때는 파일명, 기준일, 수집 시각, 큐레이터를 문서에 남긴다.
 - 원본 raw history 저장은 Phase 2 또는 별도 이슈에서 명시적으로 추가될 때만 도입한다.
+
+## Comparison Assets Pipeline
+- MVP-031 기준 Comparison Assets DB 영속화는 후속 구현이다.
+- 현재 범위는 최신 파일 세트 RULE, 정규화 기준, LTV 70%/40% 기축 대조군 모델 계약을 문서화하는 데 둔다.
+- 후속 `reference_apartments` 또는 동일 목적 테이블을 추가할 때는 `docs/MVP_COMPARISON_ASSETS_PIPELINE260627.md`의 필드 계약을 기준으로 한다.

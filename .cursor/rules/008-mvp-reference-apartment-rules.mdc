@@ -13,3 +13,5 @@ alwaysApply: true
 - 기준가 25억 초과: 최대 대출 2억을 차감합니다.
 - 기축 필요 현금은 `max(기축 기준가 - 가정 대출액, 0)`입니다.
 - 비교 카드의 차이는 `기축 필요 현금 - 구역 최소 실투자금`으로 표시합니다.
+- LTV 70%/40% 기축 대조군 모델은 비교 시나리오로 구분하되, 검증 출처 없는 LTV/DSR 정책값을 앱 로직에 임의 하드코딩하지 않습니다.
+- 최신 Naver Land 파일 세트와 Comparison Assets 파이프라인 계약은 `docs/MVP_COMPARISON_ASSETS_PIPELINE260627.md`를 기준으로 합니다.
