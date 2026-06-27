@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowLeft, Building2, FileText, Landmark, TrendingUp } from "lucide-react";
+import { AlertTriangle, ArrowLeft, Building2, FileText, Landmark, TrendingUp } from "lucide-react";
 
 import { comparisonDataAction } from "@/app/actions/comparisonData";
 import { ComparisonAssetCard } from "@/components/domain/ComparisonAssetCard";
@@ -140,10 +140,39 @@ export default async function ComparisonPage({ params, searchParams }: Compariso
           <ArrowLeft className="mr-2 h-4 w-4" />
           검색 결과로 돌아가기
         </Link>
-        <Card className="border-dashed bg-white">
-          <CardContent className="p-8 text-center">
-            <p className="text-lg font-black text-slate-950">{result.message}</p>
-            <p className="mt-2 text-sm text-slate-500">다른 구역을 선택하거나 결과 목록에서 다시 진입해 주세요.</p>
+        <Card className="border-dashed border-amber-200 bg-white">
+          <CardContent className="p-6 text-center md:p-10">
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-amber-50">
+              <AlertTriangle className="h-7 w-7 text-amber-600" />
+            </div>
+            <p className="text-lg font-black text-slate-950">비교 데이터를 불러오지 못했습니다</p>
+            <p className="mx-auto mt-2 max-w-2xl text-sm leading-6 text-slate-600">
+              {result.message} 결과 목록에서 같은 구역으로 다시 진입하거나, Preview Health에서 DB와 기축 대조군 seed
+              상태를 확인해 주세요.
+            </p>
+            <div className="mx-auto mt-4 max-w-2xl rounded-2xl border border-amber-100 bg-amber-50 p-4 text-left text-sm text-amber-900">
+              <p className="font-bold">확인 순서</p>
+              <ul className="mt-2 list-disc space-y-1 pl-5">
+                <li>검색 결과에서 구역 상세 또는 비교 버튼으로 다시 진입합니다.</li>
+                <li>기축 대조군 데이터가 비어 있으면 seed 반영 상태를 확인합니다.</li>
+                <li>최신 Preview alias URL인지 확인합니다.</li>
+              </ul>
+              <p className="mt-3 font-mono text-xs text-amber-700">errorCode: {result.errorCode}</p>
+            </div>
+            <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
+              <Link
+                href={resultsHref}
+                className="inline-flex min-h-11 items-center justify-center rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+              >
+                검색 결과로 돌아가기
+              </Link>
+              <Link
+                href="/app/preview-health"
+                className="inline-flex min-h-11 items-center justify-center rounded-lg bg-amber-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-amber-700"
+              >
+                Preview Health 확인
+              </Link>
+            </div>
           </CardContent>
         </Card>
       </div>
