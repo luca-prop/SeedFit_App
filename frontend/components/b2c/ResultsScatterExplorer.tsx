@@ -484,7 +484,11 @@ export function ResultsScatterExplorer({
           </p>
         </div>
         <div className="flex items-center gap-2">
+          <label htmlFor="results-sort" className="sr-only">
+            결과 정렬 기준
+          </label>
           <select
+            id="results-sort"
             value={selectedSort}
             onChange={(event) => pushFilters(activeDistricts, activeStageLabels, event.target.value)}
             className="min-h-10 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-800 outline-none focus:border-indigo-300 focus:ring-2 focus:ring-indigo-100"
@@ -507,10 +511,12 @@ export function ResultsScatterExplorer({
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-2 rounded-2xl border border-slate-100 bg-slate-50 p-3">
+      <div className="flex flex-wrap gap-2 rounded-2xl border border-slate-100 bg-slate-50 p-3" role="group" aria-label="자치구 필터">
         <button
           type="button"
           onClick={toggleAllDistricts}
+          aria-pressed={activeDistricts.length === allDistricts.length}
+          aria-label={`전체 자치구 보기, 현재 ${zones.length}개 구역`}
           className={`rounded-full px-3 py-1.5 text-xs font-bold transition ${
             activeDistricts.length === allDistricts.length ? "bg-indigo-600 text-white" : "bg-white text-slate-500 hover:text-indigo-600"
           }`}
@@ -525,6 +531,8 @@ export function ResultsScatterExplorer({
               key={district}
               type="button"
               onClick={() => toggleDistrict(district)}
+              aria-pressed={active}
+              aria-label={`${district} 필터 ${active ? "해제" : "선택"}, ${districtCounts[district]}개 구역`}
               className={`rounded-full px-3 py-1.5 text-xs font-bold transition ${
                 active ? "bg-indigo-600 text-white" : "bg-white text-slate-500 hover:text-indigo-600"
               }`}
@@ -535,10 +543,12 @@ export function ResultsScatterExplorer({
         })}
       </div>
 
-      <div className="flex flex-wrap gap-2 rounded-2xl border border-slate-100 bg-slate-50 p-3">
+      <div className="flex flex-wrap gap-2 rounded-2xl border border-slate-100 bg-slate-50 p-3" role="group" aria-label="사업 단계 필터">
         <button
           type="button"
           onClick={toggleAllStages}
+          aria-pressed={activeStageLabels.length === ALL_STAGE_LABELS.length}
+          aria-label={`전체 사업 단계 보기, 현재 ${zones.length}개 구역`}
           className={`rounded-full px-3 py-1.5 text-xs font-bold transition ${
             activeStageLabels.length === ALL_STAGE_LABELS.length
               ? "bg-indigo-600 text-white"
@@ -555,6 +565,8 @@ export function ResultsScatterExplorer({
               key={stage.label}
               type="button"
               onClick={() => toggleStage(stage.label)}
+              aria-pressed={active}
+              aria-label={`${stage.label} 단계 필터 ${active ? "해제" : "선택"}, ${stageCounts[stage.label] ?? 0}개 구역`}
               style={active ? { backgroundColor: stage.color } : undefined}
               className={`rounded-full px-3 py-1.5 text-xs font-bold transition ${
                 active ? "text-white shadow-sm" : "bg-white text-slate-500 hover:text-indigo-600"
@@ -566,9 +578,14 @@ export function ResultsScatterExplorer({
         })}
       </div>
 
+      <p id="results-chart-description" className="sr-only">
+        예산 맞춤 구역 분포 차트입니다. 표시 결과는 {chartData.length}개이고, 예산 범위는 {formatBudget(budgetMinKrw)}
+        부터 {formatBudget(budgetMaxKrw)}까지입니다. 차트 아래 구역 카드 목록에서도 같은 구역 상세와 비교 링크를 이용할 수 있습니다.
+      </p>
       <div
         className="relative h-[430px] rounded-[1.5rem] border border-slate-100 bg-white p-2 md:h-[540px] md:p-4"
         onClick={() => setSelectedZoneId(null)}
+        aria-describedby="results-chart-description"
       >
         {selectedPoint ? (
           <PinnedTooltip

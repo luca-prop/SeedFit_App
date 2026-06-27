@@ -454,6 +454,8 @@ export default function LandingPage() {
                 onClick={() => setSelectedPreviewZoneId(r.id)}
                 onMouseEnter={() => setSelectedPreviewZoneId(r.id)}
                 onFocus={() => setSelectedPreviewZoneId(r.id)}
+                aria-pressed={selectedPreviewZoneId === r.id}
+                aria-label={`${r.zone} 결과 프리뷰 선택, ${r.district}, ${r.stage}, 예상 초기투자금 ${r.price}`}
                 className={`group rounded-2xl border p-5 text-left transition-all hover:border-blue-300/40 hover:bg-white/[0.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300 ${
                   selectedPreviewZoneId === r.id ? "border-blue-300/50 bg-blue-400/10" : "border-white/5 bg-white/[0.02]"
                 }`}
