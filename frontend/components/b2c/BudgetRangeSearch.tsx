@@ -48,6 +48,8 @@ export function BudgetRangeSearch() {
     () => `${formatEok(budgetMinKrw)} ~ ${formatEok(budgetMaxKrw)}`,
     [budgetMinKrw, budgetMaxKrw],
   );
+  const activeQuickRangeLabel =
+    QUICK_RANGES.find((range) => range.min === budgetMinKrw && range.max === budgetMaxKrw)?.label ?? null;
 
   function handleSearch() {
     const params = new URLSearchParams({
@@ -68,7 +70,7 @@ export function BudgetRangeSearch() {
           <p className="text-sm font-semibold text-blue-200">내 가용 현금 범위</p>
           <p className="mt-1 text-3xl font-black tracking-tight text-white">{formattedRange}</p>
         </div>
-        <p className="text-xs leading-relaxed text-gray-400">
+        <p id="budget-range-help" className="text-xs leading-relaxed text-gray-400">
           1억~25억, 5천만 원 단위
           <br />
           단일 금액도 선택할 수 있습니다.
@@ -77,6 +79,7 @@ export function BudgetRangeSearch() {
 
       <Slider
         aria-label="가용 현금 범위"
+        aria-describedby="budget-range-help"
         min={REVERSE_FILTER_MIN_CASH_KRW}
         max={REVERSE_FILTER_MAX_CASH_KRW}
         step={REVERSE_FILTER_CASH_STEP_KRW}
@@ -94,23 +97,34 @@ export function BudgetRangeSearch() {
         <span>25억</span>
       </div>
 
-      <div className="mb-5 grid grid-cols-2 gap-2 sm:grid-cols-3">
-        {QUICK_RANGES.map((range) => (
-          <button
-            key={range.label}
-            type="button"
-            onClick={() => setBudgetRange([range.min, range.max])}
-            className="min-h-11 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-sm font-semibold text-gray-200 transition hover:border-blue-300/40 hover:bg-blue-400/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300"
-          >
-            {range.label}
-          </button>
-        ))}
+      <div className="mb-5 grid grid-cols-2 gap-2 sm:grid-cols-3" role="group" aria-label="빠른 예산 범위 선택">
+        {QUICK_RANGES.map((range) => {
+          const active = activeQuickRangeLabel === range.label;
+
+          return (
+            <button
+              key={range.label}
+              type="button"
+              onClick={() => setBudgetRange([range.min, range.max])}
+              aria-pressed={active}
+              aria-label={`${range.label} 예산 범위 선택`}
+              className={`min-h-11 rounded-xl border px-3 py-2 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300 ${
+                active
+                  ? "border-blue-300/60 bg-blue-400/15 text-white"
+                  : "border-white/10 bg-white/[0.04] text-gray-200 hover:border-blue-300/40 hover:bg-blue-400/10"
+              }`}
+            >
+              {range.label}
+            </button>
+          );
+        })}
       </div>
 
       <Button
         type="button"
         size="lg"
         onClick={handleSearch}
+        aria-label={`${formattedRange} 예산 범위로 구역 찾기`}
         className="h-14 w-full rounded-2xl bg-gradient-to-r from-blue-500 to-indigo-600 text-base font-bold text-white shadow-lg shadow-blue-500/25 hover:from-blue-400 hover:to-indigo-500"
       >
         <Search className="mr-2 h-5 w-5" />

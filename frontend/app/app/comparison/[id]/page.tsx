@@ -209,9 +209,11 @@ export default async function ComparisonPage({ params, searchParams }: Compariso
               이 구역의 최소 실투자금으로 진입 가능한 기축 대조군을 비교합니다.
             </p>
           </div>
-          <div className="flex rounded-xl border border-slate-200 bg-white p-1 text-xs font-bold shadow-sm">
+          <div className="flex rounded-xl border border-slate-200 bg-white p-1 text-xs font-bold shadow-sm" role="group" aria-label="기축 대조군 대출 가정 선택">
             <Link
               href={firstHomeHref}
+              aria-current={ltvModel === "firstHome70" ? "page" : undefined}
+              aria-label="생애최초 LTV 70% 대출 가정으로 보기"
               className={`rounded-lg px-3 py-2 transition ${
                 ltvModel === "firstHome70" ? "bg-indigo-600 text-white" : "text-slate-500 hover:bg-slate-50"
               }`}
@@ -220,6 +222,8 @@ export default async function ComparisonPage({ params, searchParams }: Compariso
             </Link>
             <Link
               href={generalHref}
+              aria-current={ltvModel === "general40" ? "page" : undefined}
+              aria-label="일반 LTV 40% 대출 가정으로 보기"
               className={`rounded-lg px-3 py-2 transition ${
                 ltvModel === "general40" ? "bg-indigo-600 text-white" : "text-slate-500 hover:bg-slate-50"
               }`}
