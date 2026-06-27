@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { AlertTriangle, ArrowLeft, Search } from "lucide-react";
+import { AlertTriangle, ArrowLeft, Database, Search } from "lucide-react";
 
 import { reverseFilterAction } from "@/app/actions/reverseFilter";
 import { ResultsScatterExplorer } from "@/components/b2c/ResultsScatterExplorer";
@@ -516,22 +516,40 @@ export default async function ResultsPage({ searchParams }: { searchParams?: Pro
           )}
         </div>
       ) : (
-        <Card className="flex flex-col items-center justify-center border-dashed bg-white p-8 text-center md:p-12">
-          <div className="mb-4 rounded-full bg-slate-100 p-4">
-            <Search className="h-8 w-8 text-slate-400" />
-          </div>
-          <h3 className="mb-2 text-lg font-semibold md:text-xl">{result.message}</h3>
-          <p className="mb-6 text-sm text-slate-500 md:text-base">
-            입력값 또는 데이터 준비 상태를 확인한 뒤 다시 검색해 주세요.
-          </p>
-          <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
-            <Link
-              href="/"
-              className="inline-flex min-h-11 items-center justify-center rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
-            >
-              예산 다시 입력하기
-            </Link>
-          </div>
+        <Card className="border-dashed border-amber-200 bg-white">
+          <CardContent className="p-6 text-center md:p-10">
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-amber-50">
+              <Database className="h-7 w-7 text-amber-600" />
+            </div>
+            <h3 className="text-lg font-black text-slate-950 md:text-xl">검색 결과를 불러오지 못했습니다</h3>
+            <p className="mx-auto mt-2 max-w-2xl text-sm leading-6 text-slate-600 md:text-base">
+              {result.message} 입력 예산이 유효한지 확인하고, 같은 문제가 반복되면 Preview DB 연결 또는 seed 데이터 상태를
+              확인해 주세요.
+            </p>
+            <div className="mx-auto mt-4 max-w-2xl rounded-2xl border border-amber-100 bg-amber-50 p-4 text-left text-sm text-amber-900">
+              <p className="font-bold">확인 순서</p>
+              <ul className="mt-2 list-disc space-y-1 pl-5">
+                <li>예산 범위가 1억~25억 사이인지 확인합니다.</li>
+                <li>최신 Preview alias URL에서 다시 검색합니다.</li>
+                <li>운영자는 `/app/preview-health`에서 DB/env와 seed row count를 확인합니다.</li>
+              </ul>
+              <p className="mt-3 font-mono text-xs text-amber-700">errorCode: {result.errorCode}</p>
+            </div>
+            <div className="mt-6 flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:justify-center">
+              <Link
+                href="/"
+                className="inline-flex min-h-11 items-center justify-center rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+              >
+                예산 다시 입력하기
+              </Link>
+              <Link
+                href="/app/preview-health"
+                className="inline-flex min-h-11 items-center justify-center rounded-lg bg-amber-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-amber-700"
+              >
+                Preview Health 확인
+              </Link>
+            </div>
+          </CardContent>
         </Card>
       )}
     </div>

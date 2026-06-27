@@ -166,7 +166,7 @@ export async function comparisonDataAction(input: unknown): Promise<ComparisonDa
     return {
       ok: false,
       errorCode: "INTERNAL_ERROR",
-      message: "비교 데이터 생성 중 오류가 발생했습니다.",
+      message: "기축 대조군 비교 데이터를 불러오는 중 문제가 발생했습니다.",
     };
   }
 }

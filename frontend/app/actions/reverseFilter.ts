@@ -116,7 +116,7 @@ export async function reverseFilterAction(input: unknown): Promise<ReverseFilter
     return {
       ok: false,
       errorCode: "INTERNAL_ERROR",
-      message: "Reverse Filter 처리 중 오류가 발생했습니다.",
+      message: "검색 데이터를 불러오는 중 문제가 발생했습니다.",
     };
   }
 }
