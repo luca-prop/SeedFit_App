@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Home, Building2, LayoutDashboard, Menu, X } from "lucide-react";
+import { Home, Building2, LayoutDashboard, Menu, X, ClipboardList } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
@@ -13,6 +13,13 @@ const navItems = [
   { href: "/app/b2b", label: "중개사 등록", icon: Building2 },
   { href: "/app/admin", label: "관리자", icon: LayoutDashboard, badge: "Admin" },
 ];
+
+const isPlayBoardVisible =
+  process.env.NODE_ENV !== "production" || process.env.NEXT_PUBLIC_PLAYBOARD_ENABLED === "true";
+
+const visibleNavItems = isPlayBoardVisible
+  ? [...navItems, { href: "/app/playboard", label: "PlayBoard", icon: ClipboardList, badge: "MVP-028" }]
+  : navItems;
 
 /**
  * Global Navigation Bar — Mobile-First Design
@@ -45,8 +52,8 @@ export default function GNB() {
 
           {/* Desktop Nav — md 이상 */}
           <nav className="hidden md:flex items-center gap-1">
-            {navItems.map(({ href, label, icon: Icon, badge }) => {
-              const isActive = pathname === href || (href !== "/" && pathname.startsWith(href));
+            {visibleNavItems.map(({ href, label, icon: Icon, badge }) => {
+              const isActive = pathname === href || (href !== "/app" && pathname.startsWith(href));
               return (
                 <Link
                   key={href}
@@ -85,8 +92,8 @@ export default function GNB() {
       {mobileMenuOpen && (
         <div className="md:hidden fixed inset-0 top-14 z-40 bg-white/98 backdrop-blur-sm animate-in fade-in slide-in-from-top-2 duration-200">
           <nav className="flex flex-col p-4 gap-1">
-            {navItems.map(({ href, label, icon: Icon, badge }) => {
-              const isActive = pathname === href || (href !== "/" && pathname.startsWith(href));
+            {visibleNavItems.map(({ href, label, icon: Icon, badge }) => {
+              const isActive = pathname === href || (href !== "/app" && pathname.startsWith(href));
               return (
                 <Link
                   key={href}

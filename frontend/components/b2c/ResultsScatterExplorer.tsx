@@ -417,11 +417,11 @@ export function ResultsScatterExplorer({
   const activeStageLabels = normalizeSelected(selectedStageGroups, ALL_STAGE_LABELS);
   const [selectedZoneId, setSelectedZoneId] = useState<string | null>(null);
 
-  const districtCounts = countBy(zones.map((zone) => zone.district));
-  const stageCounts = countBy(zones.map((zone) => stageAxisFor(zone.stage).label));
-  const filteredZones = zones.filter(
-    (zone) => activeDistricts.includes(zone.district) && activeStageLabels.includes(stageAxisFor(zone.stage).label),
-  );
+  const zonesMatchingStages = zones.filter((zone) => activeStageLabels.includes(stageAxisFor(zone.stage).label));
+  const zonesMatchingDistricts = zones.filter((zone) => activeDistricts.includes(zone.district));
+  const districtCounts = countBy(zonesMatchingStages.map((zone) => zone.district));
+  const stageCounts = countBy(zonesMatchingDistricts.map((zone) => stageAxisFor(zone.stage).label));
+  const filteredZones = zonesMatchingDistricts.filter((zone) => activeStageLabels.includes(stageAxisFor(zone.stage).label));
   const chartData = buildChartData(filteredZones);
   const selectedPoint = chartData.find((point) => point.zoneId === selectedZoneId) ?? null;
   const budgetMinEok = budgetMinKrw / 100_000_000;
@@ -516,12 +516,12 @@ export function ResultsScatterExplorer({
           type="button"
           onClick={toggleAllDistricts}
           aria-pressed={activeDistricts.length === allDistricts.length}
-          aria-label={`전체 자치구 보기, 현재 ${zones.length}개 구역`}
+          aria-label={`전체 자치구 보기, 현재 사업 단계 조건에서 ${zonesMatchingStages.length}개 구역`}
           className={`rounded-full px-3 py-1.5 text-xs font-bold transition ${
             activeDistricts.length === allDistricts.length ? "bg-indigo-600 text-white" : "bg-white text-slate-500 hover:text-indigo-600"
           }`}
         >
-          전체 <span className="ml-0.5 opacity-70">{zones.length}</span>
+          전체 <span className="ml-0.5 opacity-70">{zonesMatchingStages.length}</span>
         </button>
         {allDistricts.map((district) => {
           const active = activeDistricts.includes(district);
@@ -532,12 +532,12 @@ export function ResultsScatterExplorer({
               type="button"
               onClick={() => toggleDistrict(district)}
               aria-pressed={active}
-              aria-label={`${district} 필터 ${active ? "해제" : "선택"}, ${districtCounts[district]}개 구역`}
+              aria-label={`${district} 필터 ${active ? "해제" : "선택"}, 현재 사업 단계 조건에서 ${districtCounts[district] ?? 0}개 구역`}
               className={`rounded-full px-3 py-1.5 text-xs font-bold transition ${
                 active ? "bg-indigo-600 text-white" : "bg-white text-slate-500 hover:text-indigo-600"
               }`}
             >
-              {district} <span className="ml-0.5 opacity-70">{districtCounts[district]}</span>
+              {district} <span className="ml-0.5 opacity-70">{districtCounts[district] ?? 0}</span>
             </button>
           );
         })}
@@ -548,14 +548,14 @@ export function ResultsScatterExplorer({
           type="button"
           onClick={toggleAllStages}
           aria-pressed={activeStageLabels.length === ALL_STAGE_LABELS.length}
-          aria-label={`전체 사업 단계 보기, 현재 ${zones.length}개 구역`}
+          aria-label={`전체 사업 단계 보기, 현재 자치구 조건에서 ${zonesMatchingDistricts.length}개 구역`}
           className={`rounded-full px-3 py-1.5 text-xs font-bold transition ${
             activeStageLabels.length === ALL_STAGE_LABELS.length
               ? "bg-indigo-600 text-white"
               : "bg-white text-slate-500 hover:text-indigo-600"
           }`}
         >
-          전체 단계 <span className="ml-0.5 opacity-70">{zones.length}</span>
+          전체 단계 <span className="ml-0.5 opacity-70">{zonesMatchingDistricts.length}</span>
         </button>
         {STAGE_AXIS.map((stage) => {
           const active = activeStageLabels.includes(stage.label);
@@ -566,7 +566,7 @@ export function ResultsScatterExplorer({
               type="button"
               onClick={() => toggleStage(stage.label)}
               aria-pressed={active}
-              aria-label={`${stage.label} 단계 필터 ${active ? "해제" : "선택"}, ${stageCounts[stage.label] ?? 0}개 구역`}
+              aria-label={`${stage.label} 단계 필터 ${active ? "해제" : "선택"}, 현재 자치구 조건에서 ${stageCounts[stage.label] ?? 0}개 구역`}
               style={active ? { backgroundColor: stage.color } : undefined}
               className={`rounded-full px-3 py-1.5 text-xs font-bold transition ${
                 active ? "text-white shadow-sm" : "bg-white text-slate-500 hover:text-indigo-600"
@@ -583,7 +583,7 @@ export function ResultsScatterExplorer({
         부터 {formatBudget(budgetMaxKrw)}까지입니다. 차트 아래 구역 카드 목록에서도 같은 구역 상세와 비교 링크를 이용할 수 있습니다.
       </p>
       <div
-        className="relative h-[430px] rounded-[1.5rem] border border-slate-100 bg-white p-2 md:h-[540px] md:p-4"
+        className="relative h-[430px] min-h-[430px] min-w-0 overflow-hidden rounded-[1.5rem] border border-slate-100 bg-white p-2 md:h-[540px] md:min-h-[540px] md:p-4"
         onClick={() => setSelectedZoneId(null)}
         aria-describedby="results-chart-description"
       >
@@ -596,7 +596,7 @@ export function ResultsScatterExplorer({
             selectedSort={selectedSort}
           />
         ) : null}
-        <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={360}>
           <ScatterChart margin={{ top: 28, right: 24, bottom: 28, left: 0 }}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
             <XAxis

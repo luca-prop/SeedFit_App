@@ -20,6 +20,11 @@ MVP-025에서는 비밀값을 노출하지 않는 점검 표면을 추가한다.
 - `/api/preview-health`: 환경변수 존재 여부와 DB seed 상태를 JSON으로 반환한다.
 - `/app/preview-health`: 사람이 직접 확인할 수 있는 Preview 점검 화면이다.
 
+PlayBoard 검수 UI를 Preview/Production 배포에서 노출하려면 다음 플래그를 함께 설정한다. 기본값은 비공개다.
+
+- `PLAYBOARD_ENABLED=true`: `/app/playboard` 서버 라우트 접근을 허용한다.
+- `NEXT_PUBLIC_PLAYBOARD_ENABLED=true`: GNB의 PlayBoard 링크를 노출한다.
+
 점검 항목:
 
 - `DATABASE_URL` 존재 여부
