@@ -25,6 +25,8 @@ export const reverseFilterSortDirectionSchema = z.enum(["asc", "desc"]);
 
 export const reverseFilterBudgetStatusSchema = z.enum(["within_budget", "near_budget", "over_budget"]);
 
+export const zoneCoverageSchema = z.enum(["CORE", "SUB"]);
+
 export const reverseFilterErrorCodeSchema = z.enum([
   "INVALID_INPUT",
   "NO_ACTIVE_LTV_POLICY",
@@ -60,6 +62,7 @@ export const reverseFilterZoneSchema = z.object({
   district: z.string().min(1),
   dong: z.string().min(1),
   stage: z.string().min(1),
+  coverage: zoneCoverageSchema,
   projectType: z.string().nullable(),
   investmentMinKrw: safeKrwNumberSchema,
   investmentMaxKrw: safeKrwNumberSchema.nullable(),

@@ -83,6 +83,58 @@ def derive_project_type(zone_name: str | None, stage: str | None) -> str:
     return "redevelopment"
 
 
+def compact_stage(stage: str) -> str:
+    return re.sub(r"\s+", "", stage)
+
+
+def normalize_coverage_override(value: str | None) -> str | None:
+    if value is None:
+        return None
+    normalized = value.strip().upper()
+    if normalized in {"CORE", "SUB"}:
+        return normalized
+    return None
+
+
+def derive_coverage(stage: str | None, override: str | None = None) -> str:
+    """CORE = 정비구역지정(동급) 이후. SUB = 구역지정 전. See Phase2_scatter_chart검토.md."""
+    from_override = normalize_coverage_override(override)
+    if from_override:
+        return from_override
+    if not stage:
+        return "CORE"
+
+    normalized = compact_stage(stage)
+
+    if (
+        "구역지정" in normalized
+        or "관리계획고시" in normalized
+        or "추진위" in normalized
+        or "조합설립" in normalized
+        or "사업시행자지정" in normalized
+        or "시공사" in normalized
+        or "건축심의" in normalized
+        or "사업시행인가" in normalized
+        or "관리처분" in normalized
+        or "이주" in normalized
+        or "철거" in normalized
+        or "착공" in normalized
+    ):
+        return "CORE"
+
+    if (
+        "연번" in normalized
+        or "신속통합기획" in normalized
+        or "대상지선정" in normalized
+        or "관리계획수립" in normalized
+        or "통합심의" in normalized
+        or "추진준비" in normalized
+    ):
+        return "SUB"
+
+    return "CORE"
+
+
 def parse_eok_to_krw(value: str | None) -> int | None:
     if value is None:
         return None
@@ -152,6 +204,7 @@ def normalize(input_path: Path, output_path: Path) -> dict[str, Any]:
             dong = clean_text(row.get("행정동"))
             zone_name = clean_text(row.get("구역명"))
             stage = normalize_stage(clean_text(row.get("현재 단계")))
+            coverage_raw = clean_text(row.get("coverage"))
             notes = clean_text(row.get("특징/호재"))
             zone_key = natural_key(district, dong, zone_name)
 
@@ -164,18 +217,70 @@ def normalize(input_path: Path, output_path: Path) -> dict[str, Any]:
             elif stage not in ALLOWED_STAGES:
                 warnings.append(WarningItem(row_index, "unknown_stage", f"unknown stage: {stage}", zone_key))
 
+            if coverage_raw and normalize_coverage_override(coverage_raw) is None:
+                warnings.append(
+                    WarningItem(row_index, "invalid_coverage", f"coverage must be CORE or SUB: {coverage_raw}", zone_key)
+                )
+
             if zone_key in zones_by_key:
                 warnings.append(WarningItem(row_index, "duplicate_zone", "duplicate district + dong + zone_name", zone_key))
 
-            zones_by_key[zone_key] = {
+            zone_row: dict[str, Any] = {
                 "naturalKey": zone_key,
                 "district": district,
                 "dong": dong,
                 "zoneName": zone_name,
                 "stage": stage,
+                "coverage": derive_coverage(stage, coverage_raw),
                 "projectType": derive_project_type(zone_name, stage),
                 "notes": notes,
             }
+
+            # Optional geo columns (naver map view key for villa/house listings).
+            naver_map_url = clean_text(row.get("naver_map_url"))
+            lat_raw = clean_text(row.get("lat"))
+            lon_raw = clean_text(row.get("lon"))
+            z_raw = clean_text(row.get("z"))
+            cortar_no = clean_text(row.get("cortar_no"))
+            geo_source = clean_text(row.get("geo_source"))
+            geo_updated_at = clean_text(row.get("geo_updated_at"))
+
+            if naver_map_url:
+                zone_row["naverMapUrl"] = naver_map_url
+            if lat_raw:
+                try:
+                    zone_row["lat"] = float(lat_raw)
+                except ValueError:
+                    warnings.append(WarningItem(row_index, "geo_lat_parse_error", f"invalid lat: {lat_raw}", zone_key))
+            if lon_raw:
+                try:
+                    zone_row["lon"] = float(lon_raw)
+                except ValueError:
+                    warnings.append(WarningItem(row_index, "geo_lon_parse_error", f"invalid lon: {lon_raw}", zone_key))
+            if z_raw:
+                try:
+                    zone_row["z"] = int(float(z_raw))
+                except ValueError:
+                    warnings.append(WarningItem(row_index, "geo_z_parse_error", f"invalid z: {z_raw}", zone_key))
+            if cortar_no:
+                zone_row["cortarNo"] = cortar_no
+            if geo_source:
+                zone_row["geoSource"] = geo_source
+            if geo_updated_at:
+                zone_row["geoUpdatedAt"] = geo_updated_at
+
+            geo_fields = [lat_raw, lon_raw, z_raw, cortar_no]
+            if any(geo_fields) and not all(geo_fields):
+                warnings.append(
+                    WarningItem(
+                        row_index,
+                        "geo_incomplete",
+                        "partial geo fields (need lat, lon, z, cortar_no together)",
+                        zone_key,
+                    )
+                )
+
+            zones_by_key[zone_key] = zone_row
 
             try:
                 sale_min_krw, sale_max_krw = parse_eok_range(clean_text(row.get("매매가")))

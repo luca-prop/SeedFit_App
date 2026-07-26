@@ -14,6 +14,7 @@ MVP-016의 완료 기준은 사용자가 Reverse Filter 결과를 리스트만 �
 - X축은 `Phase2_scatter_chart검토.md` 기준의 재개발 8단계로 표시합니다.
 - 필터 범위는 행정구 칩, 단계 그룹 칩, 정렬입니다.
 - 기본 정렬은 `budgetFit asc`입니다.
+- **coverage 기본은 CORE만** (정비구역지정 이후). SUB는 `includeSub=1` 또는 「초기 구역(SUB) 포함」 토글로 켭니다.
 - `예산 초과` 구역은 사용자 기본 화면에서 제외합니다.
 - 스캐터 차트 점을 누르면 구역 툴팁을 고정하고, 차트 배경을 누르면 선택을 해제합니다.
 - 라벨은 전부 숨기지 않고 대표 라벨을 선별 표시합니다.
@@ -25,7 +26,7 @@ MVP-016의 완료 기준은 사용자가 Reverse Filter 결과를 리스트만 �
 결과 페이지는 다음 쿼리를 읽습니다.
 
 ```text
-/app/results?budgetMin=100000000&budgetMax=300000000&districts=용산구,성동구&stageGroups=추진준비,구역지정&sort=budgetFitAsc
+/app/results?budgetMin=100000000&budgetMax=300000000&districts=용산구,성동구&stageGroups=추진준비,구역지정&sort=budgetFitAsc&includeSub=1
 ```
 
 - `budgetMin`: 최소 가용 현금 KRW
@@ -33,6 +34,7 @@ MVP-016의 완료 기준은 사용자가 Reverse Filter 결과를 리스트만 �
 - `districts`: 선택 행정구 CSV. 없으면 전체. `__none`이면 전체 해제
 - `stageGroups`: 선택 사업 단계 CSV. 없으면 전체. `__none`이면 전체 해제
 - `sort`: 정렬 옵션. 없으면 `budgetFitAsc`
+- `includeSub`: `1`/`true`/`yes`이면 SUB(구역지정 전) 포함. **없으면 CORE만**
 
 URL에 필터 상태를 남기는 이유는 새로고침, 공유 링크, Vercel Preview 리뷰에서 같은 결과를 재현하기 위해서입니다.
 

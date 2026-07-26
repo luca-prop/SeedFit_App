@@ -17,11 +17,29 @@
 
 선택과 집중을 통해 운영 리소스를 최소화하고 검증된 시장부터 장악합니다.
 
+### 2.1 행정구 Phase (지역 확장)
+
 | Phase | 대상 자치구 | 선정 사유 및 전략 | 예상 커버 구역 수 |
 | :--- | :--- | :--- | :--- |
 | **Phase 1** | **용산구, 성동구, 광진구, 동작구** | **[투자 수요 최상위 / 하이엔드 비교군]**<br>한강변을 낀 최상급지 및 강남 인접지로 예비 투자자들의 관심도가 가장 높은 지역. 높은 프리미엄과 비교군(기축 대장)이 명확하여 1:1 대조 대시보드의 효용성이 극대화됨. | 약 80~100개 |
 | **Phase 2** | **마포구, 영등포구, 동대문구, 성북구** | **[거래 활발 / 대규모 뉴타운 중심지]**<br>아현, 신길, 이문/휘경, 장위 등 대규모 뉴타운이 진행 중이거나 해제 후 재추진되는 곳이 많음. 다양한 예산대(T1~T3) 유저를 흡수할 수 있는 볼륨 확장 지역. | 약 150~200개 |
 | **Phase 3** | **기타 선별 추가 (강남, 송파, 서대문 등)** | **[수요 기반 선별 확장]**<br>앱 내 유저의 '관심 지역 추가 요청(Lead Gen)' 데이터에 기반하여 수요가 많은 구역부터 핀셋(Pincet) 추가. | 유동적 |
+
+### 2.2 매칭 커버리지: CORE / SUB (사업 단계)
+
+동일 Golden Sample 시트·DB에 구역을 유지하되, **`coverage` 컬럼(`CORE` | `SUB`)** 으로 매칭 신뢰도를 구분합니다. 별도 스프레드시트 분리는 하지 않습니다.
+
+| coverage | 의미 | 기본 노출 (역필터·스캐터) |
+| :--- | :--- | :--- |
+| **CORE** | 정비구역지정(및 동급) **이후**. 매칭·신뢰도 본선 | **기본 ON** |
+| **SUB** | 구역지정 **전** 초기 구역. Watch·탐색용으로 유지 | 기본 OFF. `includeSub=1` 토글 시 포함 |
+
+**컷오프 (사업진행단계 기준, `Phase2_scatter_chart검토.md` / 스캐터 X축과 동일):**
+
+*   **SUB (추진준비 축):** 연번 부여, 신속통합기획 대상지 선정·확정·완료, (모아)대상지 선정·관리계획수립·통합심의통과, 추진준비
+*   **CORE (구역지정 축부터):** 정비구역지정 / 정비구역 지정, (모아)관리계획고시, **추진위 승인·설립**(구역지정 이후이므로 CORE), 조합설립인가, 사업시행자 지정, 시공사 선정, 사업시행인가, 관리처분인가, 이주·철거·착공
+
+`coverage`는 시트에 직접 기입하거나, 비어 있으면 `현재 단계`에서 파생합니다 (`normalize_golden_samples.py` / `frontend/lib/zoneCoverage.ts`). SUB 데이터는 삭제하지 않습니다.
 
 ---
 
@@ -40,7 +58,18 @@
 *   **속성**: 뚜껑, 다세대, 빌라 등의 매매 호가, 예상 프리미엄(P), 권리가액
 *   **변동 주기**: 일~주 단위 (매우 빠름)
 *   **관리 방법 (플라이휠 구축)**:
-    1.  **[초기 - 운영팀 큐레이션]**: Phase 1 지역의 핵심 구역(Golden Samples)은 운영팀이 주 1회 현장 네이버 매물 분석 및 유선 확인을 통해 수동/반자동 업데이트 진행. (현 DATA_CURATION_SPEC.md 방식 유지)
+    1.  **[초기 - 운영팀 큐레이션 · 반자동 geo]**: Phase 1 Golden Samples는 주 1회 네이버 매물 검수로 갱신한다. 아파트 `complexNo`가 없는 재개발 매물은 구역별 **지도 URL**을 SoT로 둔다.
+        *   Golden Sheet에 `naver_map_url` / `lat` / `lon` / `z` / `cortar_no` / `geo_source` / `geo_updated_at` 열을 둔다 (`DATA_CURATION_SPEC.v.2.md` §5.1).
+        *   절차:
+            1. 네이버에서 구역 지도를 맞춘 뒤 URL 복사 → 시트 `naver_map_url`
+               - 입력용 탭: Golden Sample **동일 스프레드시트**의 `지도URL` 탭 (zoneNaturalKey + naver_map_url…). 재생성·재이관: `build_geo_input_sheet.py` → `push_geo_tab_to_golden.py`
+               - 시트: https://docs.google.com/spreadsheets/d/1YaZjGX53HGNQyAjLp0AIQFGq-j0IWcfPl5WFgUeUfuY/edit
+            2. `python scripts/data/parse_naver_map_url.py --input docs/golden_samples….csv.csv` → lat/lon/z/cortar TSV를 시트에 붙여넣기
+            3. `python scripts/data/fetch_zone_listing_candidates.py --geo … --golden … --export-listings-sheet` → 매물 후보 리포트 + **구역별 최저가 최대 5건** `data/reports/매물_sheet_*.csv`
+            4. CSV를 Golden Spreadsheet의 **`매물` 탭**으로 가져오기 (`export_listings_sheet.py --push` 또는 시트 Import). 문구 매칭 열을 참고해 **사람이** 최소·최대 실투자금을 Golden 본표에 확정 (C열 자동 기입 금지)
+            5. `/redevelopment`로 스펙·정규화 반영
+        *   네이버 차단·실패 시: 동일 스키마의 `--manual-json` / `--manual-csv`로 점수·리포트만 실행 (`--skip-live`).
+        *   `매물` 탭 단독 재생성: `python scripts/data/export_listings_sheet.py --input data/reports/zone_listing_candidates_….json` (`--push`는 OAuth 선택).
     2.  **[중기 - B2B Verified 매물 연동]**: 가장 강력하고 효율적인 방법. 지역별 리드(Lead) 중개사를 B2B 파트너로 영입하여, 중개사가 직접 최신 매물 정보와 프리미엄을 입력하게 함.
         *   *전략*: 데이터 현행화의 비용과 노력을 B2B 중개사에게 전가하는 대신, 중개사에게는 진성 리드 연결과 플랫폼 내 상단 노출(Verified 뱃지) 혜택을 제공함.
     3.  **[사용자 참여형 (Crowdsourcing)]**: 각 구역 상세 페이지에 **"이 구역 정보가 예전 것인가요? 시세 제보하기"** 버튼 추가. 유저들의 집단 지성으로 변동 내역을 빠르게 감지.

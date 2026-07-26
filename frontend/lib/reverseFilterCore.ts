@@ -8,6 +8,7 @@ import {
   type ReverseFilterSortDirection,
   type ReverseFilterZone,
 } from "@/lib/reverseFilterDto";
+import { deriveZoneCoverage, type ZoneCoverage } from "@/lib/zoneCoverage";
 
 export const REVERSE_FILTER_GROUP_LIMIT = 30;
 export const REVERSE_FILTER_DISCLAIMER = MVP_DATA_DISCLOSURE.disclaimer;
@@ -18,6 +19,8 @@ export type ReverseFilterSnapshotCandidate = {
   district: string;
   dong: string;
   stage: string;
+  /** Optional sheet/DB override; otherwise derived from stage. */
+  coverage?: ZoneCoverage | null;
   projectType: string | null;
   salePriceMinKrw: bigint | null;
   salePriceMaxKrw: bigint | null;
@@ -176,6 +179,7 @@ export function buildReverseFilterZone(
     district: candidate.district,
     dong: candidate.dong,
     stage: candidate.stage,
+    coverage: deriveZoneCoverage(candidate.stage, candidate.coverage),
     projectType: candidate.projectType,
     investmentMinKrw: bigintToSafeNumber(candidate.investmentMinKrw),
     investmentMaxKrw: candidate.investmentMaxKrw === null ? null : bigintToSafeNumber(candidate.investmentMaxKrw),

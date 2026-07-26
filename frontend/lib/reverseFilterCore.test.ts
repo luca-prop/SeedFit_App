@@ -35,6 +35,7 @@ assert.equal(withinZone?.budgetStatus, "within_budget");
 assert.equal(withinZone?.matchScore, 100);
 assert.equal(withinZone?.budgetGapKrw, 0);
 assert.equal(withinZone?.requiredCashMinKrw, 280_000_000);
+assert.equal(withinZone?.coverage, "CORE");
 
 const nearZone = buildReverseFilterZone(
   {

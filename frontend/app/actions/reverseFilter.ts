@@ -16,6 +16,7 @@ import {
   reverseFilterSuccessSchema,
   type ReverseFilterResult,
 } from "@/lib/reverseFilterDto";
+import { getFallbackDataSyncedAt, listFallbackZoneSnapshots } from "@/lib/reverseFilterFallback";
 
 type ZoneWithLatestSnapshot = Zone & {
   investmentSnapshots: ZoneInvestmentSnapshot[];
@@ -34,6 +35,7 @@ function toSnapshotCandidate(row: ZoneWithLatestSnapshot): ReverseFilterSnapshot
     district: row.district,
     dong: row.dong,
     stage: row.stage,
+    coverage: row.coverage === "CORE" || row.coverage === "SUB" ? row.coverage : null,
     projectType: row.projectType,
     salePriceMinKrw: latestSnapshot.salePriceMinKrw,
     salePriceMaxKrw: latestSnapshot.salePriceMaxKrw,
@@ -74,22 +76,46 @@ async function listLatestZoneSnapshots(): Promise<ReverseFilterSnapshotCandidate
     .filter((candidate): candidate is ReverseFilterSnapshotCandidate => candidate !== null);
 }
 
-export async function reverseFilterAction(input: unknown): Promise<ReverseFilterResult> {
+async function loadReverseFilterSource(): Promise<{
+  candidates: ReverseFilterSnapshotCandidate[];
+  dataSyncedAt: string;
+  usedFallback: boolean;
+}> {
   try {
-    const parsedInput = parseReverseFilterInput(input);
     const activeLtvPolicies = await listActiveLtvPolicies();
+    const candidates = await listLatestZoneSnapshots();
 
-    if (activeLtvPolicies.length === 0) {
+    if (activeLtvPolicies.length > 0 && candidates.length > 0) {
       return {
-        ok: false,
-        errorCode: "NO_ACTIVE_LTV_POLICY",
-        message: "활성화된 LTV 정책이 없습니다.",
+        candidates,
+        dataSyncedAt: latestDataSyncedAt(candidates),
+        usedFallback: false,
       };
     }
 
-    const candidates = await listLatestZoneSnapshots();
+    console.warn("reverseFilterAction falling back to curated seed", {
+      activeLtvPolicies: activeLtvPolicies.length,
+      candidates: candidates.length,
+    });
+  } catch (error) {
+    console.error("reverseFilterAction database path failed; using curated seed fallback", error);
+  }
 
-    if (candidates.length === 0) {
+  const candidates = listFallbackZoneSnapshots();
+
+  return {
+    candidates,
+    dataSyncedAt: getFallbackDataSyncedAt(),
+    usedFallback: true,
+  };
+}
+
+export async function reverseFilterAction(input: unknown): Promise<ReverseFilterResult> {
+  try {
+    const parsedInput = parseReverseFilterInput(input);
+    const source = await loadReverseFilterSource();
+
+    if (source.candidates.length === 0) {
       return {
         ok: false,
         errorCode: "DATA_NOT_READY",
@@ -97,14 +123,16 @@ export async function reverseFilterAction(input: unknown): Promise<ReverseFilter
       };
     }
 
-    const groups = buildReverseFilterGroups(candidates, parsedInput);
+    const groups = buildReverseFilterGroups(source.candidates, parsedInput);
 
     return reverseFilterSuccessSchema.parse({
       ok: true,
       input: parsedInput,
       ...groups,
-      dataSyncedAt: latestDataSyncedAt(candidates),
-      disclaimer: REVERSE_FILTER_DISCLAIMER,
+      dataSyncedAt: source.dataSyncedAt,
+      disclaimer: source.usedFallback
+        ? `${REVERSE_FILTER_DISCLAIMER} (현재 Preview DB 연결이 불가해 큐레이션 seed로 조회 중입니다.)`
+        : REVERSE_FILTER_DISCLAIMER,
     });
   } catch (error) {
     if (error instanceof ZodError) {

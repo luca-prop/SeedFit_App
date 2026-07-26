@@ -18,6 +18,7 @@ import { BarChart3, RotateCcw } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { type ReverseFilterZone } from "@/lib/reverseFilterDto";
+import { filterZonesByCoverage } from "@/lib/zoneCoverage";
 
 type SortOption = {
   value: string;
@@ -32,6 +33,8 @@ type ResultsScatterExplorerProps = {
   selectedStageGroups: string[];
   selectedSort: string;
   sortOptions: SortOption[];
+  /** When false (default), SUB(구역지정 전) zones are hidden. */
+  includeSub: boolean;
 };
 
 type StageAxis = {
@@ -410,25 +413,35 @@ export function ResultsScatterExplorer({
   selectedStageGroups,
   selectedSort,
   sortOptions,
+  includeSub,
 }: ResultsScatterExplorerProps) {
   const router = useRouter();
-  const allDistricts = useMemo(() => uniqueSorted(zones.map((zone) => zone.district)), [zones]);
+  const coverageFilteredZones = useMemo(() => filterZonesByCoverage(zones, includeSub), [zones, includeSub]);
+  const allDistricts = useMemo(
+    () => uniqueSorted(coverageFilteredZones.map((zone) => zone.district)),
+    [coverageFilteredZones],
+  );
   const activeDistricts = normalizeSelected(selectedDistricts, allDistricts);
   const activeStageLabels = normalizeSelected(selectedStageGroups, ALL_STAGE_LABELS);
   const [selectedZoneId, setSelectedZoneId] = useState<string | null>(null);
 
-  const zonesMatchingStages = zones.filter((zone) => activeStageLabels.includes(stageAxisFor(zone.stage).label));
-  const zonesMatchingDistricts = zones.filter((zone) => activeDistricts.includes(zone.district));
+  const zonesMatchingStages = coverageFilteredZones.filter((zone) =>
+    activeStageLabels.includes(stageAxisFor(zone.stage).label),
+  );
+  const zonesMatchingDistricts = coverageFilteredZones.filter((zone) => activeDistricts.includes(zone.district));
   const districtCounts = countBy(zonesMatchingStages.map((zone) => zone.district));
   const stageCounts = countBy(zonesMatchingDistricts.map((zone) => stageAxisFor(zone.stage).label));
-  const filteredZones = zonesMatchingDistricts.filter((zone) => activeStageLabels.includes(stageAxisFor(zone.stage).label));
+  const filteredZones = zonesMatchingDistricts.filter((zone) =>
+    activeStageLabels.includes(stageAxisFor(zone.stage).label),
+  );
   const chartData = buildChartData(filteredZones);
   const selectedPoint = chartData.find((point) => point.zoneId === selectedZoneId) ?? null;
   const budgetMinEok = budgetMinKrw / 100_000_000;
   const budgetMaxEok = budgetMaxKrw / 100_000_000;
   const isSingleBudget = budgetMinKrw === budgetMaxKrw;
+  const subCount = zones.filter((zone) => zone.coverage === "SUB").length;
 
-  function pushFilters(nextDistricts: string[], nextStages: string[], nextSort = selectedSort) {
+  function pushFilters(nextDistricts: string[], nextStages: string[], nextSort = selectedSort, nextIncludeSub = includeSub) {
     const params = new URLSearchParams({
       budgetMin: String(budgetMinKrw),
       budgetMax: String(budgetMaxKrw),
@@ -439,6 +452,7 @@ export function ResultsScatterExplorer({
 
     if (districtsParam) params.set("districts", districtsParam);
     if (stagesParam) params.set("stageGroups", stagesParam);
+    if (nextIncludeSub) params.set("includeSub", "1");
 
     router.push(`/app/results?${params.toString()}`);
   }
@@ -481,9 +495,19 @@ export function ResultsScatterExplorer({
           </p>
           <p className="mt-1 text-sm text-slate-500">
             X축은 사업 단계, Y축은 구역별 최소~최대 실투자금입니다. 파란 예산선 안에 가까울수록 현재 예산과 맞습니다.
+            기본은 정비구역지정 이후(CORE)만 표시합니다.
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <Button
+            type="button"
+            variant={includeSub ? "default" : "outline"}
+            className="min-h-10"
+            onClick={() => pushFilters(activeDistricts, activeStageLabels, selectedSort, !includeSub)}
+            aria-pressed={includeSub}
+          >
+            초기 구역(SUB) 포함{subCount > 0 ? ` · ${subCount}` : ""}
+          </Button>
           <label htmlFor="results-sort" className="sr-only">
             결과 정렬 기준
           </label>

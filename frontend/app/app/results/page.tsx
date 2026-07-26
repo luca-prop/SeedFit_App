@@ -15,6 +15,7 @@ import {
   type ReverseFilterSortDirection,
   type ReverseFilterZone,
 } from "@/lib/reverseFilterDto";
+import { filterZonesByCoverage } from "@/lib/zoneCoverage";
 
 const STAGE_COLORS: Record<string, string> = {
   "조합설립인가": "bg-blue-100 text-blue-800",
@@ -126,6 +127,12 @@ function parseCsvFilter(searchParams: SearchParams, key: string) {
     .split(",")
     .map((item) => item.trim())
     .filter(Boolean);
+}
+
+/** Default false: CORE only. `includeSub=1|true|yes` enables SUB. */
+function parseIncludeSub(searchParams: SearchParams): boolean {
+  const value = firstParam(searchParams.includeSub)?.trim().toLowerCase();
+  return value === "1" || value === "true" || value === "yes";
 }
 
 function parseSortOption(searchParams: SearchParams) {
@@ -405,6 +412,7 @@ export default async function ResultsPage({ searchParams }: { searchParams?: Pro
   const legacyStage = parseFilterValue(resolvedSearchParams, "stage");
   const selectedDistricts = parseCsvFilter(resolvedSearchParams, "districts");
   const selectedStageGroups = parseCsvFilter(resolvedSearchParams, "stageGroups");
+  const includeSub = parseIncludeSub(resolvedSearchParams);
   const selectedSort = parseSortOption(resolvedSearchParams);
   const result = await reverseFilterAction({
     budgetMinKrw,
@@ -412,16 +420,22 @@ export default async function ResultsPage({ searchParams }: { searchParams?: Pro
     sortBy: selectedSort.sortBy,
     sortDirection: selectedSort.sortDirection,
   });
-  const visibleZones = result.ok ? [...result.matchedZones, ...result.nearZones] : [];
+  const allVisibleZones = result.ok ? [...result.matchedZones, ...result.nearZones] : [];
   const effectiveDistricts = selectedDistricts.length > 0 ? selectedDistricts : legacyDistrict !== "all" ? [legacyDistrict] : [];
   const effectiveStageGroups =
     selectedStageGroups.length > 0 ? selectedStageGroups : legacyStage !== "all" ? [stageAxisLabelFor(legacyStage)] : [];
-  const filteredMatchedZones = result.ok ? filterZones(result.matchedZones, effectiveDistricts, effectiveStageGroups) : [];
-  const filteredNearZones = result.ok ? filterZones(result.nearZones, effectiveDistricts, effectiveStageGroups) : [];
+  const filteredMatchedZones = result.ok
+    ? filterZones(filterZonesByCoverage(result.matchedZones, includeSub), effectiveDistricts, effectiveStageGroups)
+    : [];
+  const filteredNearZones = result.ok
+    ? filterZones(filterZonesByCoverage(result.nearZones, includeSub), effectiveDistricts, effectiveStageGroups)
+    : [];
   const visibleResultCount = filteredMatchedZones.length + filteredNearZones.length;
   const hasActiveFilters =
     selectedDistricts.length > 0 || selectedStageGroups.length > 0 || legacyDistrict !== "all" || legacyStage !== "all";
-  const nearestZones = result.ok ? result.excludedZones.slice(0, EMPTY_STATE_PREVIEW_LIMIT) : [];
+  const nearestZones = result.ok
+    ? filterZonesByCoverage(result.excludedZones, includeSub).slice(0, EMPTY_STATE_PREVIEW_LIMIT)
+    : [];
   const continuityParams = new URLSearchParams({
     budgetMin: String(budgetMinKrw),
     budgetMax: String(budgetMaxKrw),
@@ -430,7 +444,7 @@ export default async function ResultsPage({ searchParams }: { searchParams?: Pro
 
   if (selectedDistricts.length > 0) continuityParams.set("districts", selectedDistricts.join(","));
   if (selectedStageGroups.length > 0) continuityParams.set("stageGroups", selectedStageGroups.join(","));
-
+  if (includeSub) continuityParams.set("includeSub", "1");
   return (
     <div className="container mx-auto max-w-5xl px-4 py-6 md:py-8">
       <div className="mb-5 md:mb-6">
@@ -466,13 +480,14 @@ export default async function ResultsPage({ searchParams }: { searchParams?: Pro
           </Alert>
 
           <ResultsScatterExplorer
-            zones={visibleZones}
+            zones={allVisibleZones}
             budgetMinKrw={budgetMinKrw}
             budgetMaxKrw={budgetMaxKrw}
             selectedDistricts={effectiveDistricts}
             selectedStageGroups={effectiveStageGroups}
             selectedSort={selectedSort.value}
             sortOptions={SORT_OPTIONS.map(({ value, label }) => ({ value, label }))}
+            includeSub={includeSub}
           />
 
           <div className="grid gap-3 sm:grid-cols-3">
