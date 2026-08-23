@@ -554,6 +554,7 @@ function ScatterChartContent() {
           tier: "T_REF",
           stage: 9 + offset,
           stageStr: "기축 (비교군)",
+          coverage: "CORE",
           investmentMin: ref.price,
           investmentMax: ref.price,
           avg: ref.price,
