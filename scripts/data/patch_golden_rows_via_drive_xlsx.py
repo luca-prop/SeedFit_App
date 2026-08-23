@@ -56,6 +56,7 @@ def apply_patches(src: Path, out: Path, patches: list[dict[str, Any]]) -> dict[s
         if patch.get("jaegebal_url") is not None and "jaegebal_url" in hm:
             ws.cell(r, hm["jaegebal_url"], patch["jaegebal_url"])
         for col in (
+            "매매가",
             "최소 실투자금(억)",
             "최대 실투자금(억)",
             "최소 프리미엄",

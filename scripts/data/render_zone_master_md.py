@@ -23,9 +23,9 @@ SECTION3_MARKER = "## 3. 대조군 기축 아파트 데이터"
 DISTRICT_MARKER = "### 📍"
 
 TABLE_HEADER = (
-    "| 구역명 | 행정동 | 현재 단계 | 예상 실투자금 | P | 자동 매칭 분류(참고) | 특징/호재 | 비교 기축 아파트 (84타입 기준) |"
+    "| 구역명 | 행정동 | 현재 단계 | 예상 실투자금 | 매매가 | P | 자동 매칭 분류(참고) | 특징/호재 | 비교 기축 아파트 (84타입 기준) |"
 )
-TABLE_SEPARATOR = "| :--- | :--- | :--- | :--- | :--- | :---: | :--- | :--- |"
+TABLE_SEPARATOR = "| :--- | :--- | :--- | :--- | :--- | :--- | :---: | :--- | :--- |"
 
 
 def fmt_eok_number(krw: int | None) -> str | None:
@@ -120,6 +120,9 @@ def render_section2(golden: dict[str, Any]) -> str:
             investment = render_investment(
                 snapshot.get("investmentMinKrw"), snapshot.get("investmentMaxKrw")
             )
+            sale = render_investment(
+                snapshot.get("salePriceMinKrw"), snapshot.get("salePriceMaxKrw")
+            )
             premium = render_investment(
                 snapshot.get("premiumMinKrw"), snapshot.get("premiumMaxKrw")
             )
@@ -129,7 +132,7 @@ def render_section2(golden: dict[str, Any]) -> str:
             reference = render_reference_cell(primary)
             rows.append(
                 f"| **{zone['zoneName']}** | {zone.get('dong') or ''} | "
-                f"{zone.get('stage') or ''} | {investment} | {premium or '—'} | {tier} | {notes} | {reference} |"
+                f"{zone.get('stage') or ''} | {investment} | {sale or '—'} | {premium or '—'} | {tier} | {notes} | {reference} |"
             )
         block = "\n".join([f"{DISTRICT_MARKER} {district}", TABLE_HEADER, TABLE_SEPARATOR, *rows])
         blocks.append(block)
