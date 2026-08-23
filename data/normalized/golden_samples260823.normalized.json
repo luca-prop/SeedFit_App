@@ -1497,8 +1497,8 @@
       "salePriceMaxKrw": 3700000000,
       "investmentMinKrw": 780000000,
       "investmentMaxKrw": 2485000000,
-      "premiumMinKrw": null,
-      "premiumMaxKrw": null,
+      "premiumMinKrw": 1270000000,
+      "premiumMaxKrw": 1270000000,
       "sourceFile": "golden_samples260823.csv.csv",
       "sourceDate": "2026-08-23"
     },
@@ -1519,7 +1519,7 @@
       "salePriceMaxKrw": 2360000000,
       "investmentMinKrw": 1050000000,
       "investmentMaxKrw": 1361000000,
-      "premiumMinKrw": 1040000000,
+      "premiumMinKrw": 1060000000,
       "premiumMaxKrw": 1200000000,
       "sourceFile": "golden_samples260823.csv.csv",
       "sourceDate": "2026-08-23"
@@ -1552,8 +1552,8 @@
       "salePriceMaxKrw": 950000000,
       "investmentMinKrw": 690000000,
       "investmentMaxKrw": 758000000,
-      "premiumMinKrw": 400000000,
-      "premiumMaxKrw": 400000000,
+      "premiumMinKrw": 468000000,
+      "premiumMaxKrw": 468000000,
       "sourceFile": "golden_samples260823.csv.csv",
       "sourceDate": "2026-08-23"
     },
@@ -1563,8 +1563,8 @@
       "salePriceMaxKrw": 830000000,
       "investmentMinKrw": 700000000,
       "investmentMaxKrw": 760000000,
-      "premiumMinKrw": 400000000,
-      "premiumMaxKrw": 400000000,
+      "premiumMinKrw": 460000000,
+      "premiumMaxKrw": 460000000,
       "sourceFile": "golden_samples260823.csv.csv",
       "sourceDate": "2026-08-23"
     },
@@ -1574,7 +1574,7 @@
       "salePriceMaxKrw": 860000000,
       "investmentMinKrw": 560000000,
       "investmentMaxKrw": 730000000,
-      "premiumMinKrw": 470000000,
+      "premiumMinKrw": 405000000,
       "premiumMaxKrw": 470000000,
       "sourceFile": "golden_samples260823.csv.csv",
       "sourceDate": "2026-08-23"
@@ -1607,8 +1607,8 @@
       "salePriceMaxKrw": 730000000,
       "investmentMinKrw": 520000000,
       "investmentMaxKrw": 600000000,
-      "premiumMinKrw": null,
-      "premiumMaxKrw": null,
+      "premiumMinKrw": 1330000000000,
+      "premiumMaxKrw": 1330000000000,
       "sourceFile": "golden_samples260823.csv.csv",
       "sourceDate": "2026-08-23"
     },
@@ -1706,8 +1706,8 @@
       "salePriceMaxKrw": 1400000000,
       "investmentMinKrw": 850000000,
       "investmentMaxKrw": 1387000000,
-      "premiumMinKrw": 300000000,
-      "premiumMaxKrw": 300000000,
+      "premiumMinKrw": 380000000,
+      "premiumMaxKrw": 380000000,
       "sourceFile": "golden_samples260823.csv.csv",
       "sourceDate": "2026-08-23"
     },
