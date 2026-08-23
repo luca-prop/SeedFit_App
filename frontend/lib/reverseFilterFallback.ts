@@ -7,6 +7,7 @@ type SeedCandidate = {
   district: string;
   dong: string;
   stage: string;
+  coverage: "CORE" | "SUB" | null;
   projectType: string | null;
   salePriceMinKrw: number | null;
   salePriceMaxKrw: number | null;
@@ -26,6 +27,7 @@ export function listFallbackZoneSnapshots(): ReverseFilterSnapshotCandidate[] {
     district: candidate.district,
     dong: candidate.dong,
     stage: candidate.stage,
+    coverage: candidate.coverage === "CORE" || candidate.coverage === "SUB" ? candidate.coverage : null,
     projectType: candidate.projectType,
     salePriceMinKrw: toBigIntOrNull(candidate.salePriceMinKrw),
     salePriceMaxKrw: toBigIntOrNull(candidate.salePriceMaxKrw),
