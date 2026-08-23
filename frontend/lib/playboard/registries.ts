@@ -71,7 +71,7 @@ export const playBoardScreens = [
     title: "Reverse Filter 결과",
     route: "/app/results",
     designSpecType: "service",
-    flowNote: "예산 범위에 맞는 구역 후보를 리스트와 시각화로 확인합니다.",
+    flowNote: "예산 범위에 맞는 구역 후보를 리스트와 시각화로 확인하고, 결과 화면에서 예산을 바로 조절합니다.",
     status: "verified",
     workItems: ["mvp-012", "mvp-015", "mvp-016", "mvp-024"],
     requirementRefs: [
@@ -79,11 +79,11 @@ export const playBoardScreens = [
       "docs/MVP_REVERSE_FILTER_RESULTS260623.md",
       "docs/MVP_REVERSE_FILTER_RESULTS_FILTERS260623.md",
     ],
-    implLocation: "frontend/app/app/results/page.tsx; frontend/components/b2c/ResultsScatterExplorer.tsx",
+    implLocation: "frontend/app/app/results/page.tsx; frontend/components/b2c/ResultsScatterExplorer.tsx; frontend/components/b2c/ResultsBudgetSlider.tsx",
     demoStrategy: "real-route",
     engineering: {
       authGate: "공개 화면입니다.",
-      clientActions: ["district/stage 필터", "정렬 변경", "구역 상세 이동", "같은 예산 기축단지 비교 이동"],
+      clientActions: ["예산 슬라이더 조절", "district/stage 필터", "정렬 변경", "구역 상세 이동", "같은 예산 기축단지 비교 이동"],
       serverActions: ["reverseFilterAction"],
       dataReads: ["zones", "zone_investment_snapshots", "ltv_policies"],
       dataWrites: [],
@@ -92,7 +92,7 @@ export const playBoardScreens = [
       controlAreaNotes: {
         "data-accuracy": "최신 구역 investment snapshot과 데이터 기준일을 결과에 노출합니다.",
         "finance-policy": "LTV 정책 존재 여부가 Reverse Filter 처리의 전제입니다.",
-        "ux-safety": "예산 초과 구역은 기본 결과에서 제외하고 근접 후보만 보조 노출합니다.",
+        "ux-safety": "예산 초과 구역은 기본 결과에서 제외하고 근접 후보만 보조 노출합니다. 예산은 결과 페이지 슬라이더로 바로 조절합니다.",
         performance: "Reverse Filter p95 1.5s 목표와 직접 연결됩니다.",
       },
     },
@@ -304,7 +304,7 @@ export const playBoardScreens = [
     demoStrategy: "mock",
     engineering: {
       authGate: "공개 상태입니다.",
-      clientActions: ["예산 다시 입력", "필터 초기화"],
+      clientActions: ["예산 슬라이더 조절", "예산 상한 올리기", "필터 초기화"],
       serverActions: ["reverseFilterAction"],
       dataReads: ["reverse filter result groups"],
       dataWrites: [],

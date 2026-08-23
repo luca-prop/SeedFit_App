@@ -7,35 +7,17 @@ import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import {
+  BUDGET_QUICK_RANGES,
+  formatBudgetEokRange,
+  normalizeBudgetRange,
+} from "@/lib/resultsBudgetHref";
+import {
   REVERSE_FILTER_CASH_STEP_KRW,
   REVERSE_FILTER_MAX_CASH_KRW,
   REVERSE_FILTER_MIN_CASH_KRW,
 } from "@/lib/reverseFilterDto";
 
 const DEFAULT_RANGE = [100_000_000, 300_000_000] as const;
-
-const QUICK_RANGES = [
-  { label: "1~3억", min: 100_000_000, max: 300_000_000 },
-  { label: "3~5억", min: 300_000_000, max: 500_000_000 },
-  { label: "5~10억", min: 500_000_000, max: 1_000_000_000 },
-  { label: "10~15억", min: 1_000_000_000, max: 1_500_000_000 },
-  { label: "15~25억", min: 1_500_000_000, max: 2_500_000_000 },
-  { label: "3억 단일", min: 300_000_000, max: 300_000_000 },
-];
-
-function formatEok(value: number) {
-  const eok = value / 100_000_000;
-
-  return Number.isInteger(eok) ? `${eok}억` : `${eok.toFixed(1)}억`;
-}
-
-function normalizeRange(values: number[]) {
-  const [first = DEFAULT_RANGE[0], second = DEFAULT_RANGE[1]] = values;
-  const min = Math.min(first, second);
-  const max = Math.max(first, second);
-
-  return [min, max] as [number, number];
-}
 
 export function BudgetRangeSearch() {
   const router = useRouter();
@@ -45,11 +27,11 @@ export function BudgetRangeSearch() {
   ]);
 
   const formattedRange = useMemo(
-    () => `${formatEok(budgetMinKrw)} ~ ${formatEok(budgetMaxKrw)}`,
+    () => formatBudgetEokRange(budgetMinKrw, budgetMaxKrw),
     [budgetMinKrw, budgetMaxKrw],
   );
   const activeQuickRangeLabel =
-    QUICK_RANGES.find((range) => range.min === budgetMinKrw && range.max === budgetMaxKrw)?.label ?? null;
+    BUDGET_QUICK_RANGES.find((range) => range.min === budgetMinKrw && range.max === budgetMaxKrw)?.label ?? null;
 
   function handleSearch() {
     const params = new URLSearchParams({
@@ -84,7 +66,9 @@ export function BudgetRangeSearch() {
         max={REVERSE_FILTER_MAX_CASH_KRW}
         step={REVERSE_FILTER_CASH_STEP_KRW}
         value={[budgetMinKrw, budgetMaxKrw]}
-        onValueChange={(values) => setBudgetRange(normalizeRange(Array.isArray(values) ? values : [values]))}
+        onValueChange={(values) =>
+          setBudgetRange(normalizeBudgetRange(Array.isArray(values) ? [...values] : [values], DEFAULT_RANGE))
+        }
         className="py-4 [&_[data-slot=slider-range]]:bg-white [&_[data-slot=slider-thumb]]:size-4 [&_[data-slot=slider-thumb]]:border-white [&_[data-slot=slider-thumb]]:bg-white [&_[data-slot=slider-track]]:bg-slate-800"
       />
 
@@ -98,7 +82,7 @@ export function BudgetRangeSearch() {
       </div>
 
       <div className="mb-5 grid grid-cols-2 gap-2 sm:grid-cols-3" role="group" aria-label="빠른 예산 범위 선택">
-        {QUICK_RANGES.map((range) => {
+        {BUDGET_QUICK_RANGES.map((range) => {
           const active = activeQuickRangeLabel === range.label;
 
           return (

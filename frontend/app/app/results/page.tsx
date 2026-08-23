@@ -2,6 +2,7 @@ import Link from "next/link";
 import { AlertTriangle, ArrowLeft, Database, Search } from "lucide-react";
 
 import { reverseFilterAction } from "@/app/actions/reverseFilter";
+import { ResultsBudgetSlider } from "@/components/b2c/ResultsBudgetSlider";
 import { ResultsScatterExplorer } from "@/components/b2c/ResultsScatterExplorer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -453,20 +454,22 @@ export default async function ResultsPage({ searchParams }: { searchParams?: Pro
           className="mb-3 inline-flex min-h-10 items-center rounded-lg px-1 text-sm font-medium text-slate-500 transition hover:text-slate-900"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
-          예산 다시 입력하기
+          처음 화면으로
         </Link>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h1 className="text-xl font-bold text-slate-950 md:text-2xl">Reverse Filter 검색 결과</h1>
             <p className="mt-1 text-sm text-slate-500 md:text-base">
-              예산 범위{" "}
-              <span className="font-semibold text-slate-950">
-                {formatBudget(budgetMinKrw)} ~ {formatBudget(budgetMaxKrw)}
-              </span>{" "}
-              기준
+              아래 슬라이더로 예산 범위를 바로 바꿀 수 있습니다.
             </p>
           </div>
         </div>
+        <ResultsBudgetSlider
+          key={`${budgetMinKrw}-${budgetMaxKrw}`}
+          budgetMinKrw={budgetMinKrw}
+          budgetMaxKrw={budgetMaxKrw}
+          preservedSearch={continuityParams.toString()}
+        />
       </div>
 
       {result.ok ? (

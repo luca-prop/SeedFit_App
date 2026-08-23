@@ -634,7 +634,7 @@ export function ResultsScatterExplorer({
             selectedSort={selectedSort}
           />
         ) : null}
-        <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={360}>
+        <ResponsiveContainer width="100%" height="100%">
           <ScatterChart margin={{ top: isDesktop ? 36 : 28, right: isDesktop ? 28 : 16, bottom: 28, left: isDesktop ? 8 : 0 }}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
             <XAxis
