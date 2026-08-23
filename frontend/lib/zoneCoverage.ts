@@ -60,7 +60,8 @@ export function deriveZoneCoverage(stage: string, override?: string | null): Zon
     normalized.includes("대상지선정") ||
     normalized.includes("관리계획수립") ||
     normalized.includes("통합심의") ||
-    normalized.includes("추진준비")
+    normalized.includes("추진준비") ||
+    normalized.includes("대상지철회")
   ) {
     return "SUB";
   }

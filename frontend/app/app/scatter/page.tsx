@@ -6,6 +6,8 @@ import { ArrowLeft, MapPin, X, SlidersHorizontal, ExternalLink, Maximize2, Minim
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { scatterData } from "../../lib/scatterData";
+import { assignLabelSides, preferredLabelSide } from "@/lib/scatterLabelSide";
+import { shortZoneName } from "@/lib/shortZoneName";
 import { REFERENCE_COMPLEXES } from "../../lib/referenceComplexes";
 import { PROGRESS_DATES } from "../../lib/scatterDates";
 
@@ -86,7 +88,7 @@ function applyPositionDodge(data: any[]) {
   // stageStr 기준으로 그룹핑 (같은 단계명끼리 묶음)
   const stageGroups: Record<string, any[]> = {};
   data.forEach((d) => {
-    const key = d.stageStr || String(d.stage);
+    const key = String(Math.floor(Number(d.stage)));
     if (!stageGroups[key]) stageGroups[key] = [];
     stageGroups[key].push(d);
   });
@@ -112,49 +114,32 @@ function applyPositionDodge(data: any[]) {
       const offset = ((count - 1) / 2 - idx) * DODGE_WIDTH * -1;
       dodged.push({
         ...item,
-        stageDodged: item.stage + offset,
+        stageDodged: Math.floor(item.stage) + offset,
       });
     });
   }
   return dodged;
 }
 
-/**
- * 긴 구역명을 약식으로 변환 (예: 북아현3구역 -> 북아현3, 자양4동 A구역 -> 자양4A)
- */
-function getShortZoneName(name: string) {
-  if (!name) return "";
-  let short = name.replace(/구역.*$/, ""); // 구역 및 그 뒤 문자열 제거
-  short = short.replace(/\s+/g, ""); // 공백 제거
-  short = short.replace(/동([A-Z0-9])/g, "$1"); // 자양4동A -> 자양4A
-  return short;
-}
 
-/**
- * Dumbbell (덤벨) 형태 마커 렌더러
- * - 얇은 실선 + 양 끝 작은 점(Min/Max)
- * - 투명도(Alpha) 적용으로 겹침 시 밀도 표현
- */
-function DumbbellShape(props: any) {
-  const { cx, payload, yAxis, onPointClick, showLabels } = props;
+function ZonePointShape(props: any) {
+  const { cx, cy, payload, yAxis, onPointClick, showLabels, labelSides } = props;
 
   if (!payload || isNaN(cx)) return null;
 
+  const pointY =
+    yAxis && typeof yAxis.scale === "function" ? yAxis.scale(payload.investmentMin) : cy ?? 0;
+
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (onPointClick) onPointClick({ ...payload, cx, cy: 0 });
+    if (onPointClick) onPointClick({ ...payload, cx, cy: pointY });
   };
 
-  // Reference point (triangle)
   if (payload.isRef) {
-    let cy = 0;
-    if (yAxis && typeof yAxis.scale === "function") {
-      cy = yAxis.scale(payload.investmentMin);
-    }
     return (
       <g opacity={payload.isPinned ? 1 : 0.9} onClick={handleClick} style={{ cursor: "pointer" }}>
         <polygon
-          points={`${cx},${cy - 9} ${cx + 7},${cy + 5} ${cx - 7},${cy + 5}`}
+          points={`${cx},${pointY - 9} ${cx + 7},${pointY + 5} ${cx - 7},${pointY + 5}`}
           fill={payload.isPinned ? "#8b5cf6" : STAGE_COLORS.T_REF}
           stroke="#fff"
           strokeWidth={payload.isPinned ? 2 : 1}
@@ -163,72 +148,25 @@ function DumbbellShape(props: any) {
     );
   }
 
-  // 선택된 구역이 있을 때 isOut 구역은 완전히 숨김 (회색 테두리 방지)
   if (payload.isOut && payload.hasPinned) return null;
 
   const fill = payload.isPinned ? "#8b5cf6" : getStageColor(payload.stage);
-  const opacity = payload.isOut ? 0.08 : (payload.isPinned ? 1 : 0.55);
-
-  // Calculate Y positions from yAxis scale
-  let yMin = 0, yMax = 0;
-  if (yAxis && typeof yAxis.scale === "function") {
-    yMin = yAxis.scale(payload.investmentMin);
-    yMax = yAxis.scale(payload.investmentMax);
-    // Ensure yMin is below yMax in pixel space (inverted Y)
-    if (yMin < yMax) [yMin, yMax] = [yMax, yMin];
-  } else {
-    const midCy = props.cy || 0;
-    const diff = payload.investmentMax - payload.investmentMin;
-    yMax = midCy - diff * 13;
-    yMin = midCy + diff * 13;
-  }
-
-  const lineHeight = Math.abs(yMin - yMax);
-  const samePrice = lineHeight < 3;
-
-  // For the click handler, set cy to midpoint
-  const midY = (yMin + yMax) / 2;
+  const opacity = payload.isOut ? 0.08 : payload.isPinned ? 1 : 0.55;
+  const labelLeft = (labelSides?.get?.(payload.id) ?? labelSides?.[payload.id] ?? payload.labelSide) === "left";
 
   return (
-    <g opacity={opacity} onClick={(e) => {
-      e.stopPropagation();
-      if (onPointClick) onPointClick({ ...payload, cx, cy: midY });
-    }} style={{ cursor: "pointer" }}>
-      {/* Vertical line (stem) */}
-      <line
-        x1={cx}
-        y1={yMax}
-        x2={cx}
-        y2={yMin}
-        stroke={fill}
-        strokeWidth={payload.isPinned ? (samePrice ? 0 : 3.5) : (samePrice ? 0 : 2)}
-        strokeLinecap="round"
-      />
-      {/* Top dot (Max) */}
-      <circle cx={cx} cy={yMax} r={samePrice ? (payload.isPinned ? 5 : 4) : (payload.isPinned ? 4.5 : 3.5)} fill={fill} stroke="#fff" strokeWidth={1} />
-      {/* Bottom dot (Min) */}
-      {!samePrice && (
-        <circle cx={cx} cy={yMin} r={payload.isPinned ? 4.5 : 3.5} fill={fill} stroke="#fff" strokeWidth={1} />
-      )}
-      
-      {/* 덤벨 약식 구역명 라벨 (겹침 방지를 위해 약간 우상단으로 기울임) */}
+    <g opacity={opacity} onClick={handleClick} style={{ cursor: "pointer" }}>
+      <circle cx={cx} cy={pointY} r={payload.isPinned ? 5 : 4} fill={fill} stroke="#fff" strokeWidth={1} />
       {showLabels && !payload.isPinned && !payload.isOut && !payload.isRef && (
         <text
-          x={cx + 5}
-          y={yMax - 5}
+          x={cx + (labelLeft ? -6 : 6)}
+          y={pointY - 6}
           fill="#64748b"
           fontSize={11}
           fontWeight={600}
-          textAnchor="start"
-          alignmentBaseline="baseline"
-          transform={`rotate(-45, ${cx + 5}, ${yMax - 5})`}
-          style={{ cursor: "pointer", pointerEvents: "auto" }}
-          onClick={(e) => {
-            e.stopPropagation();
-            if (onPointClick) onPointClick({ ...payload, cx, cy: midY });
-          }}
+          textAnchor={labelLeft ? "end" : "start"}
         >
-          {getShortZoneName(payload.name)}
+          {shortZoneName(payload.name)}
         </text>
       )}
     </g>
@@ -327,7 +265,7 @@ function PinnedTooltip({ pinnedData, containerRef, onClose, onViewDetail, onView
             <span className="font-semibold text-gray-800">{pinnedData.stageStr}</span>
           </p>
           <p className="text-sm text-gray-900 font-bold">
-            <span className="text-gray-400 font-normal mr-2">투자금</span>
+            <span className="text-gray-400 font-normal mr-2">최저 실투자금</span>
             {pinnedData.investmentMin}억
             {pinnedData.investmentMax !== pinnedData.investmentMin
               ? ` ~ ${pinnedData.investmentMax}억`
@@ -567,7 +505,23 @@ function ScatterChartContent() {
       data = [...data, ...refPoints];
     }
 
-    return applyPositionDodge(data);
+    const dodged = applyPositionDodge(data);
+    const sides = assignLabelSides(
+      dodged
+        .filter((point: { isRef?: boolean }) => !point.isRef)
+        .map((point: { id: string; stage: number; stageDodged: number; investmentMin: number; name: string }) => ({
+          id: point.id,
+          stageIndex: Math.floor(point.stage),
+          x: point.stageDodged,
+          y: point.investmentMin,
+          name: point.name,
+        })),
+    );
+
+    return dodged.map((point: { id: string; stage: number; isRef?: boolean }) => ({
+      ...point,
+      labelSide: point.isRef ? "right" : (sides.get(point.id) ?? preferredLabelSide(Math.floor(point.stage))),
+    }));
   }, [hasBudget, budgetMinEok, budgetMaxEok, showAllZones, selectedDistrict, activeDistricts, activeStageGroups, pinnedData]);
 
   // 자동 줌 도메인: 예산 범위 구역이 화면의 85%를 차지하도록
@@ -578,12 +532,11 @@ function ScatterChartContent() {
 
     const stages = budgetZones.map((d: any) => d.stage);
     const invMins = budgetZones.map((d: any) => d.investmentMin);
-    const invMaxs = budgetZones.map((d: any) => d.investmentMax);
 
     const sMin = Math.min(...stages);
     const sMax = Math.max(...stages);
     const iMin = Math.min(...invMins);
-    const iMax = Math.max(...invMaxs);
+    const iMax = Math.max(...invMins);
 
     // 패딩 15%: 구역이 화면의 ~85% 차지
     const sPad = Math.max((sMax - sMin) * 0.15, 0.8);
@@ -648,8 +601,8 @@ function ScatterChartContent() {
               <span className="text-gray-400 mr-2">단계</span> {data.stageStr}
             </p>
             <p className="text-sm text-gray-900 font-bold">
-              <span className="text-gray-400 font-normal mr-2">투자금</span> {data.investmentMin}억 ~{" "}
-              {data.investmentMax}억
+              <span className="text-gray-400 font-normal mr-2">최저 실투자금</span> {data.investmentMin}억
+              {data.investmentMax !== data.investmentMin ? ` ~ ${data.investmentMax}억` : ""}
             </p>
           </div>
         </div>
@@ -889,7 +842,7 @@ function ScatterChartContent() {
 
               <YAxis
                 type="number"
-                dataKey="avg"
+                dataKey="investmentMin"
                 unit="억"
                 domain={
                   autoZoomDomains
@@ -932,7 +885,14 @@ function ScatterChartContent() {
               <Scatter
                 name="재개발 구역"
                 data={displayData}
-                shape={<DumbbellShape onPointClick={handlePointClick} showLabels={!isMobile || autoZoomEnabled} />}
+                shape={(props) => (
+                  <ZonePointShape
+                    {...props}
+                    onPointClick={handlePointClick}
+                    showLabels={!isMobile || autoZoomEnabled}
+                    labelSides={Object.fromEntries(displayData.map((point: { id: string; labelSide?: string }) => [point.id, point.labelSide]))}
+                  />
+                )}
                 activeShape={false}
                 isAnimationActive={false}
               />
@@ -967,11 +927,7 @@ function ScatterChartContent() {
           { label: "관처·이주·착공", color: STAGE_COLORS.RED },
         ].map(({ label, color }) => (
           <div key={label} className="flex items-center gap-2">
-            <svg width="14" height="18" viewBox="0 0 14 18">
-              <circle cx="7" cy="3" r="2.5" fill={color} />
-              <line x1="7" y1="3" x2="7" y2="15" stroke={color} strokeWidth="1.5" />
-              <circle cx="7" cy="15" r="2.5" fill={color} />
-            </svg>
+            <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: color }} />
             <span className="text-xs md:text-sm">{label}</span>
           </div>
         ))}
@@ -987,7 +943,7 @@ function ScatterChartContent() {
       {/* Chart reading guide */}
       <div className="mt-3 md:mt-4 bg-white p-3 md:p-4 rounded-2xl shadow-sm border border-gray-100 text-center">
         <p className="text-[11px] md:text-xs text-gray-400">
-          💡 각 점은 재개발 구역의 <span className="font-semibold text-gray-600">실투자금 범위(Min~Max)</span>를 덤벨 형태로 표시합니다.
+          💡 각 점은 재개발 구역의 <span className="font-semibold text-gray-600">최저 실투자금</span>입니다. 범위는 점을 누르면 볼 수 있습니다.
           {isMobile ? '' : ' 동일 단계의 구역은 좌우로 나란히 배치되어 겹침 없이 비교할 수 있습니다.'}
         </p>
       </div>

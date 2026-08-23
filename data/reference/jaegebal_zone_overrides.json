@@ -1,0 +1,105 @@
+{
+  "_comment": "Golden zoneNaturalKey or 구역명 → 재개발닷컴 강제 매칭 (검색 오매칭 교정)",
+  "byNaturalKey": {
+    "성동구|금호동|금호 22구역": {
+      "url": "https://jaegebal.com/develops/4635",
+      "search": "(가)금호동3가 1198",
+      "note": "신통기획 (가)금호동3가 1198"
+    },
+    "양천구|신정동|신정 1구역": {
+      "url": "https://jaegebal.com/develops/1402",
+      "search": "신정4동 922",
+      "note": "신통기획 신정4동 922"
+    },
+    "용산구|용산동|용산 1구역": {
+      "url": "https://jaegebal.com/develops/3697",
+      "search": "용산동2가 1-1351",
+      "note": "신통기획 용산동2가 1-1351"
+    },
+    "광진구|자양동|자양동 227-147": {
+      "url": "https://jaegebal.com/develops/2610",
+      "search": "자양3동A",
+      "note": "자양3동A"
+    },
+    "마포구|신수동|신수 13구역": {
+      "url": "https://jaegebal.com/develops/4148",
+      "search": "신수동 250",
+      "note": "신통기획 신수동 250"
+    },
+    "광진구|자양동|자양2동 681(모아타운)": {
+      "url": "https://jaegebal.com/develops/1564",
+      "search": "자양2동 681",
+      "note": "모아타운 자양2동 681"
+    },
+    "광진구|자양동|자양1동 779(모아타운)": {
+      "url": "https://jaegebal.com/develops/1188",
+      "search": "자양1동 799",
+      "note": "재개발닷컴 표기 자양1동 799 (시트 779와 동일 구역으로 매칭)"
+    },
+    "광진구|자양동|자양2동 649(B)(모아타운)": {
+      "url": "https://jaegebal.com/develops/2282",
+      "search": "자양2동 649",
+      "note": "모아타운 자양2동 649"
+    },
+    "광진구|자양동|자양동 772-1(건대모아)": {
+      "url": "https://jaegebal.com/develops/1881",
+      "search": "자양동 772-1",
+      "note": "모아타운 자양동 772-1"
+    },
+    "광진구|자양동|자양2동 663(C)(모아타운)": {
+      "url": "https://jaegebal.com/develops/4589",
+      "search": "자양동 663",
+      "note": "모아타운 자양동 663"
+    },
+    "광진구|자양동|자양1동 593(A)(모아타운)": {
+      "url": "https://jaegebal.com/develops/4588",
+      "search": "자양2동 593",
+      "note": "재개발닷컴 표기 자양2동 593 (시트 자양1동 593A와 매칭 검토)"
+    },
+    "광진구|자양동|자양동 629(모아타운)": {
+      "url": "https://jaegebal.com/develops/4641",
+      "search": "자양동 629",
+      "note": "모아타운 (가)자양동 629"
+    },
+    "동작구|상도동|상도 21구역(모아타운)": {
+      "url": "https://jaegebal.com/develops/2254",
+      "search": "상도동 242",
+      "note": "모아타운 상도동 242(상도21)"
+    },
+    "동작구|사당동|사당 5구역(재건축)": {
+      "url": "https://jaegebal.com/develops/2654",
+      "search": "사당5",
+      "note": "재건축 사당5"
+    },
+    "영등포구|신길동|신길 2구역": {
+      "url": "https://jaegebal.com/develops/2283",
+      "search": "신길2",
+      "note": "재개발 신길2 (도심공공 신길2 2571 아님)"
+    },
+    "성북구|길음동|신길음구역": {
+      "url": "https://jaegebal.com/develops/1192",
+      "search": "신길음",
+      "note": "재개발 신길음 (신길음1 2382 아님)"
+    },
+    "서초구|방배동|방배 15구역(재건축)": {
+      "url": "https://jaegebal.com/develops/2678",
+      "search": "방배15",
+      "note": "재건축 방배15 (모아타운 아님, 통합심의=건축심의)"
+    },
+    "강북구|미아동|미아 9-2구역(재건축)": {
+      "url": "https://jaegebal.com/develops/2667",
+      "search": "미아9-2",
+      "note": "재건축 미아9-2"
+    },
+    "강북구|미아동|미아 3구역": {
+      "url": "https://jaegebal.com/develops/2475",
+      "search": "미아3",
+      "note": "재개발 미아3 (가로주택 미아3 1679 아님)"
+    },
+    "강북구|미아동|미아 2구역": {
+      "url": "https://jaegebal.com/develops/2581",
+      "search": "미아2",
+      "note": "재개발 미아2 (가로주택 미아2 1498 아님)"
+    }
+  }
+}

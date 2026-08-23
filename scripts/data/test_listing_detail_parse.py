@@ -60,6 +60,25 @@ class PremiumTokenTests(unittest.TestCase):
         self.assertEqual(_premium("P4억6천"), 4.6)
         self.assertEqual(_premium("프리미엄 4억6천"), 4.6)
 
+    def test_bare_p_without_eok(self) -> None:
+        self.assertEqual(_premium("p18.9"), 18.9)
+        self.assertEqual(_premium("P18.9"), 18.9)
+
+
+class ChotuHintTests(unittest.TestCase):
+    def test_bare_chotu_without_eok(self) -> None:
+        details = extract_listing_details(
+            {},
+            description="p18.9\n이주비 기본 40+추가 30활용으로",
+            title="노량진 1구역 초투 21.4 다시 나오기 힘든 구조",
+        )
+        self.assertEqual(details["hintChotuEok"], 21.4)
+        self.assertEqual(details["hintPremiumEok"], 18.9)
+
+    def test_chotu_with_eok_still_works(self) -> None:
+        details = extract_listing_details({}, description="초투 15.8억")
+        self.assertEqual(details["hintChotuEok"], 15.8)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -51,12 +51,12 @@ def main() -> None:
     before = load_rollup(args.before)
     after = load_rollup(args.after)
     fields = [
-        ("예상초투_min", "초투min"),
-        ("예상초투_max", "초투max"),
-        ("매매가_min", "매매min"),
-        ("매매가_max", "매매max"),
-        ("P_min", "Pmin"),
-        ("P_max", "Pmax"),
+        ("초투min", "초투min"),
+        ("초투max", "초투max"),
+        ("매매min", "매매min"),
+        ("매매max", "매매max"),
+        ("Pmin", "Pmin"),
+        ("Pmax", "Pmax"),
     ]
     print(f"key\t" + "\t".join(f"{label}_Δ" for _k, label in fields))
     for key in sorted(set(before) | set(after)):

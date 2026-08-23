@@ -77,10 +77,13 @@ def normalize_stage(value: str | None) -> str | None:
 
 
 def derive_project_type(zone_name: str | None, stage: str | None) -> str:
-    haystack = f"{zone_name or ''} {stage or ''}"
-    if "재건축" in haystack:
+    name = zone_name or ""
+    haystack = f"{name} {stage or ''}"
+    if "재건축" in name or "(재건축)" in haystack:
         return "reconstruction"
-    if "모아" in haystack:
+    # 단계 라벨의 '(모아)'만으로 사업유형을 바꾸지 않는다.
+    # 장위15가 통합심의→(모아)통합심의통과로 오매핑되면 moa_town으로 굳는다.
+    if "모아" in name:
         return "moa_town"
     return "redevelopment"
 

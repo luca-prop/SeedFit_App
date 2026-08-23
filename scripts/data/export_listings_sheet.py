@@ -264,6 +264,7 @@ def load_golden_baselines(path: Path | None) -> dict[str, dict[str, Any]]:
                 "investmentMaxEok": clean_text(row.get("최대 실투자금(억)")) or "",
                 "premiumMin": clean_text(row.get("최소 프리미엄")) or "",
                 "premiumMax": clean_text(row.get("최대 프리미엄")) or "",
+                "stage": clean_text(row.get("현재 단계")) or "",
             }
     return out
 
@@ -466,6 +467,7 @@ def build_sheet_rows(
                     "descriptionSnippet": str(item.get("descriptionSnippet") or ""),
                     "설명전문": str(item.get("descriptionFull") or ""),
                     "insidePolygon": pip_cell,
+                    "현재 단계": (baseline or {}).get("stage", ""),
                     "기존_매매가": (baseline or {}).get("saleText", ""),
                     "기존_최소실투자금(억)": (baseline or {}).get("investmentMinEok", ""),
                     "기존_최대실투자금(억)": (baseline or {}).get("investmentMaxEok", ""),
@@ -499,6 +501,7 @@ ZONE_PROPOSAL_COLUMNS = [
     "행정구",
     "행정동",
     "구역명",
+    "현재 단계",
     "zoneNaturalKey",
     "표본건수",
     "예상초투_min(억)",
@@ -576,7 +579,16 @@ def build_zone_proposals(rows: list[dict[str, str]]) -> list[dict[str, str]]:
     for key in order:
         items = buckets[key]
         head = items[0]
-        chotus = [v for v in (_parse_eok_cell(r.get("예상_초투(억)")) for r in items) if v is not None]
+        chotus = [
+            v
+            for v in (
+                _parse_eok_cell(r.get("설명_초투(억)"))
+                or _parse_eok_cell(r.get("힌트_초투(억)"))
+                or _parse_eok_cell(r.get("예상_초투(억)"))
+                for r in items
+            )
+            if v is not None
+        ]
         asks = [v for v in (_parse_eok_cell(r.get("호가매매가(억)")) for r in items) if v is not None]
         premiums = [
             v
@@ -600,6 +612,7 @@ def build_zone_proposals(rows: list[dict[str, str]]) -> list[dict[str, str]]:
                 "행정구": head.get("행정구") or "",
                 "행정동": head.get("행정동") or "",
                 "구역명": head.get("구역명") or "",
+                "현재 단계": head.get("현재 단계") or "",
                 "zoneNaturalKey": key,
                 "표본건수": str(len(items)),
                 "예상초투_min(억)": fmt_eok_hint(chotu_lo) if chotu_lo is not None else "",

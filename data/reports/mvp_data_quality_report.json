@@ -1,9 +1,9 @@
 {
-  "status": "review",
+  "status": "fail",
   "sources": {
     "golden": {
-      "file": "docs/golden_samples260519.csv.csv",
-      "sourceDate": "2026-05-19"
+      "file": "docs/golden_samples260823.csv.csv",
+      "sourceDate": "2026-08-23"
     },
     "naver": {
       "files": [
@@ -19,20 +19,20 @@
     "seedSql": "data/seed/seed_mvp_data.sql"
   },
   "summary": {
-    "goldenRows": 84,
-    "zones": 84,
-    "eligibleForReverseFilter": 81,
-    "withoutCurrentListing": 3,
-    "referenceHints": 97,
+    "goldenRows": 110,
+    "zones": 110,
+    "eligibleForReverseFilter": 103,
+    "withoutCurrentListing": 7,
+    "referenceHints": 110,
     "naverListings": 529,
     "naverReferenceApartments": 72,
     "seedCounts": {
       "zones": 84,
-      "zoneInvestmentSnapshots": 84,
-      "referenceApartments": 86,
-      "zoneReferenceApartments": 97,
+      "zoneInvestmentSnapshots": 83,
+      "referenceApartments": 85,
+      "zoneReferenceApartments": 83,
       "ltvPolicies": 4,
-      "futureValueReferenceReasons": 97,
+      "futureValueReferenceReasons": 83,
       "legacyComparisonReasons": 0,
       "commitStatements": 1
     }
@@ -42,22 +42,42 @@
       "code": "missing_investment_min",
       "severity": "info",
       "message": "실투자금이 비어 있어 Reverse Filter 대상에서는 제외되지만, 현재 매물 없음 상태로 관리합니다.",
-      "count": 3,
+      "count": 7,
       "items": [
         {
-          "zoneNaturalKey": "성동구|행당동|행당 8구역",
-          "sourceFile": "golden_samples260519.csv.csv",
-          "sourceDate": "2026-05-19"
+          "zoneNaturalKey": "동대문구|제기동|제기 4구역",
+          "sourceFile": "golden_samples260823.csv.csv",
+          "sourceDate": "2026-08-23"
+        },
+        {
+          "zoneNaturalKey": "동대문구|청량리동|청량리 6구역",
+          "sourceFile": "golden_samples260823.csv.csv",
+          "sourceDate": "2026-08-23"
+        },
+        {
+          "zoneNaturalKey": "성북구|하월곡동|신월곡 1구역",
+          "sourceFile": "golden_samples260823.csv.csv",
+          "sourceDate": "2026-08-23"
+        },
+        {
+          "zoneNaturalKey": "동작구|노량진동|노량진 14구역",
+          "sourceFile": "golden_samples260823.csv.csv",
+          "sourceDate": "2026-08-23"
         },
         {
           "zoneNaturalKey": "동작구|사당동|사당 19구역",
-          "sourceFile": "golden_samples260519.csv.csv",
-          "sourceDate": "2026-05-19"
+          "sourceFile": "golden_samples260823.csv.csv",
+          "sourceDate": "2026-08-23"
         },
         {
           "zoneNaturalKey": "동작구|상도동|상도 24구역",
-          "sourceFile": "golden_samples260519.csv.csv",
-          "sourceDate": "2026-05-19"
+          "sourceFile": "golden_samples260823.csv.csv",
+          "sourceDate": "2026-08-23"
+        },
+        {
+          "zoneNaturalKey": "성동구|행당동|행당 8구역",
+          "sourceFile": "golden_samples260823.csv.csv",
+          "sourceDate": "2026-08-23"
         }
       ]
     },
@@ -86,8 +106,232 @@
       "code": "price_spread_over_20_percent",
       "severity": "warning",
       "message": "단일 source의 min/max 가격 범위가 20% 이상 벌어진 항목입니다. 시계열 변동률은 sourceDate가 추가된 뒤 별도 산정합니다.",
-      "count": 33,
+      "count": 58,
       "items": [
+        {
+          "type": "zone_investment_range",
+          "naturalKey": "강북구|미아동|미아 2구역",
+          "minKrw": 620000000,
+          "maxKrw": 1050000000,
+          "spreadRatio": 0.6935
+        },
+        {
+          "type": "zone_investment_range",
+          "naturalKey": "강북구|미아동|미아 4구역",
+          "minKrw": 1120000000,
+          "maxKrw": 1600000000,
+          "spreadRatio": 0.4286
+        },
+        {
+          "type": "zone_investment_range",
+          "naturalKey": "강북구|미아동|미아 9-2구역(재건축)",
+          "minKrw": 540000000,
+          "maxKrw": 1000000000,
+          "spreadRatio": 0.8519
+        },
+        {
+          "type": "zone_investment_range",
+          "naturalKey": "구리시|수택동|수택 2구역",
+          "minKrw": 240000000,
+          "maxKrw": 290000000,
+          "spreadRatio": 0.2083
+        },
+        {
+          "type": "zone_investment_range",
+          "naturalKey": "금천구|독산동|독산 1구역",
+          "minKrw": 690000000,
+          "maxKrw": 1180000000,
+          "spreadRatio": 0.7101
+        },
+        {
+          "type": "zone_investment_range",
+          "naturalKey": "금천구|독산동|독산 2구역",
+          "minKrw": 480000000,
+          "maxKrw": 880000000,
+          "spreadRatio": 0.8333
+        },
+        {
+          "type": "zone_investment_range",
+          "naturalKey": "금천구|독산동|독산시흥구역",
+          "minKrw": 335000000,
+          "maxKrw": 930000000,
+          "spreadRatio": 1.7761
+        },
+        {
+          "type": "zone_investment_range",
+          "naturalKey": "동대문구|용두동|용두 7구역",
+          "minKrw": 315000000,
+          "maxKrw": 380000000,
+          "spreadRatio": 0.2063
+        },
+        {
+          "type": "zone_investment_range",
+          "naturalKey": "동대문구|전농동|전농 8구역",
+          "minKrw": 950000000,
+          "maxKrw": 1255000000,
+          "spreadRatio": 0.3211
+        },
+        {
+          "type": "zone_investment_range",
+          "naturalKey": "동작구|노량진동|노량진 1구역",
+          "minKrw": 1580000000,
+          "maxKrw": 2700000000,
+          "spreadRatio": 0.7089
+        },
+        {
+          "type": "zone_investment_range",
+          "naturalKey": "동작구|노량진동|노량진 3구역",
+          "minKrw": 2000000000,
+          "maxKrw": 3300000000,
+          "spreadRatio": 0.65
+        },
+        {
+          "type": "zone_investment_range",
+          "naturalKey": "동작구|대방동|노량진 7구역",
+          "minKrw": 2100000000,
+          "maxKrw": 3100000000,
+          "spreadRatio": 0.4762
+        },
+        {
+          "type": "zone_investment_range",
+          "naturalKey": "동작구|사당동|사당 12구역",
+          "minKrw": 155000000,
+          "maxKrw": 410000000,
+          "spreadRatio": 1.6452
+        },
+        {
+          "type": "zone_investment_range",
+          "naturalKey": "동작구|사당동|사당 17구역",
+          "minKrw": 1000000000,
+          "maxKrw": 1350000000,
+          "spreadRatio": 0.35
+        },
+        {
+          "type": "zone_investment_range",
+          "naturalKey": "동작구|사당동|사당 5구역(재건축)",
+          "minKrw": 750000000,
+          "maxKrw": 1200000000,
+          "spreadRatio": 0.6
+        },
+        {
+          "type": "zone_investment_range",
+          "naturalKey": "동작구|상도동|상도 14구역",
+          "minKrw": 680000000,
+          "maxKrw": 860000000,
+          "spreadRatio": 0.2647
+        },
+        {
+          "type": "zone_investment_range",
+          "naturalKey": "동작구|상도동|상도 15구역",
+          "minKrw": 800000000,
+          "maxKrw": 960000000,
+          "spreadRatio": 0.2
+        },
+        {
+          "type": "zone_investment_range",
+          "naturalKey": "동작구|상도동|상도 21구역(모아타운)",
+          "minKrw": 180000000,
+          "maxKrw": 390000000,
+          "spreadRatio": 1.1667
+        },
+        {
+          "type": "zone_sale_price_range",
+          "naturalKey": "동작구|흑석동|흑석 10구역",
+          "minKrw": 950000000,
+          "maxKrw": 1350000000,
+          "spreadRatio": 0.4211
+        },
+        {
+          "type": "zone_investment_range",
+          "naturalKey": "마포구|공덕동|공덕 7구역",
+          "minKrw": 948000000,
+          "maxKrw": 1150000000,
+          "spreadRatio": 0.2131
+        },
+        {
+          "type": "zone_investment_range",
+          "naturalKey": "마포구|염리동|염리 4구역",
+          "minKrw": 1065000000,
+          "maxKrw": 2350000000,
+          "spreadRatio": 1.2066
+        },
+        {
+          "type": "zone_investment_range",
+          "naturalKey": "마포구|염리동|염리 5구역",
+          "minKrw": 780000000,
+          "maxKrw": 2485000000,
+          "spreadRatio": 2.1859
+        },
+        {
+          "type": "zone_investment_range",
+          "naturalKey": "서대문구|북아현동|북아현 3구역",
+          "minKrw": 1050000000,
+          "maxKrw": 1361000000,
+          "spreadRatio": 0.2962
+        },
+        {
+          "type": "zone_investment_range",
+          "naturalKey": "서초구|방배동|방배 13구역",
+          "minKrw": 1170000000,
+          "maxKrw": 2300000000,
+          "spreadRatio": 0.9658
+        },
+        {
+          "type": "zone_investment_range",
+          "naturalKey": "서초구|방배동|방배 15구역(재건축)",
+          "minKrw": 2500000000,
+          "maxKrw": 3400000000,
+          "spreadRatio": 0.36
+        },
+        {
+          "type": "zone_investment_range",
+          "naturalKey": "성남시 수정구|신흥동|신흥 3구역",
+          "minKrw": 560000000,
+          "maxKrw": 730000000,
+          "spreadRatio": 0.3036
+        },
+        {
+          "type": "zone_investment_range",
+          "naturalKey": "성동구|금호동3가|금호 21구역",
+          "minKrw": 1180000000,
+          "maxKrw": 1640000000,
+          "spreadRatio": 0.3898
+        },
+        {
+          "type": "zone_investment_range",
+          "naturalKey": "성북구|장위동|장위 13-1구역",
+          "minKrw": 160000000,
+          "maxKrw": 200000000,
+          "spreadRatio": 0.25
+        },
+        {
+          "type": "zone_investment_range",
+          "naturalKey": "영등포구|신길동|신길 16-2구역",
+          "minKrw": 370000000,
+          "maxKrw": 470000000,
+          "spreadRatio": 0.2703
+        },
+        {
+          "type": "zone_investment_range",
+          "naturalKey": "영등포구|신길동|신길 2구역",
+          "minKrw": 850000000,
+          "maxKrw": 1387000000,
+          "spreadRatio": 0.6318
+        },
+        {
+          "type": "zone_investment_range",
+          "naturalKey": "용산구|청파동|서계통합",
+          "minKrw": 600000000,
+          "maxKrw": 980000000,
+          "spreadRatio": 0.6333
+        },
+        {
+          "type": "zone_investment_range",
+          "naturalKey": "용산구|청파동|청파 1구역",
+          "minKrw": 750000000,
+          "maxKrw": 2000000000,
+          "spreadRatio": 1.6667
+        },
         {
           "type": "zone_sale_price_range",
           "naturalKey": "용산구|청파동|청파 2구역",
@@ -98,9 +342,9 @@
         {
           "type": "zone_investment_range",
           "naturalKey": "용산구|청파동|청파 2구역",
-          "minKrw": 550000000,
-          "maxKrw": 790000000,
-          "spreadRatio": 0.4364
+          "minKrw": 380000000,
+          "maxKrw": 810000000,
+          "spreadRatio": 1.1316
         },
         {
           "type": "zone_investment_range",
@@ -118,80 +362,24 @@
         },
         {
           "type": "zone_investment_range",
-          "naturalKey": "용산구|청파동|청파 3구역",
-          "minKrw": 300000000,
-          "maxKrw": 480000000,
-          "spreadRatio": 0.6
-        },
-        {
-          "type": "zone_sale_price_range",
-          "naturalKey": "용산구|후암동|남산 2구역",
-          "minKrw": 550000000,
-          "maxKrw": 700000000,
-          "spreadRatio": 0.2727
+          "naturalKey": "용산구|후암동|후암1구역(재건축)",
+          "minKrw": 1450000000,
+          "maxKrw": 7500000000,
+          "spreadRatio": 4.1724
         },
         {
           "type": "zone_investment_range",
-          "naturalKey": "용산구|후암동|남산 2구역",
-          "minKrw": 450000000,
-          "maxKrw": 560000000,
-          "spreadRatio": 0.2444
+          "naturalKey": "중구|신당동|신당 10구역",
+          "minKrw": 1200000000,
+          "maxKrw": 1900000000,
+          "spreadRatio": 0.5833
         },
         {
           "type": "zone_investment_range",
-          "naturalKey": "성동구|용답동|용답 2구역",
-          "minKrw": 410000000,
-          "maxKrw": 550000000,
-          "spreadRatio": 0.3415
-        },
-        {
-          "type": "zone_investment_range",
-          "naturalKey": "성동구|사근동|사근동 190-2",
-          "minKrw": 220000000,
-          "maxKrw": 370000000,
-          "spreadRatio": 0.6818
-        },
-        {
-          "type": "zone_investment_range",
-          "naturalKey": "성동구|금호동|금호 22구역",
-          "minKrw": 250000000,
-          "maxKrw": 350000000,
-          "spreadRatio": 0.4
-        },
-        {
-          "type": "zone_investment_range",
-          "naturalKey": "광진구|자양동|자양2동 681(모아타운)",
-          "minKrw": 390000000,
-          "maxKrw": 740000000,
-          "spreadRatio": 0.8974
-        },
-        {
-          "type": "zone_investment_range",
-          "naturalKey": "광진구|자양동|자양2동 649(B)(모아타운)",
-          "minKrw": 580000000,
-          "maxKrw": 700000000,
-          "spreadRatio": 0.2069
-        },
-        {
-          "type": "zone_investment_range",
-          "naturalKey": "광진구|구의동|구의동 46",
-          "minKrw": 330000000,
-          "maxKrw": 430000000,
-          "spreadRatio": 0.303
-        },
-        {
-          "type": "zone_investment_range",
-          "naturalKey": "광진구|자양동|자양2동 663(C)(모아타운)",
-          "minKrw": 520000000,
-          "maxKrw": 680000000,
-          "spreadRatio": 0.3077
-        },
-        {
-          "type": "zone_investment_range",
-          "naturalKey": "광진구|중곡동|중곡동 232-1(A4)",
+          "naturalKey": "중랑구|중화동|중화 6구역",
           "minKrw": 200000000,
-          "maxKrw": 250000000,
-          "spreadRatio": 0.25
+          "maxKrw": 970000000,
+          "spreadRatio": 3.85
         },
         {
           "type": "zone_sale_price_range",
@@ -216,6 +404,27 @@
         },
         {
           "type": "zone_investment_range",
+          "naturalKey": "광진구|구의동|구의동 46",
+          "minKrw": 330000000,
+          "maxKrw": 430000000,
+          "spreadRatio": 0.303
+        },
+        {
+          "type": "zone_investment_range",
+          "naturalKey": "광진구|자양동|자양2동 663(C)(모아타운)",
+          "minKrw": 520000000,
+          "maxKrw": 680000000,
+          "spreadRatio": 0.3077
+        },
+        {
+          "type": "zone_investment_range",
+          "naturalKey": "광진구|자양동|자양2동 681(모아타운)",
+          "minKrw": 390000000,
+          "maxKrw": 740000000,
+          "spreadRatio": 0.8974
+        },
+        {
+          "type": "zone_investment_range",
           "naturalKey": "광진구|자양동|자양동 629(모아타운)",
           "minKrw": 340000000,
           "maxKrw": 415000000,
@@ -223,24 +432,17 @@
         },
         {
           "type": "zone_investment_range",
-          "naturalKey": "동작구|상도동|상도 16구역",
-          "minKrw": 230000000,
-          "maxKrw": 400000000,
-          "spreadRatio": 0.7391
-        },
-        {
-          "type": "zone_sale_price_range",
-          "naturalKey": "동작구|흑석동|흑석 10구역",
-          "minKrw": 950000000,
-          "maxKrw": 1350000000,
-          "spreadRatio": 0.4211
+          "naturalKey": "광진구|중곡동|중곡동 232-1(A4)",
+          "minKrw": 200000000,
+          "maxKrw": 250000000,
+          "spreadRatio": 0.25
         },
         {
           "type": "zone_investment_range",
-          "naturalKey": "동작구|사당동|사당 21구역",
-          "minKrw": 370000000,
-          "maxKrw": 650000000,
-          "spreadRatio": 0.7568
+          "naturalKey": "동대문구|전농동|전농 10구역",
+          "minKrw": 230000000,
+          "maxKrw": 360000000,
+          "spreadRatio": 0.5652
         },
         {
           "type": "zone_sale_price_range",
@@ -251,6 +453,13 @@
         },
         {
           "type": "zone_investment_range",
+          "naturalKey": "동작구|사당동|사당 21구역",
+          "minKrw": 370000000,
+          "maxKrw": 650000000,
+          "spreadRatio": 0.7568
+        },
+        {
+          "type": "zone_investment_range",
           "naturalKey": "동작구|상도동|상도 25구역",
           "minKrw": 320000000,
           "maxKrw": 415000000,
@@ -258,66 +467,52 @@
         },
         {
           "type": "zone_investment_range",
-          "naturalKey": "영등포구|신길동|신길 16-2구역",
-          "minKrw": 370000000,
-          "maxKrw": 470000000,
-          "spreadRatio": 0.2703
+          "naturalKey": "성동구|금호동|금호 22구역",
+          "minKrw": 250000000,
+          "maxKrw": 350000000,
+          "spreadRatio": 0.4
         },
         {
           "type": "zone_investment_range",
-          "naturalKey": "동대문구|전농동|전농 10구역",
-          "minKrw": 230000000,
-          "maxKrw": 360000000,
-          "spreadRatio": 0.5652
+          "naturalKey": "성동구|사근동|사근동 190-2",
+          "minKrw": 220000000,
+          "maxKrw": 370000000,
+          "spreadRatio": 0.6818
         },
         {
           "type": "zone_investment_range",
-          "naturalKey": "동대문구|용두동|용두 7구역",
-          "minKrw": 315000000,
-          "maxKrw": 380000000,
-          "spreadRatio": 0.2063
-        },
-        {
-          "type": "zone_investment_range",
-          "naturalKey": "성북구|장위동|장위 14구역",
-          "minKrw": 380000000,
-          "maxKrw": 500000000,
-          "spreadRatio": 0.3158
+          "naturalKey": "성동구|용답동|용답 2구역",
+          "minKrw": 410000000,
+          "maxKrw": 550000000,
+          "spreadRatio": 0.3415
         },
         {
           "type": "zone_investment_range",
           "naturalKey": "성북구|장위동|장위 15구역",
+          "minKrw": 525000000,
+          "maxKrw": 710000000,
+          "spreadRatio": 0.3524
+        },
+        {
+          "type": "zone_investment_range",
+          "naturalKey": "용산구|청파동|청파 3구역",
+          "minKrw": 300000000,
+          "maxKrw": 480000000,
+          "spreadRatio": 0.6
+        },
+        {
+          "type": "zone_sale_price_range",
+          "naturalKey": "용산구|후암동|남산 2구역",
+          "minKrw": 550000000,
+          "maxKrw": 700000000,
+          "spreadRatio": 0.2727
+        },
+        {
+          "type": "zone_investment_range",
+          "naturalKey": "용산구|후암동|남산 2구역",
           "minKrw": 450000000,
-          "maxKrw": 600000000,
-          "spreadRatio": 0.3333
-        },
-        {
-          "type": "zone_investment_range",
-          "naturalKey": "성북구|장위동|장위 13-1구역",
-          "minKrw": 160000000,
-          "maxKrw": 200000000,
-          "spreadRatio": 0.25
-        },
-        {
-          "type": "zone_investment_range",
-          "naturalKey": "중랑구|중화동|중화 6구역",
-          "minKrw": 150000000,
-          "maxKrw": 200000000,
-          "spreadRatio": 0.3333
-        },
-        {
-          "type": "zone_investment_range",
-          "naturalKey": "성남시 수정구|신흥동|신흥 1구역",
-          "minKrw": 560000000,
-          "maxKrw": 700000000,
-          "spreadRatio": 0.25
-        },
-        {
-          "type": "zone_investment_range",
-          "naturalKey": "성남시 수정구|신흥동|신흥 3구역",
-          "minKrw": 510000000,
-          "maxKrw": 700000000,
-          "spreadRatio": 0.3725
+          "maxKrw": 560000000,
+          "spreadRatio": 0.2444
         }
       ]
     },
@@ -325,22 +520,50 @@
       "code": "reference_link_count_mismatch",
       "severity": "error",
       "message": "Golden future-value reference hint 수와 seed SQL의 zone-reference link 수가 다릅니다.",
-      "count": 0,
-      "items": []
+      "count": 1,
+      "items": [
+        {
+          "referenceHintCount": 110,
+          "seedLinkCount": 83
+        }
+      ]
     },
     {
       "code": "seed_count_mismatch",
       "severity": "error",
       "message": "정규화 payload 기준 기대 건수와 seed SQL INSERT 건수가 다릅니다.",
-      "count": 0,
-      "items": []
+      "count": 3,
+      "items": [
+        {
+          "name": "zones",
+          "expected": 110,
+          "actual": 84
+        },
+        {
+          "name": "zoneInvestmentSnapshots",
+          "expected": 110,
+          "actual": 83
+        },
+        {
+          "name": "zoneReferenceApartments",
+          "expected": 110,
+          "actual": 83
+        }
+      ]
     },
     {
       "code": "golden_normalization_warnings",
       "severity": "warning",
       "message": "Golden Sample normalization warning count.",
-      "count": 0,
-      "items": []
+      "count": 1,
+      "items": [
+        {
+          "row": 70,
+          "code": "missing_zone_key",
+          "message": "district, dong, or zone_name is missing",
+          "zoneNaturalKey": "||—— SUB (구역지정 전 · Watch) ——"
+        }
+      ]
     },
     {
       "code": "naver_normalization_warnings",

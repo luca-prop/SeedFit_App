@@ -1,4 +1,4 @@
-# MVP-031 최신 파일 세트 RULE 및 LTV 기축 대조군 데이터 파이프라인 260627
+﻿# MVP-031 최신 파일 세트 RULE 및 LTV 기축 대조군 데이터 파이프라인 260627
 
 ## 목적
 
@@ -16,9 +16,10 @@ MVP-031은 기축 레퍼런스와 대조군 데이터가 앱/문서/룰 사이�
 
 | 항목 | 기준 |
 |---|---|
-| 기준 원천 | `docs/Naver_Land_0503_1129.xlsx`, `docs/Naver_Land_0503_1132.xlsx` |
+| 기준 원천 | `docs/Naver_Land_0720_2202.xlsx`, `docs/Naver_Land_0720_2204.xlsx` |
 | 파일 단위 | 두 XLSX를 하나의 세트로 취급한다. 일부 파일만 교체하지 않는다. |
 | 갱신 방식 | 새 파일 세트를 추가할 때 파일명, 기준일, 수집 시각, 큐레이터를 문서에 기록한다. |
+| 최신 세트 기록 | 파일명 `Naver_Land_0720_2202.xlsx` / `Naver_Land_0720_2204.xlsx`, 기준일 2026-07-20, 수집 시각 22:02 / 22:04 (KST), 큐레이터 `/seedfit-reference-apt59-crawling` skill |
 | 원본 보존 | 원본 raw history 저장은 Phase 2 또는 별도 이슈에서 명시적으로 추가할 때만 도입한다. |
 | 앱 반영 | XLSX 산출값은 바로 앱 DB에 쓰지 않고, 큐레이션 검토 후 DATA_CURATION_SPEC와 seed/upsert 계약에 반영한다. |
 

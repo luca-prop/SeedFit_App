@@ -37,9 +37,11 @@
 **컷오프 (사업진행단계 기준, `Phase2_scatter_chart검토.md` / 스캐터 X축과 동일):**
 
 *   **SUB (추진준비 축):** 연번 부여, 신속통합기획 대상지 선정·확정·완료, (모아)대상지 선정·관리계획수립·통합심의통과, 추진준비
-*   **CORE (구역지정 축부터):** 정비구역지정 / 정비구역 지정, (모아)관리계획고시, **추진위 승인·설립**(구역지정 이후이므로 CORE), 조합설립인가, 사업시행자 지정, 시공사 선정, 사업시행인가, 관리처분인가, 이주·철거·착공
+*   **CORE (구역지정 축부터):** 정비구역지정 / 정비구역 지정, (모아)관리계획고시, **추진위 승인·설립**(구역지정 이후이므로 CORE), 조합설립인가, 사업시행자 지정, 시공사 선정, **건축심의**(시공사 선정 이후·사업시행인가 이전), 사업시행인가, 관리처분인가, 이주·철거·착공
 
 `coverage`는 시트에 직접 기입하거나, 비어 있으면 `현재 단계`에서 파생합니다 (`normalize_golden_samples.py` / `frontend/lib/zoneCoverage.ts`). SUB 데이터는 삭제하지 않습니다.
+
+**Golden Sheet 본표 레이아웃:** CORE 구역을 위에 모으고, 구분 행 아래 SUB를 둡니다. 헤더 AutoFilter로 `coverage`만 골라 볼 수 있습니다. 재정렬: `python scripts/data/reorder_golden_by_coverage.py`.
 
 ---
 
@@ -58,18 +60,30 @@
 *   **속성**: 뚜껑, 다세대, 빌라 등의 매매 호가, 예상 프리미엄(P), 권리가액
 *   **변동 주기**: 일~주 단위 (매우 빠름)
 *   **관리 방법 (플라이휠 구축)**:
-    1.  **[초기 - 운영팀 큐레이션 · 반자동 geo]**: Phase 1 Golden Samples는 주 1회 네이버 매물 검수로 갱신한다. 아파트 `complexNo`가 없는 재개발 매물은 구역별 **지도 URL**을 SoT로 둔다.
-        *   Golden Sheet에 `naver_map_url` / `lat` / `lon` / `z` / `cortar_no` / `geo_source` / `geo_updated_at` 열을 둔다 (`DATA_CURATION_SPEC.v.2.md` §5.1).
+    1.  **[초기 - 운영팀 큐레이션 · 반자동 geo · 승인 게이트]**: Phase 1 Golden Samples는 주 1회 네이버 매물 검수로 갱신한다. 아파트 `complexNo`가 없는 재개발 매물은 구역별 **지도 URL**을 SoT로 둔다. **고도화:** 정부 구역 폴리곤 SoT(`fetch_zone_polygons.py`) + Playwright 세션 클러스터(`--session-playwright`) + `--pip-filter`로 인접구역 혼입을 줄인다. **매우 중요:** 크롤 호가·문구를 Golden `매매가`(G)·실투자금(C)에 직접 넣지 않는다 — **`매물` 탭 staging → 초투 일일 확인 → 기존 구역 단가 대비 이상유무 → 승인=Y → 실투자금만 반영** (`DATA_CURATION_SPEC.v.2.md` §5.1.2). **운영 런북:** `docs/ZONE_LISTING_CRAWL_RUNBOOK.md` (동 전수→PIP→검수→429 예방).
+        *   Golden Sheet에 `naver_map_url` / `lat` / `lon` / `z` / `cortar_no` / `geo_source` / `geo_updated_at` 열을 둔다 (`DATA_CURATION_SPEC.v.2.md` §5.1). 폴리곤은 sidecar GeoJSON 계약(§5.1.1).
         *   절차:
             1. 네이버에서 구역 지도를 맞춘 뒤 URL 복사 → 시트 `naver_map_url`
                - 입력용 탭: Golden Sample **동일 스프레드시트**의 `지도URL` 탭 (zoneNaturalKey + naver_map_url…). 재생성·재이관: `build_geo_input_sheet.py` → `push_geo_tab_to_golden.py`
                - 시트: https://docs.google.com/spreadsheets/d/1YaZjGX53HGNQyAjLp0AIQFGq-j0IWcfPl5WFgUeUfuY/edit
             2. `python scripts/data/parse_naver_map_url.py --input docs/golden_samples….csv.csv` → lat/lon/z/cortar TSV를 시트에 붙여넣기
-            3. `python scripts/data/fetch_zone_listing_candidates.py --geo … --golden … --export-listings-sheet` → 매물 후보 리포트 + **구역별 최저가 최대 5건** `data/reports/매물_sheet_*.csv`
-            4. CSV를 Golden Spreadsheet의 **`매물` 탭**으로 가져오기 (`export_listings_sheet.py --push` 또는 시트 Import). 문구 매칭 열을 참고해 **사람이** 최소·최대 실투자금을 Golden 본표에 확정 (C열 자동 기입 금지)
-            5. `/redevelopment`로 스펙·정규화 반영
-        *   네이버 차단·실패 시: 동일 스키마의 `--manual-json` / `--manual-csv`로 점수·리포트만 실행 (`--skip-live`).
-        *   `매물` 탭 단독 재생성: `python scripts/data/export_listings_sheet.py --input data/reports/zone_listing_candidates_….json` (`--push`는 OAuth 선택).
+            2b. (권장) `python scripts/data/fetch_zone_polygons.py --golden … --geo …` → `zone_polygons_*.geojson`
+            3. `python scripts/data/fetch_zone_listing_candidates.py --geo … --polygons … --pip-filter --polygon-zones-only --session-playwright --enrich-details --max-pages 60` → 후보 JSON
+               - 매물 소스는 `new.land.naver.com/api/articles` (cortarNo=법정동 단위). **동 단위로만 조회되므로 구역 분리는 폴리곤 PIP가 전담** → 폴리곤 없는 구역은 `--polygon-zones-only`로 제외한다.
+               - 쿠키만으로는 **429**가 난다. 세션이 `new.land.naver.com/houses?ms=lat,lon,z` 지도를 실제로 연 뒤 SPA가 발급하는 `Authorization: Bearer …`를 스니핑해 재사용해야 200이 나온다 (`PlaywrightListingSession`). `naver_P1.py`(아파트 `complexNo`)와 같은 계열 기법.
+               - **`--max-pages`를 넉넉히(60+)** 준다. 동 전체를 소진하지 못하면 `page_cap_reached` 경고와 함께 구역 매물이 통째로 누락된다(동당 20건/페이지). 동일 cortarNo는 1회만 수집해 재사용한다.
+               - `--enrich-details`: PIP 통과 상위 N건에 대해 `/api/articles/{articleNo}`를 호출해 **전체 설명·대지지분·주소·준공·용도지역**을 채운다. 목록 API의 설명은 한 줄로 잘려 있어 초투·갭·P 문구가 거의 잡히지 않는다. 이 상세 호출은 `page.evaluate`의 same-origin `fetch`로만 통과한다(APIRequestContext는 429).
+               - 네이버가 좌표를 숨긴 매물은 PIP가 `구역 안`을 확정할 수 없어 `좌표 미공개`로 표시된다. 검수 보드는 **구역 확인된 매물을 먼저** 보여준다.
+            4. `python scripts/data/export_listings_sheet.py --input … --golden-csv …` 또는 `render_listing_review_html.py` → **가독성 검수 보드/탭**에서 초투·P·면적(㎡+평 병기) 확인 후 드롭다운 `Golden반영`/`승인`
+            5. `apply_approved_listing_investments.py` DRY-RUN → `--write` (**실투자금만**, 매매가 G 자동 반영 금지)
+               - **한 구역에서 복수 승인 가능**이며 오히려 권장된다. 승인된 `설명_초투(억)`의 최솟값→`최소 실투자금`, 최댓값→`최대 실투자금`으로 들어가므로, 범위를 잡으려면 저가·고가 2건 이상을 승인한다.
+            6. Golden 본표 확정 후 `/seedfit-golden-sample-update`
+        *   **차단(429) 예방 — 크롤러와 검수 브라우저가 같은 IP를 공유한다는 점이 핵심이다.**
+            *   크롤러: 대기 시간에 지터를 주고(고정 간격 자체가 봇 신호), 429가 나면 중단하지 않고 20/40/60초 백오프 + 지도 재시드로 3회까지 복구한다. 동일 cortarNo는 1회만 수집한다.
+            *   검수 보드: `매물 찍어서 열기`는 **탭 하나를 재사용**하고 클릭 간격을 최소 2.5초로 자동 조절한다. 10분 내 25회를 넘기면 휴식 배너가 뜬다. 주소만 필요하면 `링크 복사`(네이버 요청 0회)를 쓴다.
+            *   보드에 설명 전문·주소·대지지분·면적·준공이 이미 있으므로 **대부분은 매물을 열지 않고 검수 가능**하다. 여는 횟수를 줄이는 것이 가장 확실한 예방책이다.
+        *   네이버 차단·실패 시: `429`(요청 과다 차단)가 계속 뜨면 수 분 쿨다운 후 재시도하고, 그래도 막히면 동일 스키마의 `--manual-json` / `--manual-csv`로 점수·리포트만 실행 (`--skip-live`).
+        *   `매물` 탭 단독 재생성: `python scripts/data/export_listings_sheet.py --input data/reports/zone_listing_candidates_….json --golden-csv …` (`--push`는 OAuth 선택).
     2.  **[중기 - B2B Verified 매물 연동]**: 가장 강력하고 효율적인 방법. 지역별 리드(Lead) 중개사를 B2B 파트너로 영입하여, 중개사가 직접 최신 매물 정보와 프리미엄을 입력하게 함.
         *   *전략*: 데이터 현행화의 비용과 노력을 B2B 중개사에게 전가하는 대신, 중개사에게는 진성 리드 연결과 플랫폼 내 상단 노출(Verified 뱃지) 혜택을 제공함.
     3.  **[사용자 참여형 (Crowdsourcing)]**: 각 구역 상세 페이지에 **"이 구역 정보가 예전 것인가요? 시세 제보하기"** 버튼 추가. 유저들의 집단 지성으로 변동 내역을 빠르게 감지.

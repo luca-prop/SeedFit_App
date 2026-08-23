@@ -101,6 +101,13 @@ def parse_eok_amount(text: str) -> float | None:
         # 41,000 / 47567 / 49000 → 만원. 3.8 already caught as 억.
         if man >= 100:
             return round(man / 10_000, 4)
+
+    # 현장 약식: "초투 21.4", "p18.9" — 억 생략. 키워드 뒤에만 온다.
+    m = re.match(r"(?P<eok>\d+(?:\.\d+)?)\b(?!\s*만)", s)
+    if m:
+        n = float(m.group("eok"))
+        if 0.1 <= n < 100:
+            return round(n, 4)
     return None
 
 

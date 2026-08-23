@@ -47,3 +47,9 @@ next-env.d.ts
 # Prisma SQLite DB
 prisma/*.db
 prisma/*.db-journal
+
+# Preview DB bootstrap (local only)
+.env.preview-db
+.create-db.json
+.create-db.err
+.create-db.meta.json

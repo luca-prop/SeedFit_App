@@ -778,9 +778,9 @@ def render_html(
     function listingChotu(el) {{
       const row = listingRow(el);
       return parseEok(fieldVal(el, '설명_초투(억)'))
+        ?? parseEok(row['힌트_초투(억)'])
         ?? parseEok(el.getAttribute('data-est-chotu'))
-        ?? parseEok(row['예상_초투(억)'])
-        ?? parseEok(row['힌트_초투(억)']);
+        ?? parseEok(row['예상_초투(억)']);
     }}
     function listingAsk(el) {{
       const row = listingRow(el);
@@ -1171,16 +1171,24 @@ def main() -> None:
     out.parent.mkdir(parents=True, exist_ok=True)
     prop_csv = out.with_name(f"구역_통합본_{today}.csv")
     write_zone_proposals_csv(proposals, prop_csv)
+    from render_zone_rollup_table import copy_rollup_artifacts
     from render_zone_rollup_table import render_html as render_rollup_html
     from render_zone_rollup_table import write_xlsx as write_rollup_xlsx
 
     rollup_html = out.with_name(f"zone_rollup_{today}.html")
+    rollup_xlsx = out.with_name(f"zone_rollup_{today}.xlsx")
     rollup_html.write_text(
-        render_rollup_html(proposals, stamp=today, source=prop_csv.name),
+        render_rollup_html(
+            proposals,
+            stamp=today,
+            source=prop_csv.name,
+            golden_csv=args.golden_csv,
+        ),
         encoding="utf-8",
     )
     (out.with_name(f"구역_통합본_{today}.html")).write_text(rollup_html.read_text(encoding="utf-8"), encoding="utf-8")
-    write_rollup_xlsx(proposals, out.with_name(f"zone_rollup_{today}.xlsx"))
+    write_rollup_xlsx(proposals, rollup_xlsx, golden_csv=args.golden_csv)
+    copy_rollup_artifacts(today, html_path=rollup_html, xlsx_path=rollup_xlsx)
     source_mode = str(report.get("sourceMode") or "")
     iso = str(report.get("generatedAt") or "")[:10]
     if len(iso) != 10:

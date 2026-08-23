@@ -21,8 +21,12 @@ function loadEnvFile(path) {
 }
 
 async function main() {
-  const preview = loadEnvFile(".env.preview-db");
-  process.env.DATABASE_URL = preview.DATABASE_URL;
+  const envFile = process.argv.includes("--supabase-prod")
+    ? ".env.supabase-prod"
+    : ".env.preview-db";
+  const preview = loadEnvFile(envFile);
+  // Prefer direct for verification queries
+  process.env.DATABASE_URL = preview.DIRECT_URL || preview.DATABASE_URL;
   process.env.DIRECT_URL = preview.DIRECT_URL || preview.DATABASE_URL;
 
   const require = createRequire(import.meta.url);
