@@ -24,6 +24,7 @@ ALLOWED_STAGES = {
     "사업시행자 지정",
     "시공사선정",
     "시공사 선정",
+    "건축심의",
     "조합설립인가",
     "추진위 승인",
     "추진위설립",
@@ -38,6 +39,7 @@ ALLOWED_STAGES = {
     "(모아)대상지 선정",
     "연번 부여",
     "추진준비",
+    "대상지철회",
 }
 
 
@@ -129,6 +131,7 @@ def derive_coverage(stage: str | None, override: str | None = None) -> str:
         or "관리계획수립" in normalized
         or "통합심의" in normalized
         or "추진준비" in normalized
+        or "대상지철회" in normalized
     ):
         return "SUB"
 
@@ -286,6 +289,8 @@ def normalize(input_path: Path, output_path: Path) -> dict[str, Any]:
                 sale_min_krw, sale_max_krw = parse_eok_range(clean_text(row.get("매매가")))
                 investment_min_krw = parse_eok_to_krw(clean_text(row.get("최소 실투자금(억)")))
                 investment_max_krw = parse_eok_to_krw(clean_text(row.get("최대 실투자금(억)")))
+                premium_min_krw = parse_eok_to_krw(clean_text(row.get("최소 프리미엄")))
+                premium_max_krw = parse_eok_to_krw(clean_text(row.get("최대 프리미엄")))
                 reference_price_krw = parse_eok_to_krw(clean_text(row.get("기축 아파트 시세(억)")))
             except ValueError as exc:
                 warnings.append(WarningItem(row_index, "money_parse_error", str(exc), zone_key))
@@ -301,6 +306,8 @@ def normalize(input_path: Path, output_path: Path) -> dict[str, Any]:
                     "salePriceMaxKrw": sale_max_krw,
                     "investmentMinKrw": investment_min_krw,
                     "investmentMaxKrw": investment_max_krw,
+                    "premiumMinKrw": premium_min_krw,
+                    "premiumMaxKrw": premium_max_krw,
                     "sourceFile": input_path.name,
                     "sourceDate": source_date,
                 }
