@@ -3,13 +3,18 @@
 > **문서 목적:** SeedFit 운영에 쓰는 Cursor 스킬의 **언제/무엇/입출력/정지점**을 한곳에서 고른다.  
 > 절차 상세·명령 전문은 각 `SKILL.md`가 SoT다. 이 문서는 **라우팅·계약 요약**이다.  
 > **작성일:** 2026-08-02 · **스킬명 갱신:** 2026-08-03 (`/redevelopment`→`/seedfit-golden-sample-update`, `/reference`→`/seedfit-reference-apt59-crawling`)
+>
+> 🔀 **데이터 파이프라인 상세는 `SEEDFIT_SKILL_PIPELINE_MANUAL.md` 맨 위 현재 운영(2026-10-22)을 본다.** `/seedfit-deploy`는 golden-sample-update로 흡수되었다.
+> 역할·입출력·절차·금지·실행 시나리오·트러블슈팅은 그 문서를 본다.
+> **이 문서는 블로그 스킬(`/blog-redev`, `/blog-apt-price-update`)과 전체 라우팅 요약만 유지한다.**
 
 | 스킬 | 트리거 | 도메인 | SoT 파일 |
 |---|---|---|---|
-| `/seedfit-golden-sample-update` | Golden Sample 구역·84타입 레퍼런스 → 스펙 SoT | 앱 큐레이션 스펙 | `~/.cursor/skills/seedfit-golden-sample-update/SKILL.md` |
+| `/seedfit-golden-sample-update` | Golden Sample → 스펙 `## 2.` → Supabase → Vercel Production | 앱 반영 | `~/.cursor/skills/seedfit-golden-sample-update/SKILL.md` |
 | `/seedfit-reference-apt59-crawling` | naver_P1/P2 59타입 시세 → 스펙 §3 | 앱 큐레이션 스펙 | `~/.cursor/skills/seedfit-reference-apt59-crawling/SKILL.md` |
 | `/seedfit-district-status-update` | 재개발닷컴 → **Golden Sample 시트** (단계·coverage·진행현황·url) | Golden 시트 (스펙은 후속) | `~/.cursor/skills/seedfit-district-status-update/SKILL.md` |
-| `/seedfit-district-villas-update` | 네이버 빌라 크롤 → 검수보드 JSON → Golden+스펙 → 아카이브 → Supabase·Vercel prod | 매물·실투자금·배포 | `.cursor/skills/seedfit-district-villas-update/SKILL.md` |
+| `/seedfit-zone-add` | 신규 구역 초안 확인 → 본표·지도URL → villas `--zone-keys` | 구역 등록 | `.cursor/skills/seedfit-zone-add/SKILL.md` |
+| `/seedfit-district-villas-update` | 네이버 빌라 크롤 → 검수보드 JSON → Golden → (`/seedfit-golden-sample-update` 호출) | 매물·실투자금 | `.cursor/skills/seedfit-district-villas-update/SKILL.md` |
 | `/blog-redev` | 재개발 구역 포스팅 틀/초안 | 디카이브 블로그 | `~/.cursor/skills/blog-redev/SKILL.md` |
 | `/blog-apt-price-update` | 아파트 시세트래킹 post 1~4 | 디카이브 블로그 | `~/.cursor/skills/blog-apt-price-update/SKILL.md` |
 
