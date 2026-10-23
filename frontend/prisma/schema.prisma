@@ -111,3 +111,21 @@ model LtvPolicy {
   @@index([isActive, cashMinKrw, cashMaxKrw])
   @@map("ltv_policies")
 }
+
+/// 익명 방문자 행동 로그. userId는 로그인 도입 전까지 비어 있습니다 (익명 우선).
+model BehaviorEvent {
+  id        String   @id @default(uuid())
+  visitorId String   @map("visitor_id")
+  userId    String?  @map("user_id")
+  eventType String   @map("event_type")
+  zoneId    String?  @map("zone_id")
+  path      String?
+  referrer  String?
+  props     Json?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([eventType, createdAt])
+  @@index([visitorId, createdAt])
+  @@index([zoneId])
+  @@map("behavior_events")
+}

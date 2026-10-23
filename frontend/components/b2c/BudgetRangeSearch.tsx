@@ -6,6 +6,7 @@ import { Search } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
+import { CLIENT_EVENTS, track } from "@/lib/analytics/track";
 import {
   BUDGET_QUICK_RANGES,
   formatBudgetEokRange,
@@ -37,6 +38,12 @@ export function BudgetRangeSearch() {
     const params = new URLSearchParams({
       budgetMin: String(budgetMinKrw),
       budgetMax: String(budgetMaxKrw),
+    });
+
+    track(CLIENT_EVENTS.budgetSubmitted, {
+      budgetMinKrw,
+      budgetMaxKrw,
+      quickRange: activeQuickRangeLabel,
     });
 
     router.push(`/app/results?${params.toString()}`);

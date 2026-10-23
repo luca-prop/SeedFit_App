@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ReferenceApartmentComparisonCard } from "@/components/domain/ReferenceApartmentComparisonCard";
 import { MVP_DATA_DISCLOSURE } from "@/lib/dataDisclosure";
+import { EVENT_TYPES, recordEvent } from "@/lib/analytics/events";
 import { prisma } from "@/lib/prisma";
 
 type ZoneDetailPageProps = {
@@ -146,6 +147,13 @@ export default async function ZoneDetailLitePage({ params, searchParams }: ZoneD
   if (!zone) {
     notFound();
   }
+
+  await recordEvent({
+    eventType: EVENT_TYPES.zoneDetailOpened,
+    zoneId: zone.id,
+    path: `/app/zones/${zone.id}`,
+    props: { zoneName: zone.zoneName, district: zone.district, stage: zone.stage },
+  });
 
   const snapshot = zone.investmentSnapshots[0];
   const investmentRange = formatKrwRange(snapshot?.investmentMinKrw, snapshot?.investmentMaxKrw);

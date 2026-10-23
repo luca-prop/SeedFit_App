@@ -22,6 +22,7 @@ import { formatAxisEok, niceYTicks } from "@/lib/scatterChartFormat";
 import { assignLabelSides, preferredLabelSide } from "@/lib/scatterLabelSide";
 import { shortZoneName } from "@/lib/shortZoneName";
 import { filterZonesByCoverage } from "@/lib/zoneCoverage";
+import { CLIENT_EVENTS, track } from "@/lib/analytics/track";
 
 type SortOption = {
   value: string;
@@ -467,6 +468,10 @@ export function ResultsScatterExplorer({
     if (districtsParam) params.set("districts", districtsParam);
     if (stagesParam) params.set("stageGroups", stagesParam);
     if (nextIncludeSub) params.set("includeSub", "1");
+
+    if (nextIncludeSub !== includeSub) {
+      track(CLIENT_EVENTS.includeSubToggled, { enabled: nextIncludeSub });
+    }
 
     router.push(`/app/results?${params.toString()}`);
   }

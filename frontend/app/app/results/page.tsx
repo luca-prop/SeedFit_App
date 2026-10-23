@@ -2,6 +2,7 @@ import Link from "next/link";
 import { AlertTriangle, ArrowLeft, Database, Search } from "lucide-react";
 
 import { reverseFilterAction } from "@/app/actions/reverseFilter";
+import { EVENT_TYPES, recordEvent } from "@/lib/analytics/events";
 import { ResultsBudgetSlider } from "@/components/b2c/ResultsBudgetSlider";
 import { ResultsScatterExplorer } from "@/components/b2c/ResultsScatterExplorer";
 import { Card, CardContent } from "@/components/ui/card";
@@ -432,6 +433,20 @@ export default async function ResultsPage({ searchParams }: { searchParams?: Pro
     ? filterZones(filterZonesByCoverage(result.nearZones, includeSub), effectiveDistricts, effectiveStageGroups)
     : [];
   const visibleResultCount = filteredMatchedZones.length + filteredNearZones.length;
+
+  await recordEvent({
+    eventType: EVENT_TYPES.resultsViewed,
+    path: "/app/results",
+    props: {
+      budgetMinKrw,
+      budgetMaxKrw,
+      includeSub,
+      sort: selectedSort.value,
+      resultCount: visibleResultCount,
+      ok: result.ok,
+    },
+  });
+
   const hasActiveFilters =
     selectedDistricts.length > 0 || selectedStageGroups.length > 0 || legacyDistrict !== "all" || legacyStage !== "all";
   const nearestZones = result.ok

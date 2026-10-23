@@ -2,6 +2,7 @@ import Link from "next/link";
 import { AlertTriangle, ArrowLeft, Building2, FileText, Landmark, TrendingUp } from "lucide-react";
 
 import { comparisonDataAction } from "@/app/actions/comparisonData";
+import { EVENT_TYPES, recordEvent } from "@/lib/analytics/events";
 import { ComparisonAssetCard } from "@/components/domain/ComparisonAssetCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -132,6 +133,17 @@ export default async function ComparisonPage({ params, searchParams }: Compariso
     ltvModel: normalizeLtvModel(firstParam(resolvedSearchParams.ltvModel)),
   });
   const resultsHref = buildResultsHref(resolvedSearchParams);
+
+  await recordEvent({
+    eventType: EVENT_TYPES.reportViewed,
+    zoneId: id,
+    path: `/app/comparison/${id}`,
+    props: {
+      zoneName: firstParam(resolvedSearchParams.zoneName) ?? null,
+      ltvModel: normalizeLtvModel(firstParam(resolvedSearchParams.ltvModel)),
+      ok: result.ok,
+    },
+  });
 
   if (!result.ok) {
     return (
