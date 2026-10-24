@@ -33,6 +33,7 @@ const EVENT_ORDER: EventType[] = [
   EVENT_TYPES.zoneDetailOpened,
   EVENT_TYPES.includeSubToggled,
   EVENT_TYPES.reportViewed,
+  EVENT_TYPES.hexafitCompared,
   EVENT_TYPES.feedbackSubmitted,
 ];
 

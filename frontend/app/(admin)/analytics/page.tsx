@@ -9,6 +9,7 @@ const EVENT_LABELS: Record<string, string> = {
   zone_detail_opened: "구역 상세",
   include_sub_toggled: "SUB 토글",
   report_viewed: "비교 리포트",
+  hexafit_compared: "육각형 비교",
   feedback_submitted: "피드백 제출",
 };
 

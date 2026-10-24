@@ -176,12 +176,13 @@ function ZonePointShape(props: any) {
 /**
  * PinnedTooltip: 컨테이너 경계를 감지하여 짤리지 않게 위치 조정하는 툴팁
  */
-function PinnedTooltip({ pinnedData, containerRef, onClose, onViewDetail, onViewDistrict }: {
+function PinnedTooltip({ pinnedData, containerRef, onClose, onViewDetail, onViewDistrict, onCompareHex }: {
   pinnedData: any;
   containerRef: React.RefObject<HTMLDivElement | null>;
   onClose: () => void;
   onViewDetail: () => void;
   onViewDistrict: () => void;
+  onCompareHex: () => void;
 }) {
   const tooltipRef = useRef<HTMLDivElement>(null);
   const [adjustedPos, setAdjustedPos] = useState<{ left: number; top: number; showBelow: boolean }>({
@@ -280,6 +281,12 @@ function PinnedTooltip({ pinnedData, containerRef, onClose, onViewDetail, onView
             >
               &apos;{pinnedData.name}&apos; 자세히 보기
               <ExternalLink className="h-3.5 w-3.5" />
+            </button>
+            <button
+              onClick={onCompareHex}
+              className="w-full py-2 px-3 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-sm font-bold transition-colors flex items-center justify-center gap-1.5"
+            >
+              <span>⬡</span> 육각형으로 비교
             </button>
             <button
               onClick={onViewDistrict}
@@ -634,6 +641,13 @@ function ScatterChartContent() {
         </div>
 
         <div className="flex items-center gap-3 self-start flex-wrap">
+          <Button
+            variant="outline"
+            onClick={() => router.push("/app/hexafit")}
+            className="bg-white border-indigo-200 text-indigo-600 hover:bg-indigo-50"
+          >
+            <span className="mr-1.5">⬡</span> 육각형 비교
+          </Button>
           {hasBudget && !showAllZones && (
             <Button variant="outline" onClick={() => setShowAllZones(true)} className="bg-white">
               전체 구역 보기
@@ -911,6 +925,9 @@ function ScatterChartContent() {
             onViewDistrict={() => {
               setSelectedDistrict(pinnedData.district);
               setPinnedData(null);
+            }}
+            onCompareHex={() => {
+              router.push(`/app/hexafit?zones=${encodeURIComponent(pinnedData.name)}`);
             }}
           />
         )}

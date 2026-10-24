@@ -17,6 +17,7 @@ export const EVENT_TYPES = {
   zoneDetailOpened: "zone_detail_opened",
   includeSubToggled: "include_sub_toggled",
   reportViewed: "report_viewed",
+  hexafitCompared: "hexafit_compared",
   feedbackSubmitted: "feedback_submitted",
 } as const;
 
