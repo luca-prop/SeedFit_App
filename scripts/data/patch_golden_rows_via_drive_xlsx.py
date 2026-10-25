@@ -55,6 +55,18 @@ def apply_patches(src: Path, out: Path, patches: list[dict[str, Any]]) -> dict[s
             ws.cell(r, hm["특징/호재"], patch["특징/호재"])
         if patch.get("jaegebal_url") is not None and "jaegebal_url" in hm:
             ws.cell(r, hm["jaegebal_url"], patch["jaegebal_url"])
+        if patch.get("진행현황") is not None and "진행현황" in hm:
+            ws.cell(r, hm["진행현황"], patch["진행현황"])
+        for col in (
+            "공급세대",
+            "조합원분양세대",
+            "일반분양세대",
+            "임대세대",
+            "세대수_비고",
+            "세대수_확인일",
+        ):
+            if col in patch and col in hm:
+                ws.cell(r, hm[col], patch[col])
         for col in (
             "매매가",
             "최소 실투자금(억)",

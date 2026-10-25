@@ -26,7 +26,11 @@ from openpyxl import load_workbook
 from openpyxl.styles import PatternFill
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from normalize_golden_samples import derive_coverage  # noqa: E402
+from normalize_golden_samples import (  # noqa: E402
+    derive_coverage,
+    moa_stage_on_non_moa_zone,
+    progress_marks_stage_in_progress,
+)
 
 GOLDEN_SHEET_ID = "1YaZjGX53HGNQyAjLp0AIQFGq-j0IWcfPl5WFgUeUfuY"
 STAGE_HEADER = "현재 단계"
@@ -219,6 +223,7 @@ def apply_to_workbook(
         "unmatchedReportZones": [],
         "stagePendingApproval": [],
         "skippedMoaStageOnNonMoa": [],
+        "skippedInProgressStage": [],
         "promotedToCore": [],
     }
 
@@ -269,8 +274,14 @@ def apply_to_workbook(
             (z.get("stageDiff") == "changed")
             or (bool(z.get("forceTrusted")) and cur_stage != new_stage)
         )
-        if would_change_stage and "모아" in new_stage and "모아" not in zone_name:
+        progress_text = str(z.get("progressMerged") or ws.cell(r, progress_col).value or "")
+        if would_change_stage and moa_stage_on_non_moa_zone(zone_name, new_stage):
             stats["skippedMoaStageOnNonMoa"].append(
+                {"key": z.get("zoneNaturalKey"), "from": cur_stage, "to": new_stage}
+            )
+            would_change_stage = False
+        if would_change_stage and progress_marks_stage_in_progress(new_stage, progress_text):
+            stats["skippedInProgressStage"].append(
                 {"key": z.get("zoneNaturalKey"), "from": cur_stage, "to": new_stage}
             )
             would_change_stage = False
@@ -292,7 +303,8 @@ def apply_to_workbook(
             stats["stageUpdated"] += 1
 
         if update_coverage and COVERAGE_HEADER in hm and stage_written:
-            new_cov = derive_coverage(stage_written)
+            progress_text = z.get("progressMerged") or ws.cell(r, progress_col).value
+            new_cov = derive_coverage(stage_written, progress=str(progress_text or ""))
             prev_cov = str(ws.cell(r, hm[COVERAGE_HEADER]).value or "").strip().upper()
             if prev_cov != new_cov:
                 ws.cell(r, hm[COVERAGE_HEADER], new_cov)

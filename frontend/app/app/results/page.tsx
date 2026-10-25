@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { cookies } from "next/headers";
 import { AlertTriangle, ArrowLeft, Database, Search } from "lucide-react";
 
 import { reverseFilterAction } from "@/app/actions/reverseFilter";
@@ -414,7 +415,8 @@ export default async function ResultsPage({ searchParams }: { searchParams?: Pro
   const legacyStage = parseFilterValue(resolvedSearchParams, "stage");
   const selectedDistricts = parseCsvFilter(resolvedSearchParams, "districts");
   const selectedStageGroups = parseCsvFilter(resolvedSearchParams, "stageGroups");
-  const includeSub = parseIncludeSub(resolvedSearchParams);
+  const opsMode = (await cookies()).get("sf_ops")?.value === "1";
+  const includeSub = opsMode && parseIncludeSub(resolvedSearchParams);
   const selectedSort = parseSortOption(resolvedSearchParams);
   const result = await reverseFilterAction({
     budgetMinKrw,
@@ -478,6 +480,12 @@ export default async function ResultsPage({ searchParams }: { searchParams?: Pro
               아래 슬라이더로 예산 범위를 바로 바꿀 수 있습니다.
             </p>
           </div>
+          <Link
+            href="/app/hexafit"
+            className="inline-flex min-h-10 items-center justify-center rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-2 text-sm font-bold text-indigo-700 hover:bg-indigo-100"
+          >
+            육각형으로 비교
+          </Link>
         </div>
         <ResultsBudgetSlider
           key={`${budgetMinKrw}-${budgetMaxKrw}`}
@@ -506,6 +514,7 @@ export default async function ResultsPage({ searchParams }: { searchParams?: Pro
             selectedSort={selectedSort.value}
             sortOptions={SORT_OPTIONS.map(({ value, label }) => ({ value, label }))}
             includeSub={includeSub}
+            showCoverageToggle={opsMode}
           />
 
           <div className="grid gap-3 sm:grid-cols-3">

@@ -1,5 +1,5 @@
 {
-  "_comment": "재개발닷컴 진행단계 라벨 → SeedFit Golden `현재 단계`(ALLOWED_STAGES). projectKind: sintong | moa | common. 통합심의통과는 구역명에 모아가 있을 때만 (모아)통합심의통과. 일반 재개발은 건축심의. 장위15처럼 일반 재개발 통합심의를 모아로 쓰지 말 것.",
+  "_comment": "재개발닷컴 진행단계 라벨 → SeedFit Golden `현재 단계`(ALLOWED_STAGES). projectKind: sintong | moa | common. 통합심의통과는 구역명에 모아가 있을 때만 (모아)통합심의통과. 일반 재개발은 건축심의. 장위15처럼 일반 재개발 통합심의를 모아로 쓰지 말 것. 진행중 줄은 현재 단계가 아니다(장위14: 사업시행인가 진행중 ≠ 사업시행인가).",
   "normalize_raw": {
     " ": "",
     "·": "",

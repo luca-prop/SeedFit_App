@@ -37,8 +37,10 @@ type ResultsScatterExplorerProps = {
   selectedStageGroups: string[];
   selectedSort: string;
   sortOptions: SortOption[];
-  /** When false (default), SUB(구역지정 전) zones are hidden. */
+  /** When false (default), 구역지정 전 구역은 숨긴다. */
   includeSub: boolean;
+  /** 운영자 화면에서만 초기 구역 스위치를 보여 준다. */
+  showCoverageToggle?: boolean;
 };
 
 type StageAxis = {
@@ -425,6 +427,7 @@ export function ResultsScatterExplorer({
   selectedSort,
   sortOptions,
   includeSub,
+  showCoverageToggle = false,
 }: ResultsScatterExplorerProps) {
   const router = useRouter();
   const isDesktop = useIsDesktop();
@@ -514,19 +517,20 @@ export function ResultsScatterExplorer({
           </p>
           <p className="mt-1 text-sm text-slate-500">
             X축은 사업 단계, Y축은 구역 최저 실투자금입니다. 파란 예산선 안에 가까울수록 현재 예산과 맞습니다.
-            기본은 정비구역지정 이후(CORE)만 표시합니다.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <Button
-            type="button"
-            variant={includeSub ? "default" : "outline"}
-            className="min-h-10"
-            onClick={() => pushFilters(activeDistricts, activeStageLabels, selectedSort, !includeSub)}
-            aria-pressed={includeSub}
-          >
-            초기 구역(SUB) 포함{subCount > 0 ? ` · ${subCount}` : ""}
-          </Button>
+          {showCoverageToggle ? (
+            <Button
+              type="button"
+              variant={includeSub ? "default" : "outline"}
+              className="min-h-10"
+              onClick={() => pushFilters(activeDistricts, activeStageLabels, selectedSort, !includeSub)}
+              aria-pressed={includeSub}
+            >
+              초기 구역 포함{subCount > 0 ? ` · ${subCount}` : ""}
+            </Button>
+          ) : null}
           <label htmlFor="results-sort" className="sr-only">
             결과 정렬 기준
           </label>

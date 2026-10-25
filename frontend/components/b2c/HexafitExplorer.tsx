@@ -13,8 +13,12 @@ import {
 } from "recharts";
 
 import { hexafitZones, type HexafitZoneInput } from "@/app/lib/hexafitData";
+import { HEXAFIT_ATTRIBUTES } from "@/lib/hexafit/attributes";
+import { zoneMatchesQuery } from "@/lib/hexafit/zoneSearch";
 import {
   scoreZone,
+  buildInvestmentScale,
+  investmentScaleCaption,
   HEX_AXIS_META,
   type HexAxis,
   type ZoneHexScore,
@@ -22,27 +26,34 @@ import {
 
 const COLORS = ["#ec4899", "#8b5cf6", "#10b981", "#f59e0b"]; // 핑크·보라·초록·앰버
 const MAX_SELECT = 4;
-const RADIUS_MAX = 15; // 스펙: 공유 반경 0~15 (점수 0~10, 실투자금 억 직접 바인딩)
+const RADIUS_MAX = 10;
 
-/** 축 플롯값: 실투자금은 억 물리값(15 클램프), 나머지는 점수. 미지정은 0. */
 function plotValue(axis: HexAxis, score: ZoneHexScore): number {
-  const v = score.axes[axis].value;
-  if (v == null) return 0;
-  if (axis === "financialBarrier") return Math.min(v, RADIUS_MAX);
-  return v;
+  return score.axes[axis].value ?? 0;
 }
 
 export default function HexafitExplorer({ initialZones }: { initialZones?: string[] }) {
   const router = useRouter();
 
-  // 전 구역 1회 채점 (메모)
+  const investmentScale = useMemo(
+    () =>
+      buildInvestmentScale(
+        hexafitZones.flatMap((z) => (z.minInvestmentBillion == null ? [] : [z.minInvestmentBillion])),
+      ),
+    [],
+  );
+
+  // 전 구역 1회 채점. 투자금 점수는 이 데이터셋의 중간값·상위 25%·최고가에 고정한다.
   const scoredAll = useMemo(() => {
     const map = new Map<string, { input: HexafitZoneInput; score: ZoneHexScore }>();
     for (const z of hexafitZones) {
-      map.set(z.zoneName, { input: z, score: scoreZone(z) });
+      map.set(z.zoneName, {
+        input: z,
+        score: scoreZone({ ...z, attributes: HEXAFIT_ATTRIBUTES[z.naturalKey] }, investmentScale),
+      });
     }
     return map;
-  }, []);
+  }, [investmentScale]);
 
   const defaultSelection = useMemo(() => {
     const fromQuery = (initialZones ?? []).filter((n) => scoredAll.has(n));
@@ -58,9 +69,14 @@ export default function HexafitExplorer({ initialZones }: { initialZones?: strin
   const [activeDistrict, setActiveDistrict] = useState<string | null>(null);
   const [pickerOpen, setPickerOpen] = useState(false);
 
-  const districts = useMemo(
-    () => Array.from(new Set(hexafitZones.map((z) => z.district))),
+  const coreZones = useMemo(
+    () => hexafitZones.filter((z) => z.coverage === "CORE"),
     [],
+  );
+
+  const districts = useMemo(
+    () => Array.from(new Set(coreZones.map((z) => z.district))),
+    [coreZones],
   );
 
   const selectedScores = useMemo(
@@ -80,13 +96,11 @@ export default function HexafitExplorer({ initialZones }: { initialZones?: strin
   }, [selectedScores, scoredAll]);
 
   const filteredZones = useMemo(() => {
-    const q = query.trim();
-    return hexafitZones.filter((z) => {
+    return coreZones.filter((z) => {
       if (activeDistrict && z.district !== activeDistrict) return false;
-      if (q && !z.zoneName.includes(q) && !z.district.includes(q) && !z.dong.includes(q)) return false;
-      return true;
+      return zoneMatchesQuery(z, query);
     });
-  }, [query, activeDistrict]);
+  }, [coreZones, query, activeDistrict]);
 
   const toggle = (zoneName: string) => {
     setSelected((prev) => {
@@ -241,7 +255,8 @@ export default function HexafitExplorer({ initialZones }: { initialZones?: strin
             </ResponsiveContainer>
           </div>
           <p className="text-center text-[11px] text-gray-400 mt-1">
-            반경 0~15 · 점수축(급지·상품성·규모·안정성·사업성)은 0~10, 필요투자금 축은 억 원 실수치(15억↑는 바깥 링에 고정)
+            6축 모두 0~10점. 필요 투자금은 현재 {investmentScale?.count ?? 0}곳 기준{" "}
+            {investmentScale ? investmentScaleCaption(investmentScale) : ""}. 데이터 갱신 때 기준이 다시 계산됩니다.
           </p>
         </div>
       )}
@@ -260,15 +275,10 @@ export default function HexafitExplorer({ initialZones }: { initialZones?: strin
               {input.benchmarkName ? ` · 기축 ${input.benchmarkName} ${input.benchmarkPriceBillion ?? ""}억` : ""}
             </div>
             <ul className="space-y-1.5">
-              {HEX_AXIS_META.map(({ key, label, unit }) => {
+              {HEX_AXIS_META.map(({ key, label }) => {
                 const a = score.axes[key];
                 const missing = a.status === "missing";
-                const display =
-                  missing
-                    ? "미지정"
-                    : unit === "billion"
-                      ? `${a.value}억`
-                      : `${a.value} / 10`;
+                const display = missing ? "미지정" : `${a.value} / 10`;
                 return (
                   <li key={key} className="flex items-start justify-between gap-3 text-sm">
                     <span className="text-gray-500 shrink-0">{label}</span>
@@ -299,8 +309,9 @@ export default function HexafitExplorer({ initialZones }: { initialZones?: strin
       </div>
 
       <p className="mt-6 text-[11px] text-gray-400 leading-relaxed">
-        급지·단계·세대수·실투자금은 보유 데이터로 산출하며, 상품성(뷰·학군·브랜드)·인프라·조합 갈등 가점은 확정 전까지 반영하지 않습니다.
-        값이 없는 축은 &quot;미지정&quot;으로 표기하고 추정하지 않습니다.
+        12시 급지는 급지표 100점을 10으로 나눈 값입니다. 성수 1.6은 99점, 화면에는 9.9입니다.
+        2시·4시 가점은 정비구역 지정 이후(CORE)로 승인한 구역만 반영합니다.
+        값이 없는 축은 &quot;미지정&quot;으로 표기합니다.
       </p>
     </div>
   );

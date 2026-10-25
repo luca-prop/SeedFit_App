@@ -12,8 +12,8 @@ import { resolveLocationTier, type LocationTierResult } from "./locationTier";
 /** 6축 축 키 (12시 → 시계방향). */
 export type HexAxis =
   | "locationTier" // 12시 급지
-  | "productScarcity" // 2시 상품성·희소성
-  | "scaleInfrastructure" // 4시 규모·인프라
+  | "productScarcity" // 2시 단지 희소성·고급화 (입지 제외)
+  | "scaleInfrastructure" // 4시 체급·거주 인프라
   | "financialBarrier" // 6시 필요 투자금(억)
   | "stabilitySpeed" // 8시 안정성·속도
   | "profitability"; // 10시 사업성
@@ -25,7 +25,7 @@ export type ZoneScoringInput = {
   district: string;
   dong: string;
   stage: string | null;
-  /** 실투자금 최소/최대 (억). 6시 축에 그대로 바인딩. */
+  /** 실투자금 최소/최대 (억). 6시 축은 최소값을 분포 점수로 환산한다. */
   minInvestmentBillion: number | null;
   maxInvestmentBillion: number | null;
   /** 공급(총 신축) 세대수. 4시 Base_Scale_Score. */
@@ -42,23 +42,35 @@ export type ZoneScoringInput = {
 };
 
 export type ZoneAttributes = {
-  // 2시 상품성
-  hanRiverBelt?: boolean; // 한강벨트 +1.5
-  highEndBrand?: boolean; // 하이엔드 브랜드 확정 +0.5
-  riverView?: "full" | "partial" | null; // 조망 +0.5 / +0.3
-  schoolDistrict?: "top" | "good" | null; // 학군 +0.5 / +0.3
-  // 4시 인프라
-  mallAdjacent?: boolean; // 대형몰 인접 +0.5
-  stationDevelopment?: boolean; // 역세권/교통호재 +0.25
-  newTownPlan?: boolean; // 신도시/뉴타운 통합개발 +0.5
-  // 8시 안정성
-  conflictPenalty?: number; // 조합 갈등/소송 감점 (0~3)
-  speedBonus?: number; // 추가 가점 (0~0.5)
+  /** 2시 한강 조망. 영구 > 부분 > 벨트 중 하나. */
+  viewHan?: "hanRiverFull" | "hanRiverPartial" | "hanRiverBelt" | null;
+  /** 2시 공원 조망. 메이저 > 일반·하천 중 하나. 한강영구가 있으면 더하지 않음. */
+  viewPark?: "parkMajor" | "parkRiver" | null;
+  /** 예전 단일 조망 칸. 있으면 viewHan/viewPark로 읽는다. */
+  view?: "hanRiverFull" | "hanRiverPartial" | "hanRiverBelt" | "parkMajor" | "parkRiver" | null;
+  /** 시공사·고급화. 하나만. 하이엔드 1.5 > 1군+특화 0.8 > 1군 표준 0.4 */
+  highEndBrand?: boolean;
+  hardwareSpec?: boolean;
+  contractorStandard?: boolean;
+  /** 4시 운영자 칸. 세대수·급지는 자동. */
+  newTownPlan?: boolean;
+  stationArea?: boolean; // 역세권 +1
+  doubleStation?: boolean; // 중심위치·더블 역세권 +0.3
+  hanRiverTransit?: boolean; // 한강벨트 교통 +0.5
+  gtxAccess?: boolean; // +0.3
+  parkWaterfront?: boolean; // 대형 공원/강/하천 +0.3
+  mallAdjacent?: boolean; // +0.3
+  hospitalAdjacent?: boolean; // +0.2
+  schoolDistrict?: "core" | "wide" | null; // 대치·목동·중계 +1 / 범학군 +0.5
+  schoolOnSite?: boolean; // 초품아 +0.3
+  /** 8시 */
+  conflictPenalty?: number;
+  speedBonus?: number;
+  unionPrepApproved?: boolean;
 };
 
 export type AxisScore = {
-  /** 레이더에 그릴 값. locationTier/productScarcity/scaleInfrastructure/
-   * stabilitySpeed/profitability 는 0~10 점수, financialBarrier 는 억 원 물리값. */
+  /** 레이더에 그릴 값. 6축 모두 0~10 점수. */
   value: number | null;
   /** 채점 근거 요약 (UI 툴팁용). */
   detail: string;
@@ -81,119 +93,281 @@ export type ZoneHexScore = {
 const round1 = (v: number) => Math.round(v * 10) / 10;
 const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
 
-/** 우리 단계 라벨 → 스펙 Base_Stage_Score. 미지정은 null. */
+/** 우리 단계 라벨 → 스펙 §2.4 Base_Stage_Score. 미지정은 null. */
 const STAGE_BASE_SCORE: Record<string, number> = {
+  "착공 및 일반분양 완료": 10.0,
+  "이주 및 철거": 9.5,
   "관리처분인가": 9.0,
-  "사업시행인가": 8.5,
-  "건축심의": 8.0,
-  "사업시행자 지정": 8.0,
-  "시공사 선정": 8.0,
-  "조합설립인가": 7.5,
-  "정비구역지정": 6.5,
-  "정비구역 지정": 6.5,
-  "(모아)통합심의통과": 6.0,
-  "(모아)관리계획고시": 5.5,
-  "(모아)관리계획수립": 5.5,
-  "신속통합기획 완료": 5.5,
-  "신속통합기획 대상지 선정": 5.0,
-  "(모아)대상지 선정": 5.0,
-  "연번 부여": 4.0,
-  "추진위 승인": 3.5,
-  "추진준비": 3.0,
+  "사업시행인가": 8.0,
+  "건축심의": 7.0,
+  "시공사 선정": 6.0,
+  "사업시행자 지정": 6.0,
+  "조합설립인가": 5.0,
+  "정비구역지정": 3.0,
+  "정비구역 지정": 3.0,
+  "(모아)통합심의통과": 3.0,
+  "(모아)관리계획고시": 3.0,
+  "(모아)관리계획수립": 2.5,
+  "신속통합기획 완료": 2.5,
+  "신속통합기획 대상지 선정": 2.0,
+  "(모아)대상지 선정": 2.0,
+  "연번 부여": 0.5,
+  "추진위 승인": 0.5,
+  "추진준비": 0.5,
   // "대상지철회" → 미지정(null)
 };
 
-const GANGNAM3 = new Set(["서초구", "강남구", "송파구"]);
+/** 이 단계에 추진위 승인이 있으면 +0.5. 추진위 단독 단계는 이미 0.5라 더하지 않는다. */
+const UNION_PREP_BONUS_STAGES = new Set([
+  "정비구역지정",
+  "정비구역 지정",
+  "신속통합기획 대상지 선정",
+  "(모아)대상지 선정",
+  "연번 부여",
+]);
 
 // --- 12시 급지 ---
 function scoreLocationTier(input: ZoneScoringInput, tier: LocationTierResult): AxisScore {
   if (tier.score == null) {
     return { value: null, detail: "급지표 미등록 지역 (급지 미지정)", status: "missing" };
   }
+  const suffix = tier.source === "estimate" ? " · 인접 급지 추정" : "";
   return {
     value: tier.score,
-    detail: `급지 Index ${tier.index} → ${tier.score}점`,
+    detail: `급지 ${tier.index} · ${Math.round((tier.score ?? 0) * 10)}점 → ${tier.score}${suffix}`,
     status: "scored",
   };
 }
 
-// --- 2시 상품성·희소성 ---
-function scoreProductScarcity(input: ZoneScoringInput): AxisScore {
-  let score = 7.0;
-  const parts: string[] = ["기본 7.0"];
+function resolveViewHan(a: ZoneAttributes): "hanRiverFull" | "hanRiverPartial" | "hanRiverBelt" | null {
+  if (a.viewHan) return a.viewHan;
+  if (a.view === "hanRiverFull" || a.view === "hanRiverPartial" || a.view === "hanRiverBelt") return a.view;
+  return null;
+}
+
+function resolveViewPark(a: ZoneAttributes): "parkMajor" | "parkRiver" | null {
+  if (a.viewPark) return a.viewPark;
+  if (a.view === "parkMajor" || a.view === "parkRiver") return a.view;
+  return null;
+}
+
+export function viewBonuses(a: ZoneAttributes): { han: number; park: number; labels: string[] } {
+  const hanKey = resolveViewHan(a);
+  const parkKey = resolveViewPark(a);
+  let han = 0;
+  const labels: string[] = [];
+  if (hanKey === "hanRiverFull") {
+    han = 2;
+    labels.push("한강영구 +2");
+  } else if (hanKey === "hanRiverPartial") {
+    han = 1;
+    labels.push("한강부분 +1");
+  } else if (hanKey === "hanRiverBelt") {
+    han = 0.5;
+    labels.push("한강벨트 +0.5");
+  }
+  let park = 0;
+  if (hanKey === "hanRiverFull") {
+    if (parkKey) labels.push("공원뷰 생략(한강영구)");
+  } else if (parkKey === "parkMajor") {
+    park = 0.5;
+    labels.push("메이저공원 +0.5");
+  } else if (parkKey === "parkRiver") {
+    park = 0.3;
+    labels.push("공원·하천 +0.3");
+  }
+  return { han, park, labels };
+}
+
+/** 2시 급지 가점. 1.0~2.1 = +1.0, 2.2~2.7 = +0.5, 2.8 = +0.2, 2.9 이상 = 0. */
+export function productTierBonus(index: number | null | undefined): number {
+  if (index == null) return 0;
+  if (index <= 2.1) return 1.0;
+  if (index <= 2.7) return 0.5;
+  if (index <= 2.8) return 0.2;
+  return 0;
+}
+
+// --- 2시 희소성·상품성 ---
+function scoreProductScarcity(input: ZoneScoringInput, tier: LocationTierResult): AxisScore {
+  let score = 6.0;
+  const parts: string[] = ["기본 6.0"];
   const a = input.attributes ?? {};
-  if (GANGNAM3.has(input.district)) {
-    score += 2.0;
-    parts.push("강남3구 +2.0");
+  const tierBonus = productTierBonus(tier.index);
+  if (tierBonus) {
+    score += tierBonus;
+    parts.push(`급지 ${tier.index} +${tierBonus}`);
   }
-  if (a.hanRiverBelt) {
-    score += 1.5;
-    parts.push("한강벨트 +1.5");
-  }
+  const { han, park, labels } = viewBonuses(a);
+  score += han + park;
+  parts.push(...labels);
   if (a.highEndBrand) {
-    score += 0.5;
-    parts.push("하이엔드 +0.5");
-  }
-  if (a.riverView === "full") {
-    score += 0.5;
-    parts.push("한강조망 +0.5");
-  } else if (a.riverView === "partial") {
-    score += 0.3;
-    parts.push("한강조망 +0.3");
-  }
-  if (a.schoolDistrict === "top") {
-    score += 0.5;
-    parts.push("학군 +0.5");
-  } else if (a.schoolDistrict === "good") {
-    score += 0.3;
-    parts.push("학군 +0.3");
+    score += 1.5;
+    parts.push("하이엔드 +1.5");
+  } else if (a.hardwareSpec) {
+    score += 0.8;
+    parts.push("1군+특화 +0.8");
+  } else if (a.contractorStandard) {
+    score += 0.4;
+    parts.push("1군 표준 +0.4");
   }
   return { value: round1(clamp(score, 0, 10)), detail: parts.join(" · "), status: "scored" };
 }
 
-// --- 4시 규모·인프라 ---
-function baseScaleScore(units: number): number {
-  if (units >= 5000) return 10.0;
-  if (units >= 3000) return 9.5;
-  if (units >= 2000) return 9.0;
-  if (units >= 1000) return 8.5;
-  if (units >= 500) return 7.5;
-  // <500: 3.0~6.0 선형
-  return round1(clamp(3.0 + (units / 500) * 3.0, 3.0, 6.0));
+// --- 4시 규모·생활편의 ---
+export function baseScaleScore(units: number): number {
+  if (units >= 5000) return 6.5;
+  if (units >= 3000) return 6.0;
+  if (units >= 2000) return 5.5;
+  if (units >= 1000) return 5.3;
+  if (units >= 500) return 5.0;
+  if (units >= 300) return 4.0;
+  return 3.0;
 }
 
 function scoreScaleInfrastructure(input: ZoneScoringInput): AxisScore {
   if (input.supplyUnits == null || input.supplyUnits <= 0) {
     return { value: null, detail: "세대수 미확보", status: "missing" };
   }
-  let score = baseScaleScore(input.supplyUnits);
-  const parts: string[] = [`${input.supplyUnits.toLocaleString()}세대 → 기본 ${score}`];
+  const base = baseScaleScore(input.supplyUnits);
   const a = input.attributes ?? {};
-  if (a.mallAdjacent) {
-    score += 0.5;
-    parts.push("대형몰 +0.5");
-  }
-  if (a.stationDevelopment) {
-    score += 0.25;
-    parts.push("교통호재 +0.25");
-  }
+  const parts: string[] = [`${input.supplyUnits.toLocaleString()}세대 → ${base}`];
+  let mass = base;
   if (a.newTownPlan) {
-    score += 0.5;
-    parts.push("통합개발 +0.5");
+    const before = mass;
+    mass = Math.min(6.5, mass + 1.0);
+    parts.push(`뉴타운 +${round1(mass - before)} (체급 상한 6.5)`);
   }
-  return { value: round1(clamp(score, 0, 10)), detail: parts.join(" · "), status: "scored" };
+  let extra = 0;
+  if (a.stationArea) {
+    extra += 1.0;
+    parts.push("역세권 +1");
+  }
+  if (a.doubleStation) {
+    extra += 0.3;
+    parts.push("중심·더블역세권 +0.3");
+  }
+  if (a.hanRiverTransit) {
+    extra += 0.5;
+    parts.push("한강벨트교통 +0.5");
+  }
+  if (a.gtxAccess) {
+    extra += 0.3;
+    parts.push("GTX +0.3");
+  }
+  if (a.parkWaterfront) {
+    extra += 0.3;
+    parts.push("공원·강·하천 +0.3");
+  }
+  if (a.mallAdjacent) {
+    extra += 0.3;
+    parts.push("대형몰 +0.3");
+  }
+  if (a.hospitalAdjacent) {
+    extra += 0.2;
+    parts.push("종합병원 +0.2");
+  }
+  if (a.schoolDistrict === "core") {
+    extra += 1.0;
+    parts.push("핵심학군 +1");
+  } else if (a.schoolDistrict === "wide") {
+    extra += 0.5;
+    parts.push("범학군 +0.5");
+  }
+  if (a.schoolOnSite) {
+    extra += 0.3;
+    parts.push("초품아 +0.3");
+  }
+  return { value: round1(clamp(mass + extra, 0, 10)), detail: parts.join(" · "), status: "scored" };
 }
 
-// --- 6시 필요 투자금 (억 물리값) ---
-function scoreFinancialBarrier(input: ZoneScoringInput): AxisScore {
+/**
+ * 6시 축 기준. 현재 구역 최소 실투자금 분포에서 한 번 구한다.
+ * 화면을 열 때마다 다시 계산하지 않고, 육각형 데이터가 갱신될 때 같이 바뀐다.
+ * 0점=최저, 5점=중간값, 7.5점=상위 25% 경계, 10점=최고. 높을수록 진입 장벽이 크다.
+ */
+export type InvestmentScale = {
+  floorEok: number;
+  medianEok: number;
+  p75Eok: number;
+  ceilingEok: number;
+  count: number;
+};
+
+export function buildInvestmentScale(values: readonly number[]): InvestmentScale | null {
+  const sorted = values.filter((v) => Number.isFinite(v) && v > 0).slice().sort((a, b) => a - b);
+  if (sorted.length === 0) return null;
+  const n = sorted.length;
+  const medianEok =
+    n % 2 === 1 ? sorted[(n - 1) / 2] : (sorted[n / 2 - 1] + sorted[n / 2]) / 2;
+  return {
+    floorEok: sorted[0],
+    medianEok,
+    p75Eok: sorted[Math.floor(0.75 * (n - 1))],
+    ceilingEok: sorted[n - 1],
+    count: n,
+  };
+}
+
+function formatEok(n: number): string {
+  const rounded = Math.round(n * 100) / 100;
+  return Number.isInteger(rounded) ? String(rounded) : String(rounded);
+}
+
+/** 차트 캡션·축 상세에 쓰는 현재 기준. */
+export function investmentScaleCaption(scale: InvestmentScale): string {
+  return `5점=${formatEok(scale.medianEok)}억(중간) · 7.5점=${formatEok(scale.p75Eok)}억(상위 25%) · 10점=${formatEok(scale.ceilingEok)}억`;
+}
+
+function investmentKnots(scale: InvestmentScale): Array<[number, number]> {
+  const raw: Array<[number, number]> = [
+    [scale.floorEok, 0],
+    [scale.medianEok, 5],
+    [scale.p75Eok, 7.5],
+    [scale.ceilingEok, 10],
+  ];
+  const knots: Array<[number, number]> = [];
+  for (const knot of raw) {
+    const prev = knots[knots.length - 1];
+    if (!prev || knot[0] > prev[0]) knots.push(knot);
+    else if (knot[0] === prev[0]) prev[1] = Math.max(prev[1], knot[1]);
+  }
+  return knots;
+}
+
+export function investmentToScore(eok: number, scale: InvestmentScale): number {
+  const knots = investmentKnots(scale);
+  if (eok <= knots[0][0]) return knots[0][1];
+  const last = knots[knots.length - 1];
+  if (eok >= last[0]) return last[1];
+  for (let i = 1; i < knots.length; i++) {
+    const [x0, y0] = knots[i - 1];
+    const [x1, y1] = knots[i];
+    if (eok <= x1) {
+      const t = (eok - x0) / (x1 - x0);
+      return round1(clamp(y0 + t * (y1 - y0), 0, 10));
+    }
+  }
+  return last[1];
+}
+
+function scoreFinancialBarrier(input: ZoneScoringInput, scale: InvestmentScale | null): AxisScore {
   if (input.minInvestmentBillion == null) {
     return { value: null, detail: "실투자금 미확보", status: "missing" };
   }
-  const detail =
+  if (scale == null) {
+    return { value: null, detail: "투자금 기준 미계산", status: "missing" };
+  }
+  const score = investmentToScore(input.minInvestmentBillion, scale);
+  const range =
     input.maxInvestmentBillion != null && input.maxInvestmentBillion !== input.minInvestmentBillion
-      ? `실투자금 ${input.minInvestmentBillion}~${input.maxInvestmentBillion}억 (최소 바인딩)`
-      : `실투자금 ${input.minInvestmentBillion}억`;
-  return { value: input.minInvestmentBillion, detail, status: "scored" };
+      ? `${input.minInvestmentBillion}~${input.maxInvestmentBillion}억`
+      : `${input.minInvestmentBillion}억`;
+  return {
+    value: score,
+    detail: `실투자금 ${range} → ${score}점 (${investmentScaleCaption(scale)})`,
+    status: "scored",
+  };
 }
 
 // --- 8시 안정성·속도 ---
@@ -208,16 +382,19 @@ function scoreStabilitySpeed(input: ZoneScoringInput): AxisScore {
   const base = STAGE_BASE_SCORE[input.stage];
   const a = input.attributes ?? {};
   const penalty = a.conflictPenalty ?? 0;
+  const unionPrep =
+    a.unionPrepApproved && UNION_PREP_BONUS_STAGES.has(input.stage) ? 0.5 : 0;
   const bonus = a.speedBonus ?? 0;
-  const score = round1(clamp(base - penalty + bonus, 0, 10));
+  const score = round1(clamp(base - penalty + unionPrep + bonus, 0, 10));
   const parts = [`${input.stage} 기본 ${base}`];
   if (penalty) parts.push(`갈등 -${penalty}`);
+  if (unionPrep) parts.push("추진위 +0.5");
   if (bonus) parts.push(`가점 +${bonus}`);
   return { value: score, detail: parts.join(" · "), status: "scored" };
 }
 
-// --- 10시 사업성 (일반분양/조합원 비율 × 급지군) ---
-function profitabilityFromMatrix(ratioPct: number, tierIndex: number): number {
+/** 10시 매트릭스. 스펙 §2.5 — 50% 이상은 급지 구분 없음, 그 아래만 상/중/하 차등. */
+export function profitabilityFromMatrix(ratioPct: number, tierIndex: number): number {
   const band: 0 | 1 | 2 = tierIndex <= 2.6 ? 0 : tierIndex <= 3.5 ? 1 : 2;
   // 행: ratio 구간, 열: [상급지, 중급지, 하위급지]
   let row: number[];
@@ -272,14 +449,14 @@ function diagnose(axes: Record<HexAxis, AxisScore>, minInvest: number | null): s
   return out;
 }
 
-/** 구역 1건 채점. */
-export function scoreZone(input: ZoneScoringInput): ZoneHexScore {
+/** 구역 1건 채점. scale은 현재 데이터셋의 투자금 분포. 없으면 6시 축은 미지정. */
+export function scoreZone(input: ZoneScoringInput, scale: InvestmentScale | null = null): ZoneHexScore {
   const tier = resolveLocationTier({ naturalKey: input.naturalKey, dong: input.dong });
   const axes: Record<HexAxis, AxisScore> = {
     locationTier: scoreLocationTier(input, tier),
-    productScarcity: scoreProductScarcity(input),
+    productScarcity: scoreProductScarcity(input, tier),
     scaleInfrastructure: scoreScaleInfrastructure(input),
-    financialBarrier: scoreFinancialBarrier(input),
+    financialBarrier: scoreFinancialBarrier(input, scale),
     stabilitySpeed: scoreStabilitySpeed(input),
     profitability: scoreProfitability(input, tier),
   };
@@ -298,9 +475,9 @@ export function scoreZone(input: ZoneScoringInput): ZoneHexScore {
 /** UI 라벨/각도 메타. 12시부터 시계방향. */
 export const HEX_AXIS_META: Array<{ key: HexAxis; label: string; unit: "score" | "billion" }> = [
   { key: "locationTier", label: "급지", unit: "score" },
-  { key: "productScarcity", label: "상품성·희소성", unit: "score" },
-  { key: "scaleInfrastructure", label: "규모·인프라", unit: "score" },
-  { key: "financialBarrier", label: "필요 투자금(억)", unit: "billion" },
+  { key: "productScarcity", label: "희소성·상품성", unit: "score" },
+  { key: "scaleInfrastructure", label: "규모·생활편의", unit: "score" },
+  { key: "financialBarrier", label: "필요 투자금", unit: "score" },
   { key: "stabilitySpeed", label: "안정성·속도", unit: "score" },
   { key: "profitability", label: "사업성", unit: "score" },
 ];

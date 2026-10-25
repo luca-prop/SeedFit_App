@@ -2,9 +2,10 @@
  * CORE vs SUB coverage for SeedFit matching surfaces.
  *
  * Cut: 정비구역지정(및 동급) 이후 = CORE.
- * 추진위는 구역지정 이후이므로 CORE.
- * 신통 확정·완료·모아 통합심의 등 구역지정 전 = SUB.
- * Source of stage taxonomy: docs/Phase2_scatter_chart검토.md
+ * 추진위 승인·설립은 그 자체로 CORE가 아니다.
+ * 진행현황에 정비구역지정 또는 관리계획고시가 날짜로 끝난 곳만 CORE.
+ * 연번·대상지 등 구역지정 전 단계는 SUB.
+ * Source: docs/DATA_CURATION_SPEC.v.2.md §4.1
  */
 
 export type ZoneCoverage = "CORE" | "SUB";
@@ -23,11 +24,33 @@ function compactStage(stage: string): string {
   return stage.replace(/\s+/g, "");
 }
 
+/** 정비구역지정·관리계획고시가 날짜로 끝난 줄. '진행중'은 완료가 아니다. */
+export function designationCompleted(progress: string | null | undefined): boolean {
+  if (!progress) return false;
+  for (const raw of progress.split(/\r?\n/)) {
+    const line = raw.trim();
+    const bar = line.indexOf("|");
+    if (bar < 0) continue;
+    const label = compactStage(line.slice(0, bar));
+    const detail = line.slice(bar + 1).trim();
+    const detailCompact = compactStage(detail);
+    if (detailCompact.includes("진행중")) continue;
+    if (!/\d{4}/.test(detail)) continue;
+    if (label.includes("정비구역지정") || label.includes("관리계획고시")) return true;
+  }
+  return false;
+}
+
 /**
  * Derive coverage from business stage.
  * Explicit sheet/DB override wins when provided as CORE|SUB.
+ * `progress` is the 진행현황 cell, used only for 추진위.
  */
-export function deriveZoneCoverage(stage: string, override?: string | null): ZoneCoverage {
+export function deriveZoneCoverage(
+  stage: string,
+  override?: string | null,
+  progress?: string | null,
+): ZoneCoverage {
   const fromOverride = normalizeCoverageOverride(override);
   if (fromOverride) {
     return fromOverride;
@@ -35,11 +58,25 @@ export function deriveZoneCoverage(stage: string, override?: string | null): Zon
 
   const normalized = compactStage(stage);
 
-  // CORE first: 구역지정 동급·이후 (모아 관리계획고시 = 구역지정 축)
+  if (
+    normalized.includes("연번") ||
+    normalized.includes("신속통합기획") ||
+    normalized.includes("대상지선정") ||
+    normalized.includes("관리계획수립") ||
+    normalized.includes("통합심의") ||
+    normalized.includes("추진준비") ||
+    normalized.includes("대상지철회")
+  ) {
+    return "SUB";
+  }
+
+  if (normalized.includes("추진위")) {
+    return designationCompleted(progress) ? "CORE" : "SUB";
+  }
+
   if (
     normalized.includes("구역지정") ||
     normalized.includes("관리계획고시") ||
-    normalized.includes("추진위") ||
     normalized.includes("조합설립") ||
     normalized.includes("사업시행자지정") ||
     normalized.includes("시공사") ||
@@ -53,20 +90,6 @@ export function deriveZoneCoverage(stage: string, override?: string | null): Zon
     return "CORE";
   }
 
-  // SUB: 구역지정 전 추진준비 축
-  if (
-    normalized.includes("연번") ||
-    normalized.includes("신속통합기획") ||
-    normalized.includes("대상지선정") ||
-    normalized.includes("관리계획수립") ||
-    normalized.includes("통합심의") ||
-    normalized.includes("추진준비") ||
-    normalized.includes("대상지철회")
-  ) {
-    return "SUB";
-  }
-
-  // Unknown later-looking stages default to CORE (safer for matching trust).
   return "CORE";
 }
 

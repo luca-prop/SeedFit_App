@@ -92,6 +92,26 @@ def compact_stage(stage: str) -> str:
     return re.sub(r"\s+", "", stage)
 
 
+def moa_stage_on_non_moa_zone(zone_name: str | None, stage: str | None) -> bool:
+    """구역명에 모아가 없는데 (모아)* 단계가 붙은 경우. 장위15 사고."""
+    return bool(stage and "모아" in stage and zone_name and "모아" not in zone_name)
+
+
+def progress_marks_stage_in_progress(stage: str | None, progress: str | None) -> bool:
+    """진행현황에서 해당 단계가 '진행중'이면 True. 장위14: 사업시행인가|196개월째 진행중."""
+    if not stage or not progress:
+        return False
+    needle = compact_stage(stage)
+    for raw in str(progress).splitlines():
+        line = raw.strip()
+        if "|" not in line:
+            continue
+        label, detail = line.split("|", 1)
+        if needle in compact_stage(label) and "진행중" in compact_stage(detail):
+            return True
+    return False
+
+
 def normalize_coverage_override(value: str | None) -> str | None:
     if value is None:
         return None
@@ -101,8 +121,28 @@ def normalize_coverage_override(value: str | None) -> str | None:
     return None
 
 
-def derive_coverage(stage: str | None, override: str | None = None) -> str:
-    """CORE = 정비구역지정(동급) 이후. SUB = 구역지정 전. See Phase2_scatter_chart검토.md."""
+def designation_completed(progress: str | None) -> bool:
+    """정비구역지정·관리계획고시가 날짜로 끝난 줄이 있으면 True. '진행중'은 제외."""
+    if not progress:
+        return False
+    for raw in str(progress).splitlines():
+        line = raw.strip()
+        if "|" not in line:
+            continue
+        label, detail = line.split("|", 1)
+        label_c = compact_stage(label)
+        detail_c = compact_stage(detail)
+        if "진행중" in detail_c:
+            continue
+        if not re.search(r"\d{4}", detail):
+            continue
+        if "정비구역지정" in label_c or "관리계획고시" in label_c:
+            return True
+    return False
+
+
+def derive_coverage(stage: str | None, override: str | None = None, progress: str | None = None) -> str:
+    """CORE = 정비구역지정(동급) 이후. 추진위 단독은 SUB. See DATA_CURATION_SPEC §4.1."""
     from_override = normalize_coverage_override(override)
     if from_override:
         return from_override
@@ -111,10 +151,24 @@ def derive_coverage(stage: str | None, override: str | None = None) -> str:
 
     normalized = compact_stage(stage)
 
+    # 연번·대상지 등은 진행현황에 옛 지정 날짜가 남아 있어도 SUB.
+    if (
+        "연번" in normalized
+        or "신속통합기획" in normalized
+        or "대상지선정" in normalized
+        or "관리계획수립" in normalized
+        or "통합심의" in normalized
+        or "추진준비" in normalized
+        or "대상지철회" in normalized
+    ):
+        return "SUB"
+
+    if "추진위" in normalized:
+        return "CORE" if designation_completed(progress) else "SUB"
+
     if (
         "구역지정" in normalized
         or "관리계획고시" in normalized
-        or "추진위" in normalized
         or "조합설립" in normalized
         or "사업시행자지정" in normalized
         or "시공사" in normalized
@@ -126,17 +180,6 @@ def derive_coverage(stage: str | None, override: str | None = None) -> str:
         or "착공" in normalized
     ):
         return "CORE"
-
-    if (
-        "연번" in normalized
-        or "신속통합기획" in normalized
-        or "대상지선정" in normalized
-        or "관리계획수립" in normalized
-        or "통합심의" in normalized
-        or "추진준비" in normalized
-        or "대상지철회" in normalized
-    ):
-        return "SUB"
 
     return "CORE"
 
@@ -218,10 +261,29 @@ def normalize(input_path: Path, output_path: Path) -> dict[str, Any]:
                 warnings.append(WarningItem(row_index, "missing_zone_key", "district, dong, or zone_name is missing", zone_key))
                 continue
 
+            progress_text = clean_text(row.get("진행현황"))
             if not stage:
                 warnings.append(WarningItem(row_index, "missing_stage", "stage is missing", zone_key))
             elif stage not in ALLOWED_STAGES:
                 warnings.append(WarningItem(row_index, "unknown_stage", f"unknown stage: {stage}", zone_key))
+            if moa_stage_on_non_moa_zone(zone_name, stage):
+                warnings.append(
+                    WarningItem(
+                        row_index,
+                        "moa_stage_on_non_moa_zone",
+                        f"비모아 구역에 모아 단계: {stage}",
+                        zone_key,
+                    )
+                )
+            if progress_marks_stage_in_progress(stage, progress_text):
+                warnings.append(
+                    WarningItem(
+                        row_index,
+                        "stage_is_in_progress",
+                        f"현재 단계가 진행현황에서 진행중: {stage}",
+                        zone_key,
+                    )
+                )
 
             if coverage_raw and normalize_coverage_override(coverage_raw) is None:
                 warnings.append(
@@ -237,7 +299,7 @@ def normalize(input_path: Path, output_path: Path) -> dict[str, Any]:
                 "dong": dong,
                 "zoneName": zone_name,
                 "stage": stage,
-                "coverage": derive_coverage(stage, coverage_raw),
+                "coverage": derive_coverage(stage, coverage_raw, progress_text),
                 "projectType": derive_project_type(zone_name, stage),
                 "notes": notes,
             }

@@ -138,6 +138,23 @@ def find_duplicate_zones(golden: dict[str, Any]) -> Finding:
     )
 
 
+def find_moa_stage_on_non_moa_zones(golden: dict[str, Any]) -> Finding:
+    items = [
+        {"zoneNaturalKey": zone["naturalKey"], "stage": zone.get("stage")}
+        for zone in golden["zones"]
+        if zone.get("stage")
+        and "모아" in str(zone.get("stage"))
+        and "모아" not in str(zone.get("zoneName") or "")
+    ]
+    return Finding(
+        code="moa_stage_on_non_moa_zone",
+        severity="error",
+        message="구역명에 모아가 없는데 (모아)* 단계가 붙어 있습니다. 장위15 사고 — 일반 재개발 통합심의를 모아로 읽지 않습니다.",
+        count=len(items),
+        items=items,
+    )
+
+
 def find_unknown_stages(golden: dict[str, Any]) -> Finding:
     items = [
         {"zoneNaturalKey": zone["naturalKey"], "stage": zone.get("stage")}
@@ -255,6 +272,7 @@ def build_report(golden_path: Path, naver_path: Path, seed_sql_path: Path) -> di
         find_inverted_ranges(golden),
         find_duplicate_zones(golden),
         find_unknown_stages(golden),
+        find_moa_stage_on_non_moa_zones(golden),
         find_large_price_spreads(golden, naver),
         find_reference_link_mismatches(golden, seed_counts),
         find_seed_count_mismatches(golden, naver, seed_counts),

@@ -149,10 +149,10 @@
       "district": "동대문구",
       "dong": "용두동",
       "zoneName": "용두 7구역",
-      "stage": "추진위 승인",
-      "coverage": "CORE",
+      "stage": "연번 부여",
+      "coverage": "SUB",
       "projectType": "redevelopment",
-      "notes": "용두동 39"
+      "notes": "【오매칭 수정 2026-10-25】신통기획 용두동 39. 이전 /develops/2425 소형 용두7(공급 112) 제거. 진행현황의 2000 정비구역·2012 추진위는 그 소형 구역 이력이라 제거. 연번부여(2024-11-04)라 coverage SUB. 실투자 3.15~3.8은 재검수"
     },
     {
       "naturalKey": "동대문구|이문동|이문 4구역",
@@ -300,7 +300,7 @@
       "dong": "상도동",
       "zoneName": "상도 16구역",
       "stage": "추진위 승인",
-      "coverage": "CORE",
+      "coverage": "SUB",
       "projectType": "redevelopment",
       "notes": "26년 4월 29일 추진위 승인"
     },
@@ -320,7 +320,7 @@
       "dong": "흑석동",
       "zoneName": "흑석 10구역",
       "stage": "추진위 승인",
-      "coverage": "CORE",
+      "coverage": "SUB",
       "projectType": "redevelopment",
       "notes": "25년 6월 30일 대상지 선정"
     },
@@ -539,10 +539,10 @@
       "district": "성북구",
       "dong": "장위동",
       "zoneName": "장위 14구역",
-      "stage": "사업시행인가",
+      "stage": "시공사 선정",
       "coverage": "CORE",
       "projectType": "redevelopment",
-      "notes": "10년 5월 26일 조합설립인가"
+      "notes": "시공사선정 2010.07.11. 사업시행인가 진행중 표기는 미착수라 현재 단계에서 뺌."
     },
     {
       "naturalKey": "성북구|하월곡동|신월곡 1구역",
@@ -650,7 +650,7 @@
       "dong": "후암동",
       "zoneName": "동후암 1구역",
       "stage": "추진위 승인",
-      "coverage": "CORE",
+      "coverage": "SUB",
       "projectType": "redevelopment",
       "notes": "24년 6월 27일 대상지 선정"
     },
@@ -660,7 +660,7 @@
       "dong": "후암동",
       "zoneName": "동후암 3구역",
       "stage": "추진위 승인",
-      "coverage": "CORE",
+      "coverage": "SUB",
       "projectType": "redevelopment",
       "notes": "24년 8월 28일 대상지 선정"
     },
@@ -670,7 +670,7 @@
       "dong": "후암동",
       "zoneName": "후암1구역(재건축)",
       "stage": "추진위 승인",
-      "coverage": "CORE",
+      "coverage": "SUB",
       "projectType": "reconstruction",
       "notes": "2007년 4월 23일 추진위 승인"
     },
@@ -1009,10 +1009,10 @@
       "district": "성북구",
       "dong": "장위동",
       "zoneName": "장위 15구역",
-      "stage": "(모아)통합심의통과",
-      "coverage": "SUB",
+      "stage": "시공사 선정",
+      "coverage": "CORE",
       "projectType": "redevelopment",
-      "notes": "22년 3월 28일 조합설립인가"
+      "notes": "시공사 선정. 통합심의통과(2026.05.21)를 (모아)로 읽어 SUB가 된 오류를 되돌림. 사업시행인가 진행중 표기는 미착수라 뺌."
     },
     {
       "naturalKey": "양천구|신정동|신정 1구역",
