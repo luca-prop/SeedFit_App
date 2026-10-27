@@ -8,23 +8,23 @@ The report validates normalized Golden Sample data, Naver Land reference evidenc
 
 ## 2. Overall Status
 
-- Status: `fail`
-- Golden rows: `110`
-- Zones: `110`
-- Reverse Filter eligible zones: `103`
-- Zones without current listing/investment amount: `7`
-- Future-value reference hints: `110`
+- Status: `review`
+- Golden rows: `114`
+- Zones: `114`
+- Reverse Filter eligible zones: `108`
+- Zones without current listing/investment amount: `6`
+- Future-value reference hints: `114`
 - Naver listing evidence rows: `529`
 - Naver reference apartments: `72`
 
 ## 3. Seed SQL Counts
 
-- `zones`: `84`
-- `zoneInvestmentSnapshots`: `83`
-- `referenceApartments`: `85`
-- `zoneReferenceApartments`: `83`
+- `zones`: `114`
+- `zoneInvestmentSnapshots`: `114`
+- `referenceApartments`: `92`
+- `zoneReferenceApartments`: `114`
 - `ltvPolicies`: `4`
-- `futureValueReferenceReasons`: `83`
+- `futureValueReferenceReasons`: `114`
 - `legacyComparisonReasons`: `0`
 - `commitStatements`: `1`
 
@@ -33,16 +33,15 @@ The report validates normalized Golden Sample data, Naver Land reference evidenc
 ### `missing_investment_min`
 
 - Severity: `info`
-- Count: `7`
+- Count: `6`
 - Meaning: 실투자금이 비어 있어 Reverse Filter 대상에서는 제외되지만, 현재 매물 없음 상태로 관리합니다.
 
-- `{"zoneNaturalKey": "동대문구|제기동|제기 4구역", "sourceFile": "golden_samples260823.csv.csv", "sourceDate": "2026-08-23"}`
-- `{"zoneNaturalKey": "동대문구|청량리동|청량리 6구역", "sourceFile": "golden_samples260823.csv.csv", "sourceDate": "2026-08-23"}`
-- `{"zoneNaturalKey": "성북구|하월곡동|신월곡 1구역", "sourceFile": "golden_samples260823.csv.csv", "sourceDate": "2026-08-23"}`
-- `{"zoneNaturalKey": "동작구|노량진동|노량진 14구역", "sourceFile": "golden_samples260823.csv.csv", "sourceDate": "2026-08-23"}`
-- `{"zoneNaturalKey": "동작구|사당동|사당 19구역", "sourceFile": "golden_samples260823.csv.csv", "sourceDate": "2026-08-23"}`
-- `{"zoneNaturalKey": "동작구|상도동|상도 24구역", "sourceFile": "golden_samples260823.csv.csv", "sourceDate": "2026-08-23"}`
-- `{"zoneNaturalKey": "성동구|행당동|행당 8구역", "sourceFile": "golden_samples260823.csv.csv", "sourceDate": "2026-08-23"}`
+- `{"zoneNaturalKey": "동대문구|제기동|제기 4구역", "sourceFile": "golden_samples261027.csv.csv", "sourceDate": "2026-10-27"}`
+- `{"zoneNaturalKey": "성북구|하월곡동|신월곡 1구역", "sourceFile": "golden_samples261027.csv.csv", "sourceDate": "2026-10-27"}`
+- `{"zoneNaturalKey": "동작구|노량진동|노량진 14구역", "sourceFile": "golden_samples261027.csv.csv", "sourceDate": "2026-10-27"}`
+- `{"zoneNaturalKey": "동작구|사당동|사당 19구역", "sourceFile": "golden_samples261027.csv.csv", "sourceDate": "2026-10-27"}`
+- `{"zoneNaturalKey": "동작구|상도동|상도 24구역", "sourceFile": "golden_samples261027.csv.csv", "sourceDate": "2026-10-27"}`
+- `{"zoneNaturalKey": "성동구|행당동|행당 8구역", "sourceFile": "golden_samples261027.csv.csv", "sourceDate": "2026-10-27"}`
 
 ### `inverted_min_max`
 
@@ -65,59 +64,82 @@ The report validates normalized Golden Sample data, Naver Land reference evidenc
 - Meaning: 허용 stage 목록에 없는 단계 값입니다.
 
 
+### `moa_stage_on_non_moa_zone`
+
+- Severity: `error`
+- Count: `0`
+- Meaning: 구역명에 모아가 없는데 (모아)* 단계가 붙어 있습니다. 장위15 사고 — 일반 재개발 통합심의를 모아로 읽지 않습니다.
+
+
 ### `price_spread_over_20_percent`
 
 - Severity: `warning`
-- Count: `58`
+- Count: `79`
 - Meaning: 단일 source의 min/max 가격 범위가 20% 이상 벌어진 항목입니다. 시계열 변동률은 sourceDate가 추가된 뒤 별도 산정합니다.
 
-- `{"type": "zone_investment_range", "naturalKey": "강북구|미아동|미아 2구역", "minKrw": 620000000, "maxKrw": 1050000000, "spreadRatio": 0.6935}`
-- `{"type": "zone_investment_range", "naturalKey": "강북구|미아동|미아 4구역", "minKrw": 1120000000, "maxKrw": 1600000000, "spreadRatio": 0.4286}`
-- `{"type": "zone_investment_range", "naturalKey": "강북구|미아동|미아 9-2구역(재건축)", "minKrw": 540000000, "maxKrw": 1000000000, "spreadRatio": 0.8519}`
-- `{"type": "zone_investment_range", "naturalKey": "구리시|수택동|수택 2구역", "minKrw": 240000000, "maxKrw": 290000000, "spreadRatio": 0.2083}`
-- `{"type": "zone_investment_range", "naturalKey": "금천구|독산동|독산 1구역", "minKrw": 690000000, "maxKrw": 1180000000, "spreadRatio": 0.7101}`
-- `{"type": "zone_investment_range", "naturalKey": "금천구|독산동|독산 2구역", "minKrw": 480000000, "maxKrw": 880000000, "spreadRatio": 0.8333}`
-- `{"type": "zone_investment_range", "naturalKey": "금천구|독산동|독산시흥구역", "minKrw": 335000000, "maxKrw": 930000000, "spreadRatio": 1.7761}`
+- `{"type": "zone_sale_price_range", "naturalKey": "강북구|미아동|미아 2구역", "minKrw": 750000000, "maxKrw": 1250000000, "spreadRatio": 0.6667}`
+- `{"type": "zone_investment_range", "naturalKey": "강북구|미아동|미아 2구역", "minKrw": 420000000, "maxKrw": 648000000, "spreadRatio": 0.5429}`
+- `{"type": "zone_sale_price_range", "naturalKey": "강북구|미아동|미아 4구역", "minKrw": 1120000000, "maxKrw": 1600000000, "spreadRatio": 0.4286}`
+- `{"type": "zone_sale_price_range", "naturalKey": "강북구|미아동|미아 9-2구역(재건축)", "minKrw": 600000000, "maxKrw": 1000000000, "spreadRatio": 0.6667}`
+- `{"type": "zone_investment_range", "naturalKey": "강북구|미아동|미아 9-2구역(재건축)", "minKrw": 550000000, "maxKrw": 750000000, "spreadRatio": 0.3636}`
+- `{"type": "zone_investment_range", "naturalKey": "광진구|자양동|자양2동 649(B)(모아타운)", "minKrw": 900000000, "maxKrw": 1200000000, "spreadRatio": 0.3333}`
+- `{"type": "zone_investment_range", "naturalKey": "광진구|자양동|자양동 772-1(건대모아)", "minKrw": 800000000, "maxKrw": 1300000000, "spreadRatio": 0.625}`
+- `{"type": "zone_sale_price_range", "naturalKey": "구리시|수택동|수택 2구역", "minKrw": 310000000, "maxKrw": 390000000, "spreadRatio": 0.2581}`
+- `{"type": "zone_investment_range", "naturalKey": "구리시|수택동|수택 2구역", "minKrw": 300000000, "maxKrw": 370000000, "spreadRatio": 0.2333}`
+- `{"type": "zone_sale_price_range", "naturalKey": "금천구|독산동|독산 1구역", "minKrw": 690000000, "maxKrw": 1200000000, "spreadRatio": 0.7391}`
+- `{"type": "zone_investment_range", "naturalKey": "금천구|독산동|독산 1구역", "minKrw": 590000000, "maxKrw": 1120000000, "spreadRatio": 0.8983}`
+- `{"type": "zone_sale_price_range", "naturalKey": "금천구|독산동|독산 2구역", "minKrw": 480000000, "maxKrw": 1070000000, "spreadRatio": 1.2292}`
+- `{"type": "zone_investment_range", "naturalKey": "금천구|독산동|독산 2구역", "minKrw": 273000000, "maxKrw": 797000000, "spreadRatio": 1.9194}`
+- `{"type": "zone_sale_price_range", "naturalKey": "금천구|독산동|독산시흥구역", "minKrw": 658000000, "maxKrw": 930000000, "spreadRatio": 0.4134}`
+- `{"type": "zone_investment_range", "naturalKey": "금천구|독산동|독산시흥구역", "minKrw": 235000000, "maxKrw": 658000000, "spreadRatio": 1.8}`
 - `{"type": "zone_investment_range", "naturalKey": "동대문구|용두동|용두 7구역", "minKrw": 315000000, "maxKrw": 380000000, "spreadRatio": 0.2063}`
-- `{"type": "zone_investment_range", "naturalKey": "동대문구|전농동|전농 8구역", "minKrw": 950000000, "maxKrw": 1255000000, "spreadRatio": 0.3211}`
-- `{"type": "zone_investment_range", "naturalKey": "동작구|노량진동|노량진 1구역", "minKrw": 1580000000, "maxKrw": 2700000000, "spreadRatio": 0.7089}`
-- `{"type": "zone_investment_range", "naturalKey": "동작구|노량진동|노량진 3구역", "minKrw": 2000000000, "maxKrw": 3300000000, "spreadRatio": 0.65}`
-- `{"type": "zone_investment_range", "naturalKey": "동작구|대방동|노량진 7구역", "minKrw": 2100000000, "maxKrw": 3100000000, "spreadRatio": 0.4762}`
-- `{"type": "zone_investment_range", "naturalKey": "동작구|사당동|사당 12구역", "minKrw": 155000000, "maxKrw": 410000000, "spreadRatio": 1.6452}`
-- `{"type": "zone_investment_range", "naturalKey": "동작구|사당동|사당 17구역", "minKrw": 1000000000, "maxKrw": 1350000000, "spreadRatio": 0.35}`
-- `{"type": "zone_investment_range", "naturalKey": "동작구|사당동|사당 5구역(재건축)", "minKrw": 750000000, "maxKrw": 1200000000, "spreadRatio": 0.6}`
-- `{"type": "zone_investment_range", "naturalKey": "동작구|상도동|상도 14구역", "minKrw": 680000000, "maxKrw": 860000000, "spreadRatio": 0.2647}`
-- `{"type": "zone_investment_range", "naturalKey": "동작구|상도동|상도 15구역", "minKrw": 800000000, "maxKrw": 960000000, "spreadRatio": 0.2}`
-- `{"type": "zone_investment_range", "naturalKey": "동작구|상도동|상도 21구역(모아타운)", "minKrw": 180000000, "maxKrw": 390000000, "spreadRatio": 1.1667}`
-- `{"type": "zone_sale_price_range", "naturalKey": "동작구|흑석동|흑석 10구역", "minKrw": 950000000, "maxKrw": 1350000000, "spreadRatio": 0.4211}`
-- `{"type": "zone_investment_range", "naturalKey": "마포구|공덕동|공덕 7구역", "minKrw": 948000000, "maxKrw": 1150000000, "spreadRatio": 0.2131}`
-- ... and 38 more
+- `{"type": "zone_investment_range", "naturalKey": "동대문구|전농동|전농 8구역", "minKrw": 950000000, "maxKrw": 1200000000, "spreadRatio": 0.2632}`
+- `{"type": "zone_sale_price_range", "naturalKey": "동작구|노량진동|노량진 1구역", "minKrw": 2020000000, "maxKrw": 2700000000, "spreadRatio": 0.3366}`
+- `{"type": "zone_sale_price_range", "naturalKey": "동작구|노량진동|노량진 3구역", "minKrw": 2000000000, "maxKrw": 3300000000, "spreadRatio": 0.65}`
+- `{"type": "zone_sale_price_range", "naturalKey": "동작구|대방동|노량진 7구역", "minKrw": 2100000000, "maxKrw": 3100000000, "spreadRatio": 0.4762}`
+- ... and 59 more
 
 ### `reference_link_count_mismatch`
 
 - Severity: `error`
-- Count: `1`
+- Count: `0`
 - Meaning: Golden future-value reference hint 수와 seed SQL의 zone-reference link 수가 다릅니다.
 
-- `{"referenceHintCount": 110, "seedLinkCount": 83}`
 
 ### `seed_count_mismatch`
 
 - Severity: `error`
-- Count: `3`
+- Count: `0`
 - Meaning: 정규화 payload 기준 기대 건수와 seed SQL INSERT 건수가 다릅니다.
 
-- `{"name": "zones", "expected": 110, "actual": 84}`
-- `{"name": "zoneInvestmentSnapshots", "expected": 110, "actual": 83}`
-- `{"name": "zoneReferenceApartments", "expected": 110, "actual": 83}`
 
 ### `golden_normalization_warnings`
 
 - Severity: `warning`
-- Count: `1`
+- Count: `119`
 - Meaning: Golden Sample normalization warning count.
 
-- `{"row": 70, "code": "missing_zone_key", "message": "district, dong, or zone_name is missing", "zoneNaturalKey": "||—— SUB (구역지정 전 · Watch) ——"}`
+- `{"row": 2, "code": "reference_name_without_price", "message": "reference apartment exists without shared price", "zoneNaturalKey": "강북구|미아동|미아 2구역"}`
+- `{"row": 3, "code": "reference_name_without_price", "message": "reference apartment exists without shared price", "zoneNaturalKey": "강북구|미아동|미아 3구역"}`
+- `{"row": 4, "code": "reference_name_without_price", "message": "reference apartment exists without shared price", "zoneNaturalKey": "강북구|미아동|미아 4구역"}`
+- `{"row": 5, "code": "reference_name_without_price", "message": "reference apartment exists without shared price", "zoneNaturalKey": "강북구|미아동|미아 9-2구역(재건축)"}`
+- `{"row": 6, "code": "reference_name_without_price", "message": "reference apartment exists without shared price", "zoneNaturalKey": "광진구|자양동|자양 7구역"}`
+- `{"row": 7, "code": "reference_name_without_price", "message": "reference apartment exists without shared price", "zoneNaturalKey": "광진구|자양동|자양1동 779(모아타운)"}`
+- `{"row": 8, "code": "reference_name_without_price", "message": "reference apartment exists without shared price", "zoneNaturalKey": "광진구|자양동|자양2동 649(B)(모아타운)"}`
+- `{"row": 9, "code": "reference_name_without_price", "message": "reference apartment exists without shared price", "zoneNaturalKey": "광진구|자양동|자양4동 A구역"}`
+- `{"row": 10, "code": "reference_name_without_price", "message": "reference apartment exists without shared price", "zoneNaturalKey": "광진구|자양동|자양3동A구역"}`
+- `{"row": 11, "code": "reference_name_without_price", "message": "reference apartment exists without shared price", "zoneNaturalKey": "광진구|자양동|자양동 772-1(건대모아)"}`
+- `{"row": 12, "code": "reference_name_without_price", "message": "reference apartment exists without shared price", "zoneNaturalKey": "구리시|수택동|수택 2구역"}`
+- `{"row": 13, "code": "reference_name_without_price", "message": "reference apartment exists without shared price", "zoneNaturalKey": "금천구|독산동|독산 1구역"}`
+- `{"row": 14, "code": "reference_name_without_price", "message": "reference apartment exists without shared price", "zoneNaturalKey": "금천구|독산동|독산 2구역"}`
+- `{"row": 15, "code": "reference_name_without_price", "message": "reference apartment exists without shared price", "zoneNaturalKey": "금천구|독산동|독산시흥구역"}`
+- `{"row": 16, "code": "reference_name_without_price", "message": "reference apartment exists without shared price", "zoneNaturalKey": "동대문구|용두동|용두 7구역"}`
+- `{"row": 17, "code": "reference_name_without_price", "message": "reference apartment exists without shared price", "zoneNaturalKey": "동대문구|이문동|이문 4구역"}`
+- `{"row": 18, "code": "reference_name_without_price", "message": "reference apartment exists without shared price", "zoneNaturalKey": "동대문구|전농동|전농 8구역"}`
+- `{"row": 19, "code": "reference_name_without_price", "message": "reference apartment exists without shared price", "zoneNaturalKey": "동대문구|제기동|제기 4구역"}`
+- `{"row": 20, "code": "reference_name_without_price", "message": "reference apartment exists without shared price", "zoneNaturalKey": "동대문구|제기동|제기 6구역"}`
+- `{"row": 21, "code": "reference_name_without_price", "message": "reference apartment exists without shared price", "zoneNaturalKey": "동대문구|청량리동|청량리 6구역"}`
+- ... and 99 more
 
 ### `naver_normalization_warnings`
 

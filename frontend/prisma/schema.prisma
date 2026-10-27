@@ -129,3 +129,12 @@ model BehaviorEvent {
   @@index([zoneId])
   @@map("behavior_events")
 }
+
+/// 매물 검수보드 PC·폰 동기화. 앱 스키마 밖에 raw SQL로만 있으면 db push가 통째로 지운다.
+model ListingReviewSync {
+  boardId   String   @id @map("board_id")
+  payload   Json
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("listing_review_sync")
+}

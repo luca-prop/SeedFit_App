@@ -3,12 +3,12 @@ export const scatterData = [
     "id": "미아 2구역",
     "name": "미아 2구역",
     "district": "강북구",
-    "tier": "T3",
+    "tier": "T2",
     "stage": 4.1,
     "stageStr": "건축심의",
     "coverage": "CORE",
-    "investmentMin": 6.2,
-    "investmentMax": 10.5
+    "investmentMin": 4.2,
+    "investmentMax": 6.48
   },
   {
     "id": "미아 3구역",
@@ -29,8 +29,8 @@ export const scatterData = [
     "stage": 6.1,
     "stageStr": "관리처분인가",
     "coverage": "CORE",
-    "investmentMin": 11.2,
-    "investmentMax": 16.0
+    "investmentMin": 11.5,
+    "investmentMax": 12.5
   },
   {
     "id": "미아 9-2구역(재건축)",
@@ -40,8 +40,8 @@ export const scatterData = [
     "stage": 5.1,
     "stageStr": "사업시행인가",
     "coverage": "CORE",
-    "investmentMin": 5.4,
-    "investmentMax": 10.0
+    "investmentMin": 5.5,
+    "investmentMax": 7.5
   },
   {
     "id": "구의1동 221-1",
@@ -84,8 +84,8 @@ export const scatterData = [
     "stage": 3.1,
     "stageStr": "조합설립인가",
     "coverage": "CORE",
-    "investmentMin": 16.1,
-    "investmentMax": 17.9
+    "investmentMin": 17.8,
+    "investmentMax": 19.0
   },
   {
     "id": "자양1동 593(A)(모아타운)",
@@ -117,8 +117,8 @@ export const scatterData = [
     "stage": 3.1,
     "stageStr": "조합설립인가",
     "coverage": "CORE",
-    "investmentMin": 6.9,
-    "investmentMax": 7.8
+    "investmentMin": 9.0,
+    "investmentMax": 12.0
   },
   {
     "id": "자양2동 663(C)(모아타운)",
@@ -143,19 +143,8 @@ export const scatterData = [
     "investmentMax": 7.4
   },
   {
-    "id": "자양4동 A구역",
-    "name": "자양4동 A구역",
-    "district": "광진구",
-    "tier": "T4",
-    "stage": 2.1,
-    "stageStr": "정비구역 지정",
-    "coverage": "CORE",
-    "investmentMin": 15.8,
-    "investmentMax": 18.0
-  },
-  {
-    "id": "자양동 227-147",
-    "name": "자양동 227-147",
+    "id": "자양3동A구역",
+    "name": "자양3동A구역",
     "district": "광진구",
     "tier": "T3",
     "stage": 2.1,
@@ -163,6 +152,17 @@ export const scatterData = [
     "coverage": "CORE",
     "investmentMin": 9.0,
     "investmentMax": 10.25
+  },
+  {
+    "id": "자양4동 A구역",
+    "name": "자양4동 A구역",
+    "district": "광진구",
+    "tier": "T4",
+    "stage": 2.1,
+    "stageStr": "정비구역 지정",
+    "coverage": "CORE",
+    "investmentMin": 16.4,
+    "investmentMax": 18.5
   },
   {
     "id": "자양동 629(모아타운)",
@@ -179,12 +179,12 @@ export const scatterData = [
     "id": "자양동 772-1(건대모아)",
     "name": "자양동 772-1(건대모아)",
     "district": "광진구",
-    "tier": "T2",
+    "tier": "T3",
     "stage": 3.1,
     "stageStr": "조합설립인가",
     "coverage": "CORE",
-    "investmentMin": 4.7,
-    "investmentMax": 5.1
+    "investmentMin": 8.0,
+    "investmentMax": 13.0
   },
   {
     "id": "중곡 1구역(A5)",
@@ -212,12 +212,12 @@ export const scatterData = [
     "id": "수택 2구역",
     "name": "수택 2구역",
     "district": "구리시",
-    "tier": "T1",
+    "tier": "T2",
     "stage": 4.1,
     "stageStr": "시공사 선정",
     "coverage": "CORE",
-    "investmentMin": 2.4,
-    "investmentMax": 2.9
+    "investmentMin": 3.0,
+    "investmentMax": 3.7
   },
   {
     "id": "독산 1구역",
@@ -227,30 +227,30 @@ export const scatterData = [
     "stage": 3.0,
     "stageStr": "사업시행자 지정",
     "coverage": "CORE",
-    "investmentMin": 6.9,
-    "investmentMax": 11.8
+    "investmentMin": 5.9,
+    "investmentMax": 11.2
   },
   {
     "id": "독산 2구역",
     "name": "독산 2구역",
     "district": "금천구",
-    "tier": "T2",
+    "tier": "T1",
     "stage": 3.1,
     "stageStr": "조합설립인가",
     "coverage": "CORE",
-    "investmentMin": 4.8,
-    "investmentMax": 8.8
+    "investmentMin": 2.73,
+    "investmentMax": 7.97
   },
   {
     "id": "독산시흥구역",
     "name": "독산시흥구역",
     "district": "금천구",
-    "tier": "T2",
+    "tier": "T1",
     "stage": 3.1,
     "stageStr": "조합설립인가",
     "coverage": "CORE",
-    "investmentMin": 3.35,
-    "investmentMax": 9.3
+    "investmentMin": 2.35,
+    "investmentMax": 6.58
   },
   {
     "id": "용두 7구역",
@@ -271,8 +271,8 @@ export const scatterData = [
     "stage": 6.1,
     "stageStr": "관리처분인가",
     "coverage": "CORE",
-    "investmentMin": 13.0,
-    "investmentMax": 14.5
+    "investmentMin": 13.2,
+    "investmentMax": 14.4
   },
   {
     "id": "전농 10구역",
@@ -305,7 +305,7 @@ export const scatterData = [
     "stageStr": "조합설립인가",
     "coverage": "CORE",
     "investmentMin": 9.5,
-    "investmentMax": 12.55
+    "investmentMax": 12.0
   },
   {
     "id": "제기 6구역",
@@ -315,8 +315,19 @@ export const scatterData = [
     "stage": 6.1,
     "stageStr": "관리처분인가",
     "coverage": "CORE",
-    "investmentMin": 9.8,
-    "investmentMax": 9.8
+    "investmentMin": 8.0,
+    "investmentMax": 8.0
+  },
+  {
+    "id": "청량리 6구역",
+    "name": "청량리 6구역",
+    "district": "동대문구",
+    "tier": "T4",
+    "stage": 5.1,
+    "stageStr": "사업시행인가",
+    "coverage": "CORE",
+    "investmentMin": 12.0,
+    "investmentMax": 13.5
   },
   {
     "id": "청량리 8구역",
@@ -337,8 +348,8 @@ export const scatterData = [
     "stage": 6.1,
     "stageStr": "관리처분인가",
     "coverage": "CORE",
-    "investmentMin": 20.2,
-    "investmentMax": 27.0
+    "investmentMin": 19.5,
+    "investmentMax": 19.5
   },
   {
     "id": "노량진 3구역",
@@ -349,7 +360,7 @@ export const scatterData = [
     "stageStr": "관리처분인가",
     "coverage": "CORE",
     "investmentMin": 20.0,
-    "investmentMax": 33.0
+    "investmentMax": 22.5
   },
   {
     "id": "노량진 7구역",
@@ -360,7 +371,7 @@ export const scatterData = [
     "stageStr": "관리처분인가",
     "coverage": "CORE",
     "investmentMin": 19.73,
-    "investmentMax": 31.0
+    "investmentMax": 22.0
   },
   {
     "id": "사당 12구역",
@@ -404,7 +415,7 @@ export const scatterData = [
     "stageStr": "조합설립인가",
     "coverage": "CORE",
     "investmentMin": 10.0,
-    "investmentMax": 13.5
+    "investmentMax": 18.0
   },
   {
     "id": "사당 18구역",
@@ -432,12 +443,12 @@ export const scatterData = [
     "id": "사당 5구역(재건축)",
     "name": "사당 5구역(재건축)",
     "district": "동작구",
-    "tier": "T3",
+    "tier": "T4",
     "stage": 5.1,
     "stageStr": "사업시행인가",
     "coverage": "CORE",
-    "investmentMin": 7.5,
-    "investmentMax": 12.0
+    "investmentMin": 10.44,
+    "investmentMax": 10.44
   },
   {
     "id": "상도 14구역",
@@ -447,8 +458,8 @@ export const scatterData = [
     "stage": 3.0,
     "stageStr": "사업시행자 지정",
     "coverage": "CORE",
-    "investmentMin": 6.8,
-    "investmentMax": 8.6
+    "investmentMin": 7.5,
+    "investmentMax": 9.5
   },
   {
     "id": "상도 15구역",
@@ -458,8 +469,8 @@ export const scatterData = [
     "stage": 4.1,
     "stageStr": "시공사 선정",
     "coverage": "CORE",
-    "investmentMin": 8.0,
-    "investmentMax": 9.6
+    "investmentMin": 5.86,
+    "investmentMax": 7.15
   },
   {
     "id": "상도 16구역",
@@ -524,8 +535,8 @@ export const scatterData = [
     "stage": 3.1,
     "stageStr": "조합설립인가",
     "coverage": "CORE",
-    "investmentMin": 9.48,
-    "investmentMax": 11.5
+    "investmentMin": 8.7,
+    "investmentMax": 12.8
   },
   {
     "id": "공덕 8구역",
@@ -536,7 +547,7 @@ export const scatterData = [
     "stageStr": "추진위 승인",
     "coverage": "CORE",
     "investmentMin": 7.62,
-    "investmentMax": 8.2
+    "investmentMax": 9.12
   },
   {
     "id": "대흥 5구역",
@@ -569,7 +580,7 @@ export const scatterData = [
     "stageStr": "조합설립인가",
     "coverage": "CORE",
     "investmentMin": 10.65,
-    "investmentMax": 12.6
+    "investmentMax": 12.3
   },
   {
     "id": "염리 5구역",
@@ -580,7 +591,7 @@ export const scatterData = [
     "stageStr": "정비구역지정",
     "coverage": "CORE",
     "investmentMin": 7.8,
-    "investmentMax": 9.9
+    "investmentMax": 7.8
   },
   {
     "id": "북아현 2구역",
@@ -590,8 +601,8 @@ export const scatterData = [
     "stage": 6.1,
     "stageStr": "관리처분인가",
     "coverage": "CORE",
-    "investmentMin": 16.0,
-    "investmentMax": 19.0
+    "investmentMin": 15.5,
+    "investmentMax": 17.6
   },
   {
     "id": "북아현 3구역",
@@ -601,8 +612,8 @@ export const scatterData = [
     "stage": 5.1,
     "stageStr": "사업시행인가",
     "coverage": "CORE",
-    "investmentMin": 11.5,
-    "investmentMax": 13.61
+    "investmentMin": 11.47,
+    "investmentMax": 11.9
   },
   {
     "id": "방배 13구역",
@@ -612,8 +623,8 @@ export const scatterData = [
     "stage": 6.1,
     "stageStr": "관리처분인가",
     "coverage": "CORE",
-    "investmentMin": 20.7,
-    "investmentMax": 23.0
+    "investmentMin": 19.9,
+    "investmentMax": 20.5
   },
   {
     "id": "방배 15구역(재건축)",
@@ -623,8 +634,8 @@ export const scatterData = [
     "stage": 4.1,
     "stageStr": "건축심의",
     "coverage": "CORE",
-    "investmentMin": 25.0,
-    "investmentMax": 34.0
+    "investmentMin": 26.5,
+    "investmentMax": 32.0
   },
   {
     "id": "수진 1구역",
@@ -634,8 +645,8 @@ export const scatterData = [
     "stage": 6.1,
     "stageStr": "관리처분인가",
     "coverage": "CORE",
-    "investmentMin": 6.9,
-    "investmentMax": 7.58
+    "investmentMin": 6.0,
+    "investmentMax": 8.6
   },
   {
     "id": "신흥 1구역",
@@ -645,8 +656,8 @@ export const scatterData = [
     "stage": 5.1,
     "stageStr": "사업시행인가",
     "coverage": "CORE",
-    "investmentMin": 7.0,
-    "investmentMax": 7.6
+    "investmentMin": 5.9,
+    "investmentMax": 8.5
   },
   {
     "id": "신흥 3구역",
@@ -656,8 +667,8 @@ export const scatterData = [
     "stage": 4.1,
     "stageStr": "시공사 선정",
     "coverage": "CORE",
-    "investmentMin": 5.6,
-    "investmentMax": 7.3
+    "investmentMin": 7.0,
+    "investmentMax": 8.6
   },
   {
     "id": "금호 16구역",
@@ -667,8 +678,8 @@ export const scatterData = [
     "stage": 6.1,
     "stageStr": "관리처분인가",
     "coverage": "CORE",
-    "investmentMin": 14.5,
-    "investmentMax": 16.0
+    "investmentMin": 13.26,
+    "investmentMax": 14.0
   },
   {
     "id": "금호 21구역",
@@ -678,8 +689,8 @@ export const scatterData = [
     "stage": 4.1,
     "stageStr": "시공사 선정",
     "coverage": "CORE",
-    "investmentMin": 11.8,
-    "investmentMax": 16.4
+    "investmentMin": 11.5,
+    "investmentMax": 16.35
   },
   {
     "id": "금호 22구역",
@@ -715,6 +726,50 @@ export const scatterData = [
     "investmentMax": 3.7
   },
   {
+    "id": "성수전략1구역",
+    "name": "성수전략1구역",
+    "district": "성동구",
+    "tier": "T4",
+    "stage": 4.1,
+    "stageStr": "시공사 선정",
+    "coverage": "CORE",
+    "investmentMin": 21.0,
+    "investmentMax": 31.0
+  },
+  {
+    "id": "성수전략2구역",
+    "name": "성수전략2구역",
+    "district": "성동구",
+    "tier": "T4",
+    "stage": 3.1,
+    "stageStr": "조합설립인가",
+    "coverage": "CORE",
+    "investmentMin": 24.5,
+    "investmentMax": 28.0
+  },
+  {
+    "id": "성수전략3구역",
+    "name": "성수전략3구역",
+    "district": "성동구",
+    "tier": "T4",
+    "stage": 4.1,
+    "stageStr": "시공사 선정",
+    "coverage": "CORE",
+    "investmentMin": 24.7,
+    "investmentMax": 27.55
+  },
+  {
+    "id": "성수전략4구역",
+    "name": "성수전략4구역",
+    "district": "성동구",
+    "tier": "T4",
+    "stage": 4.1,
+    "stageStr": "시공사 선정",
+    "coverage": "CORE",
+    "investmentMin": 27.8,
+    "investmentMax": 30.0
+  },
+  {
     "id": "용답 1구역",
     "name": "용답 1구역",
     "district": "성동구",
@@ -744,7 +799,7 @@ export const scatterData = [
     "stage": 3.1,
     "stageStr": "조합설립인가",
     "coverage": "CORE",
-    "investmentMin": 5.2,
+    "investmentMin": 5.8,
     "investmentMax": 6.0
   },
   {
@@ -755,8 +810,8 @@ export const scatterData = [
     "stage": 5.1,
     "stageStr": "사업시행인가",
     "coverage": "CORE",
-    "investmentMin": 8.5,
-    "investmentMax": 8.5
+    "investmentMin": 6.3,
+    "investmentMax": 6.3
   },
   {
     "id": "장위 13-1구역",
@@ -773,12 +828,12 @@ export const scatterData = [
     "id": "장위 13-2구역",
     "name": "장위 13-2구역",
     "district": "성북구",
-    "tier": "T1",
+    "tier": "T2",
     "stage": 2.1,
     "stageStr": "정비구역지정",
     "coverage": "CORE",
-    "investmentMin": 1.8,
-    "investmentMax": 2.0
+    "investmentMin": 3.28,
+    "investmentMax": 4.0
   },
   {
     "id": "장위 14구역",
@@ -789,7 +844,7 @@ export const scatterData = [
     "stageStr": "시공사 선정",
     "coverage": "CORE",
     "investmentMin": 5.5,
-    "investmentMax": 5.98
+    "investmentMax": 6.0
   },
   {
     "id": "장위 15구역",
@@ -799,8 +854,8 @@ export const scatterData = [
     "stage": 4.1,
     "stageStr": "시공사 선정",
     "coverage": "CORE",
-    "investmentMin": 5.25,
-    "investmentMax": 7.1
+    "investmentMin": 6.25,
+    "investmentMax": 7.5
   },
   {
     "id": "마천 1구역",
@@ -810,19 +865,19 @@ export const scatterData = [
     "stage": 3.1,
     "stageStr": "조합설립인가",
     "coverage": "CORE",
-    "investmentMin": 9.2,
-    "investmentMax": 11.0
+    "investmentMin": 9.3,
+    "investmentMax": 10.6
   },
   {
     "id": "마천 3구역",
     "name": "마천 3구역",
     "district": "송파구",
-    "tier": "T4",
+    "tier": "T3",
     "stage": 5.1,
     "stageStr": "사업시행인가",
     "coverage": "CORE",
-    "investmentMin": 10.6,
-    "investmentMax": 11.5
+    "investmentMin": 9.4,
+    "investmentMax": 9.51
   },
   {
     "id": "신정 1구역",
@@ -839,12 +894,12 @@ export const scatterData = [
     "id": "신길 16-2구역",
     "name": "신길 16-2구역",
     "district": "영등포구",
-    "tier": "T2",
+    "tier": "T3",
     "stage": 2.1,
     "stageStr": "정비구역지정",
     "coverage": "CORE",
-    "investmentMin": 3.7,
-    "investmentMax": 4.7
+    "investmentMin": 7.7,
+    "investmentMax": 11.0
   },
   {
     "id": "신길 2구역",
@@ -943,7 +998,7 @@ export const scatterData = [
     "stageStr": "조합설립인가",
     "coverage": "CORE",
     "investmentMin": 6.0,
-    "investmentMax": 9.8
+    "investmentMax": 12.0
   },
   {
     "id": "용산 1구역",
@@ -1004,12 +1059,12 @@ export const scatterData = [
     "id": "이촌1구역(재건축)",
     "name": "이촌1구역(재건축)",
     "district": "용산구",
-    "tier": "T4",
+    "tier": "T3",
     "stage": 2.1,
     "stageStr": "정비구역지정",
     "coverage": "CORE",
-    "investmentMin": 12.0,
-    "investmentMax": 14.2
+    "investmentMin": 8.39,
+    "investmentMax": 14.0
   },
   {
     "id": "이태원 1구역",
@@ -1031,7 +1086,7 @@ export const scatterData = [
     "stageStr": "조합설립인가",
     "coverage": "CORE",
     "investmentMin": 7.5,
-    "investmentMax": 20.0
+    "investmentMax": 16.5
   },
   {
     "id": "청파 2구역",
@@ -1042,7 +1097,7 @@ export const scatterData = [
     "stageStr": "조합설립인가",
     "coverage": "CORE",
     "investmentMin": 8.0,
-    "investmentMax": 8.1
+    "investmentMax": 8.5
   },
   {
     "id": "청파 3구역",
@@ -1085,8 +1140,8 @@ export const scatterData = [
     "stage": 6.1,
     "stageStr": "관리처분인가",
     "coverage": "CORE",
-    "investmentMin": 6.64,
-    "investmentMax": 7.06
+    "investmentMin": 7.08,
+    "investmentMax": 7.1
   },
   {
     "id": "대조 1구역",
@@ -1118,18 +1173,18 @@ export const scatterData = [
     "stage": 4.1,
     "stageStr": "시공사 선정",
     "coverage": "CORE",
-    "investmentMin": 12.0,
-    "investmentMax": 19.0
+    "investmentMin": 14.65,
+    "investmentMax": 20.0
   },
   {
     "id": "중화 6구역",
     "name": "중화 6구역",
     "district": "중랑구",
-    "tier": "T1",
+    "tier": "T2",
     "stage": 2.1,
     "stageStr": "정비구역지정",
     "coverage": "CORE",
-    "investmentMin": 2.0,
-    "investmentMax": 9.7
+    "investmentMin": 4.6,
+    "investmentMax": 10.0
   }
 ];

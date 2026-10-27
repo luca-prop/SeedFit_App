@@ -1,0 +1,1516 @@
+{
+  "generatedAt": "2026-10-27",
+  "goldenCsv": "docs/golden_samples261027.csv.csv",
+  "write": false,
+  "changedCount": 57,
+  "blockedCount": 0,
+  "changed": [
+    {
+      "zoneNaturalKey": "강북구|미아동|미아 2구역",
+      "before": {
+        "min": "6.2",
+        "max": "10.5",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "4.2",
+        "max": "6.48",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 4,
+      "articleNos": [
+        "2652313084",
+        "2657746583",
+        "2654560919",
+        "2652658937"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "강북구|미아동|미아 3구역",
+      "before": {
+        "min": "12",
+        "max": "12",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "12",
+        "max": "12",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 1,
+      "articleNos": [
+        "2653542319"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "강북구|미아동|미아 4구역",
+      "before": {
+        "min": "11.2",
+        "max": "16",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "11.5",
+        "max": "12.5",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 3,
+      "articleNos": [
+        "2653755036",
+        "2655232538",
+        "2655740085"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "강북구|미아동|미아 9-2구역(재건축)",
+      "before": {
+        "min": "5.4",
+        "max": "10",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "5.5",
+        "max": "7.5",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 5,
+      "articleNos": [
+        "2656269407",
+        "2657294211",
+        "2657305285",
+        "2653398388",
+        "2653935884"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "광진구|자양동|자양 7구역",
+      "before": {
+        "min": "16.1",
+        "max": "17.9",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "17.8",
+        "max": "19",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 5,
+      "articleNos": [
+        "2652045096",
+        "2654750221",
+        "2651877871",
+        "2654921518",
+        "2657130425"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "광진구|자양동|자양2동 649(B)(모아타운)",
+      "before": {
+        "min": "6.9",
+        "max": "7.8",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "9",
+        "max": "12",
+        "pMin": "3",
+        "pMax": "3"
+      },
+      "approvedCount": 5,
+      "articleNos": [
+        "2656133470",
+        "2654873980",
+        "2651848561",
+        "2654973679",
+        "2656292972"
+      ],
+      "chotuFlags": [
+        "OK",
+        "HIGH"
+      ]
+    },
+    {
+      "zoneNaturalKey": "광진구|자양동|자양4동 A구역",
+      "before": {
+        "min": "15.8",
+        "max": "18",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "16.4",
+        "max": "18.5",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 4,
+      "articleNos": [
+        "2652288862",
+        "2655409608",
+        "2655391523",
+        "2655110224"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "광진구|자양동|자양동 772-1(건대모아)",
+      "before": {
+        "min": "4.7",
+        "max": "5.1",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "8",
+        "max": "13",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 5,
+      "articleNos": [
+        "2656065584",
+        "2652030512",
+        "2656867485",
+        "2655473233",
+        "2652141513"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "구리시|수택동|수택 2구역",
+      "before": {
+        "min": "2.4",
+        "max": "2.9",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "3",
+        "max": "3.7",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 5,
+      "articleNos": [
+        "2651773525",
+        "2657620138",
+        "2655561834",
+        "2657317384",
+        "2657311273"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "금천구|독산동|독산 1구역",
+      "before": {
+        "min": "6.9",
+        "max": "11.8",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "5.9",
+        "max": "11.2",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 5,
+      "articleNos": [
+        "2655826795",
+        "2653688260",
+        "2656719186",
+        "2657045000",
+        "2657494716"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "금천구|독산동|독산 2구역",
+      "before": {
+        "min": "4.8",
+        "max": "8.8",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "2.73",
+        "max": "7.97",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 5,
+      "articleNos": [
+        "2657140446",
+        "2655275850",
+        "2654073714",
+        "2652878183",
+        "2653929102"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "금천구|독산동|독산시흥구역",
+      "before": {
+        "min": "3.35",
+        "max": "9.3",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "2.35",
+        "max": "6.58",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 4,
+      "articleNos": [
+        "2656876312",
+        "2655600185",
+        "2654688709",
+        "2655145807"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "동대문구|이문동|이문 4구역",
+      "before": {
+        "min": "13",
+        "max": "14.5",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "13.2",
+        "max": "14.4",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 5,
+      "articleNos": [
+        "2656488151",
+        "2657023014",
+        "2657712668",
+        "2657282587",
+        "2652580992"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "동대문구|전농동|전농 8구역",
+      "before": {
+        "min": "9.5",
+        "max": "12.55",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "9.5",
+        "max": "12",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 5,
+      "articleNos": [
+        "2653727051",
+        "2653204709",
+        "2657374931",
+        "2653661031",
+        "2655394520"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "동대문구|제기동|제기 6구역",
+      "before": {
+        "min": "9.8",
+        "max": "9.8",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "8",
+        "max": "8",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 1,
+      "articleNos": [
+        "2655058250"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "동대문구|청량리동|청량리 6구역",
+      "before": {
+        "min": null,
+        "max": null,
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "12",
+        "max": "13.5",
+        "pMin": "8.15",
+        "pMax": "8.15"
+      },
+      "approvedCount": 2,
+      "articleNos": [
+        "2655202136",
+        "2651705225"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "동대문구|청량리동|청량리 8구역",
+      "before": {
+        "min": "12",
+        "max": "12",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "12",
+        "max": "12",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 2,
+      "articleNos": [
+        "2655860510",
+        "2655658298"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "동작구|노량진동|노량진 1구역",
+      "before": {
+        "min": "20.2",
+        "max": "27",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "19.5",
+        "max": "19.5",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 4,
+      "articleNos": [
+        "2656789330",
+        "2657373785",
+        "2656664112",
+        "2656606351"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "동작구|노량진동|노량진 3구역",
+      "before": {
+        "min": "20",
+        "max": "33",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "20",
+        "max": "22.5",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 2,
+      "articleNos": [
+        "2655401394",
+        "2657247857"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "동작구|대방동|노량진 7구역",
+      "before": {
+        "min": "19.73",
+        "max": "31",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "19.73",
+        "max": "22",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 4,
+      "articleNos": [
+        "2653275776",
+        "2654005911",
+        "2657605132",
+        "2657605091"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "동작구|사당동|사당 17구역",
+      "before": {
+        "min": "10",
+        "max": "13.5",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "10",
+        "max": "18",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 5,
+      "articleNos": [
+        "2651978688",
+        "2657580383",
+        "2654910408",
+        "2651704765",
+        "2654529725"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "동작구|사당동|사당 5구역(재건축)",
+      "before": {
+        "min": "7.5",
+        "max": "12",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "10.44",
+        "max": "10.44",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 1,
+      "articleNos": [
+        "2654320411"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "동작구|상도동|상도 14구역",
+      "before": {
+        "min": "6.8",
+        "max": "8.6",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "7.5",
+        "max": "9.5",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 5,
+      "articleNos": [
+        "2655132872",
+        "2655704035",
+        "2655708866",
+        "2656042226",
+        "2655591114"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "동작구|상도동|상도 15구역",
+      "before": {
+        "min": "8",
+        "max": "9.6",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "5.86",
+        "max": "7.15",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 5,
+      "articleNos": [
+        "2652397656",
+        "2652399350",
+        "2655172597",
+        "2656105403",
+        "2654708728"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "마포구|공덕동|공덕 7구역",
+      "before": {
+        "min": "9.48",
+        "max": "11.5",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "8.7",
+        "max": "12.8",
+        "pMin": "6.4",
+        "pMax": "6.4"
+      },
+      "approvedCount": 5,
+      "articleNos": [
+        "2656849033",
+        "2656310256",
+        "2654578996",
+        "2656364755",
+        "2656527603"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "마포구|공덕동|공덕 8구역",
+      "before": {
+        "min": "7.62",
+        "max": "8.2",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "7.62",
+        "max": "9.12",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 5,
+      "articleNos": [
+        "2654355035",
+        "2653059196",
+        "2651827479",
+        "2656116575",
+        "2652552553"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "마포구|염리동|염리 4구역",
+      "before": {
+        "min": "10.65",
+        "max": "12.6",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "10.65",
+        "max": "12.3",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 3,
+      "articleNos": [
+        "2652102365",
+        "2654615845",
+        "2652100975"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "마포구|염리동|염리 5구역",
+      "before": {
+        "min": "7.8",
+        "max": "9.9",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "7.8",
+        "max": "7.8",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 5,
+      "articleNos": [
+        "2655601260",
+        "2655368641",
+        "2651994226",
+        "2654576781",
+        "2652473784"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "서대문구|북아현동|북아현 2구역",
+      "before": {
+        "min": "16",
+        "max": "19",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "15.5",
+        "max": "17.6",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 5,
+      "articleNos": [
+        "2655738740",
+        "2655170006",
+        "2654956234",
+        "2653276709",
+        "2655364897"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "서대문구|북아현동|북아현 3구역",
+      "before": {
+        "min": "11.5",
+        "max": "13.61",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "11.47",
+        "max": "11.9",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 3,
+      "articleNos": [
+        "2657753242",
+        "2657254973",
+        "2653917515"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "서초구|방배동|방배 13구역",
+      "before": {
+        "min": "20.7",
+        "max": "23",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "19.9",
+        "max": "20.5",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 5,
+      "articleNos": [
+        "2654037359",
+        "2654617124",
+        "2654586209",
+        "2653349611",
+        "2655185291"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "서초구|방배동|방배 15구역(재건축)",
+      "before": {
+        "min": "25",
+        "max": "34",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "26.5",
+        "max": "32",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 5,
+      "articleNos": [
+        "2655207209",
+        "2651713346",
+        "2652395937",
+        "2655246146",
+        "2657343054"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "성남시 수정구|수진동|수진 1구역",
+      "before": {
+        "min": "6.9",
+        "max": "7.58",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "6",
+        "max": "8.6",
+        "pMin": "5.6",
+        "pMax": "5.68"
+      },
+      "approvedCount": 5,
+      "articleNos": [
+        "2652044794",
+        "2657129086",
+        "2657123422",
+        "2655367184",
+        "2657792340"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "성남시 수정구|신흥동|신흥 1구역",
+      "before": {
+        "min": "7",
+        "max": "7.6",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "5.9",
+        "max": "8.5",
+        "pMin": "4",
+        "pMax": "5.18"
+      },
+      "approvedCount": 5,
+      "articleNos": [
+        "2656880598",
+        "2656904114",
+        "2656139536",
+        "2655072120",
+        "2656064859"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "성남시 수정구|신흥동|신흥 3구역",
+      "before": {
+        "min": "5.6",
+        "max": "7.3",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "7",
+        "max": "8.6",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 3,
+      "articleNos": [
+        "2656803646",
+        "2651963603",
+        "2653427364"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "성동구|금호동2가|금호 16구역",
+      "before": {
+        "min": "14.5",
+        "max": "16",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "13.26",
+        "max": "14",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 5,
+      "articleNos": [
+        "2656784880",
+        "2656813531",
+        "2657095865",
+        "2653552173",
+        "2656579185"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "성동구|금호동3가|금호 21구역",
+      "before": {
+        "min": "11.8",
+        "max": "16.4",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "11.5",
+        "max": "16.35",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 5,
+      "articleNos": [
+        "2657353466",
+        "2657382059",
+        "2657315860",
+        "2656282135",
+        "2657475101"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "성동구|성수동|성수전략1구역",
+      "before": {
+        "min": "21",
+        "max": "31",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "21",
+        "max": "31",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 5,
+      "articleNos": [
+        "2652831333",
+        "2652782071",
+        "2654543306",
+        "2656968713",
+        "2653138354"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "성동구|성수동|성수전략2구역",
+      "before": {
+        "min": "24.5",
+        "max": "27.15",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "24.5",
+        "max": "28",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 5,
+      "articleNos": [
+        "2655451628",
+        "2652586864",
+        "2651862164",
+        "2651923246",
+        "2656773392"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "성동구|성수동|성수전략3구역",
+      "before": {
+        "min": "20",
+        "max": "27",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "24.7",
+        "max": "27.55",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 5,
+      "articleNos": [
+        "2655733611",
+        "2654863809",
+        "2655814206",
+        "2654949610",
+        "2657363435"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "성동구|성수동|성수전략4구역",
+      "before": {
+        "min": "30",
+        "max": "30",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "27.8",
+        "max": "30",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 5,
+      "articleNos": [
+        "2657134304",
+        "2655456572",
+        "2654994983",
+        "2657060560",
+        "2655460670"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "성북구|길음동|길음 5구역",
+      "before": {
+        "min": "5.2",
+        "max": "6",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "5.8",
+        "max": "6",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 3,
+      "articleNos": [
+        "2656580032",
+        "2654446911",
+        "2652185871"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "성북구|길음동|신길음구역",
+      "before": {
+        "min": "8.5",
+        "max": "8.5",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "6.3",
+        "max": "6.3",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 1,
+      "articleNos": [
+        "2655048743"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "성북구|장위동|장위 13-2구역",
+      "before": {
+        "min": "1.8",
+        "max": "2",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "3.28",
+        "max": "4",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 5,
+      "articleNos": [
+        "2657012582",
+        "2652397583",
+        "2655921656",
+        "2655010508",
+        "2654795733"
+      ],
+      "chotuFlags": [
+        "HIGH",
+        "HIGH"
+      ]
+    },
+    {
+      "zoneNaturalKey": "성북구|장위동|장위 14구역",
+      "before": {
+        "min": "5.5",
+        "max": "5.98",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "5.5",
+        "max": "6",
+        "pMin": "1",
+        "pMax": "1"
+      },
+      "approvedCount": 4,
+      "articleNos": [
+        "2656987782",
+        "2657481206",
+        "2657506005",
+        "2657505926"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "송파구|마천동|마천 1구역",
+      "before": {
+        "min": "9.2",
+        "max": "11",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "9.3",
+        "max": "10.6",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 4,
+      "articleNos": [
+        "2653146404",
+        "2655651134",
+        "2656081380",
+        "2656868746"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "송파구|마천동|마천 3구역",
+      "before": {
+        "min": "10.6",
+        "max": "11.5",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "9.4",
+        "max": "9.51",
+        "pMin": "6",
+        "pMax": "6.89"
+      },
+      "approvedCount": 5,
+      "articleNos": [
+        "2656247369",
+        "2656096546",
+        "2654531427",
+        "2655840658",
+        "2656892648"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "영등포구|신길동|신길 16-2구역",
+      "before": {
+        "min": "3.7",
+        "max": "4.7",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "7.7",
+        "max": "11",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 5,
+      "articleNos": [
+        "2652328440",
+        "2657148428",
+        "2657556093",
+        "2655889829",
+        "2654247884"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "용산구|이촌동|이촌1구역(재건축)",
+      "before": {
+        "min": "12",
+        "max": "14.2",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "8.39",
+        "max": "14",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 5,
+      "articleNos": [
+        "2655470608",
+        "2657177331",
+        "2657177409",
+        "2657566098",
+        "2656469963"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "용산구|청파동|서계통합",
+      "before": {
+        "min": "6",
+        "max": "9.8",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "6",
+        "max": "12",
+        "pMin": "3",
+        "pMax": "3"
+      },
+      "approvedCount": 5,
+      "articleNos": [
+        "2655261032",
+        "2656322537",
+        "2653687158",
+        "2653622160",
+        "2654087641"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "용산구|청파동|청파 1구역",
+      "before": {
+        "min": "7.5",
+        "max": "20",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "7.5",
+        "max": "16.5",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 4,
+      "articleNos": [
+        "2655205284",
+        "2657149919",
+        "2652699915",
+        "2656888622"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "용산구|청파동|청파 2구역",
+      "before": {
+        "min": "8",
+        "max": "8.1",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "8",
+        "max": "8.5",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 3,
+      "articleNos": [
+        "2655566010",
+        "2654851420",
+        "2654850832"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "은평구|갈현동|갈현 1구역",
+      "before": {
+        "min": "6.64",
+        "max": "7.06",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "7.08",
+        "max": "7.1",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 5,
+      "articleNos": [
+        "2652578803",
+        "2656075569",
+        "2655186369",
+        "2656488794",
+        "2655060038"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "은평구|불광동|불광 5구역",
+      "before": {
+        "min": "9.17",
+        "max": "10.52",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "9.17",
+        "max": "10.52",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 5,
+      "articleNos": [
+        "2652083658",
+        "2652084026",
+        "2653945666",
+        "2657791848",
+        "2656504109"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "중구|신당동|신당 10구역",
+      "before": {
+        "min": "12",
+        "max": "19",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "14.65",
+        "max": "20",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 4,
+      "articleNos": [
+        "2654921886",
+        "2652549218",
+        "2656708969",
+        "2654592507"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "중랑구|중화동|중화 6구역",
+      "before": {
+        "min": "2",
+        "max": "9.7",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "4.6",
+        "max": "10",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 5,
+      "articleNos": [
+        "2654936534",
+        "2656384564",
+        "2654230643",
+        "2651659476",
+        "2655782724"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    },
+    {
+      "zoneNaturalKey": "성북구|장위동|장위 15구역",
+      "before": {
+        "min": "5.25",
+        "max": "7.1",
+        "pMin": null,
+        "pMax": null
+      },
+      "after": {
+        "min": "6.25",
+        "max": "7.5",
+        "pMin": null,
+        "pMax": null
+      },
+      "approvedCount": 5,
+      "articleNos": [
+        "2654865875",
+        "2656986899",
+        "2655770901",
+        "2654902752",
+        "2657110994"
+      ],
+      "chotuFlags": [
+        "OK",
+        "OK"
+      ]
+    }
+  ],
+  "blocked": [],
+  "note": "매매가(G) never auto-updated from crawl 호가. P is applied only when the rollup has a hint.",
+  "proposalCount": 59,
+  "skippedCount": 2,
+  "skippedSample": [
+    {
+      "zoneNaturalKey": "성북구|장위동|장위 13-1구역",
+      "reason": "not_approved"
+    },
+    {
+      "zoneNaturalKey": "영등포구|신길동|신길 2구역",
+      "reason": "not_approved"
+    }
+  ]
+}

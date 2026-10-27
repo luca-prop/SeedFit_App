@@ -3,11 +3,11 @@
 
 from __future__ import annotations
 
+import argparse
 import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-GOLDEN = ROOT / "data/normalized/golden_samples260823.normalized.json"
 OUT = ROOT / "frontend/app/lib/scatterData.ts"
 
 
@@ -51,7 +51,14 @@ def to_eok(krw: int | None) -> float:
 
 
 def main() -> None:
-    raw = json.loads(GOLDEN.read_text(encoding="utf-8"))
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--golden",
+        type=Path,
+        default=ROOT / "data/normalized/golden_samples261027.normalized.json",
+    )
+    args = parser.parse_args()
+    raw = json.loads(args.golden.read_text(encoding="utf-8"))
     zone_by_key = {z["naturalKey"]: z for z in raw["zones"]}
     rows: list[dict] = []
     for snap in raw["zoneInvestmentSnapshots"]:
