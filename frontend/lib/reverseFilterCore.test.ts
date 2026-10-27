@@ -231,7 +231,7 @@ const districtFiltered = buildReverseFilterGroups(
 
 assert.equal(districtFiltered.matchedZones.length, 1);
 assert.equal(districtFiltered.matchedZones[0].district, "마포구");
-assert.equal(REVERSE_FILTER_GROUP_LIMIT, 30);
+assert.equal(REVERSE_FILTER_GROUP_LIMIT, 200);
 
 const belowRangeZone = buildReverseFilterZone(
   {
@@ -254,7 +254,7 @@ assert.equal(belowRangeZone?.budgetStatus, "over_budget");
 assert.equal(belowRangeZone?.excludedReason, "예산 범위 미만");
 
 const limited = buildReverseFilterGroups(
-  Array.from({ length: 31 }, (_, index) => ({
+  Array.from({ length: REVERSE_FILTER_GROUP_LIMIT + 1 }, (_, index) => ({
     zoneId: `zone-limit-${index}`,
     zoneName: `제한테스트${index}`,
     district: "마포구",
