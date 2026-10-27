@@ -414,9 +414,9 @@
         {
           "type": "zone_investment_range",
           "naturalKey": "성북구|장위동|장위 13-1구역",
-          "minKrw": 160000000,
-          "maxKrw": 200000000,
-          "spreadRatio": 0.25
+          "minKrw": 320000000,
+          "maxKrw": 391000000,
+          "spreadRatio": 0.2219
         },
         {
           "type": "zone_investment_range",

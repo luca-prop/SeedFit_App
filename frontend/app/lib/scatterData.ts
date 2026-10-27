@@ -817,12 +817,12 @@ export const scatterData = [
     "id": "장위 13-1구역",
     "name": "장위 13-1구역",
     "district": "성북구",
-    "tier": "T1",
+    "tier": "T2",
     "stage": 2.1,
     "stageStr": "정비구역지정",
     "coverage": "CORE",
-    "investmentMin": 1.6,
-    "investmentMax": 2.0
+    "investmentMin": 3.2,
+    "investmentMax": 3.91
   },
   {
     "id": "장위 13-2구역",
