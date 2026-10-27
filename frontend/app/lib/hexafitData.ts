@@ -210,7 +210,7 @@ export const hexafitZones: HexafitZoneInput[] = [
     "generalUnits": 866,
     "memberEstimated": true,
     "benchmarkName": "금천롯데캐슬골드파크1차",
-    "benchmarkPriceBillion": 13
+    "benchmarkPriceBillion": 13.45
   },
   {
     "naturalKey": "금천구|독산동|독산 2구역",
@@ -226,7 +226,7 @@ export const hexafitZones: HexafitZoneInput[] = [
     "generalUnits": 813,
     "memberEstimated": true,
     "benchmarkName": "금천롯데캐슬골드파크1차",
-    "benchmarkPriceBillion": 13
+    "benchmarkPriceBillion": 13.45
   },
   {
     "naturalKey": "금천구|독산동|독산시흥구역",
@@ -242,7 +242,7 @@ export const hexafitZones: HexafitZoneInput[] = [
     "generalUnits": 767,
     "memberEstimated": true,
     "benchmarkName": "금천롯데캐슬골드파크1차",
-    "benchmarkPriceBillion": 13
+    "benchmarkPriceBillion": 13.45
   },
   {
     "naturalKey": "동대문구|용두동|용두 7구역",
@@ -258,7 +258,7 @@ export const hexafitZones: HexafitZoneInput[] = [
     "generalUnits": null,
     "memberEstimated": false,
     "benchmarkName": "래미안크레시티",
-    "benchmarkPriceBillion": 18
+    "benchmarkPriceBillion": 18.4
   },
   {
     "naturalKey": "동대문구|이문동|이문 4구역",
@@ -274,7 +274,7 @@ export const hexafitZones: HexafitZoneInput[] = [
     "generalUnits": 1230,
     "memberEstimated": true,
     "benchmarkName": "이문아이파크자이",
-    "benchmarkPriceBillion": 18.3
+    "benchmarkPriceBillion": 20.6
   },
   {
     "naturalKey": "동대문구|전농동|전농 8구역",
@@ -370,7 +370,7 @@ export const hexafitZones: HexafitZoneInput[] = [
     "generalUnits": 1496,
     "memberEstimated": true,
     "benchmarkName": "라클라체자이드파인",
-    "benchmarkPriceBillion": 25.6
+    "benchmarkPriceBillion": 26.63
   },
   {
     "naturalKey": "동작구|노량진동|노량진 3구역",
@@ -386,7 +386,7 @@ export const hexafitZones: HexafitZoneInput[] = [
     "generalUnits": 252,
     "memberEstimated": true,
     "benchmarkName": "라클라체자이드파인",
-    "benchmarkPriceBillion": 25.6
+    "benchmarkPriceBillion": 26.63
   },
   {
     "naturalKey": "동작구|대방동|노량진 7구역",
@@ -418,7 +418,7 @@ export const hexafitZones: HexafitZoneInput[] = [
     "generalUnits": 178,
     "memberEstimated": true,
     "benchmarkName": "래미안로이파크",
-    "benchmarkPriceBillion": 21.5
+    "benchmarkPriceBillion": 22.5
   },
   {
     "naturalKey": "동작구|사당동|사당 17구역",
@@ -434,7 +434,7 @@ export const hexafitZones: HexafitZoneInput[] = [
     "generalUnits": 330,
     "memberEstimated": true,
     "benchmarkName": "래미안로이파크",
-    "benchmarkPriceBillion": 21.5
+    "benchmarkPriceBillion": 22.5
   },
   {
     "naturalKey": "동작구|사당동|사당 5구역(재건축)",
@@ -450,7 +450,7 @@ export const hexafitZones: HexafitZoneInput[] = [
     "generalUnits": 140,
     "memberEstimated": true,
     "benchmarkName": "래미안로이파크",
-    "benchmarkPriceBillion": 21.5
+    "benchmarkPriceBillion": 22.5
   },
   {
     "naturalKey": "동작구|상도동|상도 14구역",
@@ -466,7 +466,7 @@ export const hexafitZones: HexafitZoneInput[] = [
     "generalUnits": 240,
     "memberEstimated": true,
     "benchmarkName": "e편한세상상도노빌리티",
-    "benchmarkPriceBillion": 22.7
+    "benchmarkPriceBillion": 23.7
   },
   {
     "naturalKey": "동작구|상도동|상도 15구역",
@@ -482,7 +482,7 @@ export const hexafitZones: HexafitZoneInput[] = [
     "generalUnits": 615,
     "memberEstimated": true,
     "benchmarkName": "e편한세상상도노빌리티",
-    "benchmarkPriceBillion": 22.7
+    "benchmarkPriceBillion": 23.7
   },
   {
     "naturalKey": "동작구|상도동|상도 16구역",
@@ -498,7 +498,7 @@ export const hexafitZones: HexafitZoneInput[] = [
     "generalUnits": 295,
     "memberEstimated": false,
     "benchmarkName": "e편한세상상도노빌리티",
-    "benchmarkPriceBillion": 22.7
+    "benchmarkPriceBillion": 23.7
   },
   {
     "naturalKey": "동작구|상도동|상도 21구역(모아타운)",
@@ -514,7 +514,7 @@ export const hexafitZones: HexafitZoneInput[] = [
     "generalUnits": 505,
     "memberEstimated": true,
     "benchmarkName": "e편한세상상도노빌리티",
-    "benchmarkPriceBillion": 22.7
+    "benchmarkPriceBillion": 23.7
   },
   {
     "naturalKey": "동작구|흑석동|흑석 10구역",
@@ -530,7 +530,7 @@ export const hexafitZones: HexafitZoneInput[] = [
     "generalUnits": null,
     "memberEstimated": false,
     "benchmarkName": "흑석자이",
-    "benchmarkPriceBillion": 24
+    "benchmarkPriceBillion": 26.25
   },
   {
     "naturalKey": "마포구|공덕동|공덕 7구역",
@@ -546,7 +546,7 @@ export const hexafitZones: HexafitZoneInput[] = [
     "generalUnits": null,
     "memberEstimated": false,
     "benchmarkName": "마포자이힐스테이트",
-    "benchmarkPriceBillion": 31
+    "benchmarkPriceBillion": 31.8
   },
   {
     "naturalKey": "마포구|공덕동|공덕 8구역",
@@ -562,7 +562,7 @@ export const hexafitZones: HexafitZoneInput[] = [
     "generalUnits": 630,
     "memberEstimated": true,
     "benchmarkName": "마포자이힐스테이트",
-    "benchmarkPriceBillion": 31
+    "benchmarkPriceBillion": 31.8
   },
   {
     "naturalKey": "마포구|염리동|염리 4구역",
@@ -674,7 +674,7 @@ export const hexafitZones: HexafitZoneInput[] = [
     "generalUnits": 1445,
     "memberEstimated": true,
     "benchmarkName": "산성역 헤리스톤  (분양권)",
-    "benchmarkPriceBillion": 15.73
+    "benchmarkPriceBillion": 17.93
   },
   {
     "naturalKey": "성남시 수정구|신흥동|신흥 1구역",
@@ -914,7 +914,7 @@ export const hexafitZones: HexafitZoneInput[] = [
     "generalUnits": 690,
     "memberEstimated": true,
     "benchmarkName": "송파시그니처롯데캐슬",
-    "benchmarkPriceBillion": 21.1
+    "benchmarkPriceBillion": 22.3
   },
   {
     "naturalKey": "송파구|마천동|마천 3구역",
@@ -930,7 +930,7 @@ export const hexafitZones: HexafitZoneInput[] = [
     "generalUnits": 545,
     "memberEstimated": true,
     "benchmarkName": "송파시그니처롯데캐슬",
-    "benchmarkPriceBillion": 21.1
+    "benchmarkPriceBillion": 22.3
   },
   {
     "naturalKey": "영등포구|신길동|신길 16-2구역",
@@ -1170,7 +1170,7 @@ export const hexafitZones: HexafitZoneInput[] = [
     "generalUnits": null,
     "memberEstimated": false,
     "benchmarkName": "사가정센트럴아이파크",
-    "benchmarkPriceBillion": 14.95
+    "benchmarkPriceBillion": 15.9
   },
   {
     "naturalKey": "광진구|구의동|구의1동 221-1",
@@ -1186,7 +1186,7 @@ export const hexafitZones: HexafitZoneInput[] = [
     "generalUnits": null,
     "memberEstimated": false,
     "benchmarkName": "래미안구의파크스위트",
-    "benchmarkPriceBillion": 20
+    "benchmarkPriceBillion": 21
   },
   {
     "naturalKey": "광진구|구의동|구의동 32",
@@ -1202,7 +1202,7 @@ export const hexafitZones: HexafitZoneInput[] = [
     "generalUnits": null,
     "memberEstimated": false,
     "benchmarkName": "래미안구의파크스위트",
-    "benchmarkPriceBillion": 20
+    "benchmarkPriceBillion": 21
   },
   {
     "naturalKey": "광진구|구의동|구의동 46",
@@ -1218,7 +1218,7 @@ export const hexafitZones: HexafitZoneInput[] = [
     "generalUnits": null,
     "memberEstimated": false,
     "benchmarkName": "래미안구의파크스위트",
-    "benchmarkPriceBillion": 20
+    "benchmarkPriceBillion": 21
   },
   {
     "naturalKey": "광진구|자양동|자양1동 593(A)(모아타운)",
@@ -1362,7 +1362,7 @@ export const hexafitZones: HexafitZoneInput[] = [
     "generalUnits": null,
     "memberEstimated": false,
     "benchmarkName": "라클라체자이드파인",
-    "benchmarkPriceBillion": 25.6
+    "benchmarkPriceBillion": 26.63
   },
   {
     "naturalKey": "동작구|사당동|사당 15구역",
@@ -1378,7 +1378,7 @@ export const hexafitZones: HexafitZoneInput[] = [
     "generalUnits": null,
     "memberEstimated": false,
     "benchmarkName": "래미안로이파크",
-    "benchmarkPriceBillion": 21.5
+    "benchmarkPriceBillion": 22.5
   },
   {
     "naturalKey": "동작구|사당동|사당 16구역",
@@ -1394,7 +1394,7 @@ export const hexafitZones: HexafitZoneInput[] = [
     "generalUnits": 367,
     "memberEstimated": true,
     "benchmarkName": "래미안로이파크",
-    "benchmarkPriceBillion": 21.5
+    "benchmarkPriceBillion": 22.5
   },
   {
     "naturalKey": "동작구|사당동|사당 18구역",
@@ -1410,7 +1410,7 @@ export const hexafitZones: HexafitZoneInput[] = [
     "generalUnits": null,
     "memberEstimated": false,
     "benchmarkName": "래미안로이파크",
-    "benchmarkPriceBillion": 21.5
+    "benchmarkPriceBillion": 22.5
   },
   {
     "naturalKey": "동작구|사당동|사당 19구역",
@@ -1426,7 +1426,7 @@ export const hexafitZones: HexafitZoneInput[] = [
     "generalUnits": null,
     "memberEstimated": false,
     "benchmarkName": "래미안로이파크",
-    "benchmarkPriceBillion": 21.5
+    "benchmarkPriceBillion": 22.5
   },
   {
     "naturalKey": "동작구|사당동|사당 21구역",
@@ -1442,7 +1442,7 @@ export const hexafitZones: HexafitZoneInput[] = [
     "generalUnits": null,
     "memberEstimated": false,
     "benchmarkName": "래미안로이파크",
-    "benchmarkPriceBillion": 21.5
+    "benchmarkPriceBillion": 22.5
   },
   {
     "naturalKey": "동작구|상도동|상도 23구역",
@@ -1458,7 +1458,7 @@ export const hexafitZones: HexafitZoneInput[] = [
     "generalUnits": null,
     "memberEstimated": false,
     "benchmarkName": "e편한세상상도노빌리티",
-    "benchmarkPriceBillion": 22.7
+    "benchmarkPriceBillion": 23.7
   },
   {
     "naturalKey": "동작구|상도동|상도 24구역",
@@ -1474,7 +1474,7 @@ export const hexafitZones: HexafitZoneInput[] = [
     "generalUnits": null,
     "memberEstimated": false,
     "benchmarkName": "e편한세상상도노빌리티",
-    "benchmarkPriceBillion": 22.7
+    "benchmarkPriceBillion": 23.7
   },
   {
     "naturalKey": "동작구|상도동|상도 25구역",
@@ -1490,7 +1490,7 @@ export const hexafitZones: HexafitZoneInput[] = [
     "generalUnits": null,
     "memberEstimated": false,
     "benchmarkName": "e편한세상상도노빌리티",
-    "benchmarkPriceBillion": 22.7
+    "benchmarkPriceBillion": 23.7
   },
   {
     "naturalKey": "마포구|대흥동|대흥 5구역",
@@ -1506,7 +1506,7 @@ export const hexafitZones: HexafitZoneInput[] = [
     "generalUnits": null,
     "memberEstimated": false,
     "benchmarkName": "마포프레스티지자이",
-    "benchmarkPriceBillion": 28.9
+    "benchmarkPriceBillion": 29.6
   },
   {
     "naturalKey": "마포구|신수동|신수 13구역",
@@ -1522,7 +1522,7 @@ export const hexafitZones: HexafitZoneInput[] = [
     "generalUnits": null,
     "memberEstimated": false,
     "benchmarkName": "마포아이파크포레",
-    "benchmarkPriceBillion": 24
+    "benchmarkPriceBillion": 26.8
   },
   {
     "naturalKey": "성동구|금호동|금호 22구역",
@@ -1538,7 +1538,7 @@ export const hexafitZones: HexafitZoneInput[] = [
     "generalUnits": null,
     "memberEstimated": false,
     "benchmarkName": "옥수파크힐스",
-    "benchmarkPriceBillion": 25
+    "benchmarkPriceBillion": 27.5
   },
   {
     "naturalKey": "성동구|금호동4가|금호 23구역",
@@ -1682,7 +1682,7 @@ export const hexafitZones: HexafitZoneInput[] = [
     "generalUnits": null,
     "memberEstimated": false,
     "benchmarkName": "이촌한가람",
-    "benchmarkPriceBillion": 31
+    "benchmarkPriceBillion": 32
   },
   {
     "naturalKey": "용산구|용산동|용산 1구역",
@@ -1698,7 +1698,7 @@ export const hexafitZones: HexafitZoneInput[] = [
     "generalUnits": null,
     "memberEstimated": false,
     "benchmarkName": "이촌한가람",
-    "benchmarkPriceBillion": 31
+    "benchmarkPriceBillion": 32
   },
   {
     "naturalKey": "용산구|용산동|용산 3구역",
@@ -1714,7 +1714,7 @@ export const hexafitZones: HexafitZoneInput[] = [
     "generalUnits": null,
     "memberEstimated": false,
     "benchmarkName": "이촌한가람",
-    "benchmarkPriceBillion": 31
+    "benchmarkPriceBillion": 32
   },
   {
     "naturalKey": "용산구|용산동|용산 4구역",
@@ -1730,7 +1730,7 @@ export const hexafitZones: HexafitZoneInput[] = [
     "generalUnits": null,
     "memberEstimated": false,
     "benchmarkName": "이촌한가람",
-    "benchmarkPriceBillion": 31
+    "benchmarkPriceBillion": 32
   },
   {
     "naturalKey": "용산구|원효로3가|원효로3가 1구역",
