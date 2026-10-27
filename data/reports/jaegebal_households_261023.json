@@ -131,8 +131,8 @@
       "status": "ok"
     },
     {
-      "zoneNaturalKey": "광진구|자양동|자양동 227-147",
-      "zoneName": "자양동 227-147",
+      "zoneNaturalKey": "광진구|자양동|자양3동A구역",
+      "zoneName": "자양3동A구역",
       "jaegebalUrl": "https://jaegebal.com/develops/2610",
       "supplyUnits": 1030,
       "memberUnits": 540,
@@ -229,18 +229,19 @@
     {
       "zoneNaturalKey": "동대문구|용두동|용두 7구역",
       "zoneName": "용두 7구역",
-      "jaegebalUrl": "https://jaegebal.com/develops/2425",
-      "supplyUnits": 112,
-      "memberUnits": 32,
-      "generalSaleUnits": 80,
+      "jaegebalUrl": "https://jaegebal.com/develops/4551",
+      "supplyUnits": null,
+      "memberUnits": null,
+      "generalSaleUnits": null,
       "rentalUnits": null,
-      "landOwners": 32,
-      "memberEstimated": true,
-      "memberRaw": "32세대 (29%) (토지등소유자 기반 추정)",
-      "pageTitle": "용두 7구역 재개발 | 실거래가, 진행단계, 매물, 최신정보를 한눈에 | 재개발닷컴",
+      "landOwners": null,
+      "memberEstimated": false,
+      "memberRaw": null,
+      "pageTitle": "신통기획 용두동 39",
       "partsSum": null,
       "sumMatchesSupply": null,
-      "status": "ok"
+      "status": "rematch",
+      "note": "【오매칭 수정 2026-10-25】이전 /develops/2425 소형 용두 7구역 공급 112는 제거. 신통 용두동 39 페이지에는 공급세대가 없음."
     },
     {
       "zoneNaturalKey": "동대문구|이문동|이문 4구역",

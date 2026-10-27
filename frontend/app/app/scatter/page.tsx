@@ -235,7 +235,7 @@ function PinnedTooltip({ pinnedData, containerRef, onClose, onViewDetail, onView
       onClick={(e) => e.stopPropagation()}
     >
       <div className="flex items-center justify-between mb-2 gap-2">
-        <h3 className="font-bold text-gray-900 text-base leading-tight">{pinnedData.name}</h3>
+        <h3 className="font-bold text-gray-900 text-base leading-tight">{shortZoneName(pinnedData.name) || pinnedData.name}</h3>
         <button
           className="flex-shrink-0 h-6 w-6 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
           onClick={onClose}
@@ -279,7 +279,7 @@ function PinnedTooltip({ pinnedData, containerRef, onClose, onViewDetail, onView
               onClick={onViewDetail}
               className="w-full py-2 px-3 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold transition-colors flex items-center justify-center gap-1.5"
             >
-              &apos;{pinnedData.name}&apos; 자세히 보기
+              &apos;{shortZoneName(pinnedData.name) || pinnedData.name}&apos; 자세히 보기
               <ExternalLink className="h-3.5 w-3.5" />
             </button>
             <button

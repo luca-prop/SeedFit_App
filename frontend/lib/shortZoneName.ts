@@ -4,8 +4,17 @@
  * 자양1동·자양2동을 자양1동779처럼 붙이지 않는다. 지번 앞은 반드시 띄운다.
  * 모아타운·건대모아는 (모아)만 남긴다.
  */
+const SHORT_NAME_ALIASES: Record<string, string> = {
+  // Golden SoT는 자양3동A구역. 차트에서는 지번 별칭을 같이 보여 조회가 되게 한다.
+  "자양3동A구역": "자양3A(227-147)",
+  "자양동 227-147": "자양3A(227-147)",
+};
+
 export function shortZoneName(name: string): string {
   if (!name) return "";
+
+  const alias = SHORT_NAME_ALIASES[name.trim()];
+  if (alias) return alias;
 
   let s = name.trim();
   const hasMoa = /모아타운|건대모아|\(모아\)/.test(s);
