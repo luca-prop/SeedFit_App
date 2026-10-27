@@ -59,7 +59,7 @@ export const playBoardScreens = [
       telemetryEvents: ["landing_search_started 예정"],
       exceptionStates: ["empty-results"],
       controlAreaNotes: {
-        "ux-safety": "예산 범위는 1억~25억, 5천만 원 단위로 제한됩니다.",
+        "ux-safety": "예산 범위는 0~40억, 5천만 원 단위로 제한됩니다.",
         performance: "랜딩 LCP 1.0s 목표의 핵심 진입 화면입니다.",
         observability: "검색 완료율 KPI 계측 진입점입니다.",
       },

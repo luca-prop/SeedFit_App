@@ -8,7 +8,10 @@ import { SlidersHorizontal } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import {
   BUDGET_QUICK_RANGES,
+  BUDGET_SCALE_LABEL,
+  BUDGET_SLIDER_TICKS_KRW,
   applyBudgetToResultsHref,
+  formatBudgetEok,
   formatBudgetEokRange,
   normalizeBudgetRange,
 } from "@/lib/resultsBudgetHref";
@@ -71,7 +74,7 @@ export function ResultsBudgetSlider({
           </p>
         </div>
         <p id="results-budget-help" className="text-xs leading-relaxed text-slate-500">
-          1억~25억, 5천만 원 단위
+          {BUDGET_SCALE_LABEL}
           <br />
           손잡이를 놓거나 아래 범위를 누르면 결과가 바뀝니다.
         </p>
@@ -94,12 +97,9 @@ export function ResultsBudgetSlider({
       />
 
       <div className="mb-4 flex justify-between text-xs font-medium text-slate-400">
-        <span>1억</span>
-        <span>5억</span>
-        <span>10억</span>
-        <span>15억</span>
-        <span>20억</span>
-        <span>25억</span>
+        {BUDGET_SLIDER_TICKS_KRW.map((tick) => (
+          <span key={tick}>{formatBudgetEok(tick)}</span>
+        ))}
       </div>
 
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-6" role="group" aria-label="빠른 예산 범위 선택">

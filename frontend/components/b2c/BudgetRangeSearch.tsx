@@ -9,6 +9,9 @@ import { Slider } from "@/components/ui/slider";
 import { CLIENT_EVENTS, track } from "@/lib/analytics/track";
 import {
   BUDGET_QUICK_RANGES,
+  BUDGET_SCALE_LABEL,
+  BUDGET_SLIDER_TICKS_KRW,
+  formatBudgetEok,
   formatBudgetEokRange,
   normalizeBudgetRange,
 } from "@/lib/resultsBudgetHref";
@@ -60,7 +63,7 @@ export function BudgetRangeSearch() {
           <p className="mt-1 text-3xl font-black tracking-tight text-white">{formattedRange}</p>
         </div>
         <p id="budget-range-help" className="text-xs leading-relaxed text-gray-400">
-          1억~25억, 5천만 원 단위
+          {BUDGET_SCALE_LABEL}
           <br />
           단일 금액도 선택할 수 있습니다.
         </p>
@@ -80,12 +83,9 @@ export function BudgetRangeSearch() {
       />
 
       <div className="mb-5 flex justify-between text-xs font-medium text-gray-500">
-        <span>1억</span>
-        <span>5억</span>
-        <span>10억</span>
-        <span>15억</span>
-        <span>20억</span>
-        <span>25억</span>
+        {BUDGET_SLIDER_TICKS_KRW.map((tick) => (
+          <span key={tick}>{formatBudgetEok(tick)}</span>
+        ))}
       </div>
 
       <div className="mb-5 grid grid-cols-2 gap-2 sm:grid-cols-3" role="group" aria-label="빠른 예산 범위 선택">

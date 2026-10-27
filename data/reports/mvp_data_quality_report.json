@@ -449,9 +449,9 @@
         {
           "type": "zone_investment_range",
           "naturalKey": "영등포구|신길동|신길 2구역",
-          "minKrw": 850000000,
-          "maxKrw": 1387000000,
-          "spreadRatio": 0.6318
+          "minKrw": 1010000000,
+          "maxKrw": 1400000000,
+          "spreadRatio": 0.3861
         },
         {
           "type": "zone_investment_range",

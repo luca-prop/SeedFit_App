@@ -571,7 +571,7 @@ export default async function ResultsPage({ searchParams }: { searchParams?: Pro
             <div className="mx-auto mt-4 max-w-2xl rounded-2xl border border-amber-100 bg-amber-50 p-4 text-left text-sm text-amber-900">
               <p className="font-bold">확인 순서</p>
               <ul className="mt-2 list-disc space-y-1 pl-5">
-                <li>예산 범위가 1억~25억 사이인지 확인합니다.</li>
+                <li>예산 범위가 0~40억 사이인지 확인합니다.</li>
                 <li>최신 Preview alias URL에서 다시 검색합니다.</li>
                 <li>운영자는 `/app/preview-health`에서 DB/env와 seed row count를 확인합니다.</li>
               </ul>

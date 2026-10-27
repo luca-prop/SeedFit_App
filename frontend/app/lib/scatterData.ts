@@ -905,12 +905,12 @@ export const scatterData = [
     "id": "신길 2구역",
     "name": "신길 2구역",
     "district": "영등포구",
-    "tier": "T3",
+    "tier": "T4",
     "stage": 5.1,
     "stageStr": "사업시행인가",
     "coverage": "CORE",
-    "investmentMin": 8.5,
-    "investmentMax": 13.87
+    "investmentMin": 10.1,
+    "investmentMax": 14.0
   },
   {
     "id": "여의대방신길 2구역",
