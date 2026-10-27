@@ -265,6 +265,7 @@ python scripts/data/apply_jaegebal_district_status.py --diff … --write --apply
   → archive/golden 루트 + YYMMDD/
   → /seedfit-golden-sample-update 절차로 스펙 ## 2.
   → /seedfit-deploy (Supabase → git → Vercel Production)
+  → blog HTML (승인 CORE만. SUB·CORE 보류 제외. 6개 예산 × 구역·단계·초투)
 ```
 
 ### 3.4 절차 체크리스트
@@ -283,6 +284,7 @@ python scripts/data/apply_jaegebal_district_status.py --diff … --write --apply
 [ ] 6.  archive/golden 루트 + YYMMDD/ 에 html, xlsx, golden_samples.xlsx
 [ ] 7.  fetch_golden_samples_from_drive → normalize → validate → render_zone_master_md --write
 [ ] 8.  /seedfit-deploy (seed → Supabase → 카운트 검증 → git push → vercel --prod → 스모크)
+[ ] 9.  render_blog_invest_tables.py — 검수보드 승인 ∩ CORE. SUB·CORE 보류 제외. 6개 예산 표
 ```
 
 ### 3.5 크롤 규칙 (국면 A)
