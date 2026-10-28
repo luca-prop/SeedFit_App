@@ -18,6 +18,7 @@ import {
   type ReverseFilterSortDirection,
   type ReverseFilterZone,
 } from "@/lib/reverseFilterDto";
+import { stageAxisLabelFor } from "@/lib/stageAxis";
 import { filterZonesByCoverage } from "@/lib/zoneCoverage";
 
 const STAGE_COLORS: Record<string, string> = {
@@ -212,22 +213,6 @@ function buildRaisedBudgetHref(budgetMinKrw: number, budgetMaxKrw: number, sort:
     budgetMaxKrw: nextBudgetMaxKrw,
     sort,
   });
-}
-
-function stageAxisLabelFor(stage: string) {
-  const normalized = stage.replace(/\s+/g, "");
-
-  if (normalized.includes("착공")) return "착공";
-  if (normalized.includes("이주") || normalized.includes("철거")) return "이주철거";
-  if (normalized.includes("관리처분")) return "관리처분";
-  if (normalized.includes("사업시행")) return "사업시행";
-  if (normalized.includes("시공사") || normalized.includes("건축심의")) return "시공사";
-  if (normalized.includes("조합설립") || normalized.includes("사업시행자지정")) return "조합설립";
-  if (normalized.includes("구역지정") || normalized.includes("관리계획고시") || normalized.includes("추진위")) {
-    return "구역지정";
-  }
-
-  return "추진준비";
 }
 
 function filterZones(zones: ReverseFilterZone[], selectedDistricts: string[], selectedStageLabels: string[]) {

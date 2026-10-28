@@ -21,6 +21,7 @@ import { type ReverseFilterZone } from "@/lib/reverseFilterDto";
 import { formatAxisEok, niceYTicks } from "@/lib/scatterChartFormat";
 import { assignLabelSides, preferredLabelSide } from "@/lib/scatterLabelSide";
 import { shortZoneName } from "@/lib/shortZoneName";
+import { stageAxisLabelFor } from "@/lib/stageAxis";
 import { filterZonesByCoverage } from "@/lib/zoneCoverage";
 import { CLIENT_EVENTS, track } from "@/lib/analytics/track";
 
@@ -114,19 +115,8 @@ function buildZoneHref(path: string, zone: ChartPoint, budgetMinKrw: number, bud
 }
 
 function stageAxisFor(stage: string): StageAxis {
-  const normalized = stage.replace(/\s+/g, "");
-
-  if (normalized.includes("착공")) return STAGE_AXIS[7];
-  if (normalized.includes("이주") || normalized.includes("철거")) return STAGE_AXIS[6];
-  if (normalized.includes("관리처분")) return STAGE_AXIS[5];
-  if (normalized.includes("사업시행")) return STAGE_AXIS[4];
-  if (normalized.includes("시공사") || normalized.includes("건축심의")) return STAGE_AXIS[3];
-  if (normalized.includes("조합설립") || normalized.includes("사업시행자지정")) return STAGE_AXIS[2];
-  if (normalized.includes("구역지정") || normalized.includes("관리계획고시") || normalized.includes("추진위")) {
-    return STAGE_AXIS[1];
-  }
-
-  return STAGE_AXIS[0];
+  const label = stageAxisLabelFor(stage);
+  return STAGE_AXIS.find((item) => item.label === label) ?? STAGE_AXIS[0];
 }
 
 function uniqueSorted(values: string[]) {
