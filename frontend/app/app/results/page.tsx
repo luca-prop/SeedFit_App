@@ -1,7 +1,10 @@
 import Link from "next/link";
+import { cookies } from "next/headers";
 import { AlertTriangle, ArrowLeft, Database, Search } from "lucide-react";
 
 import { reverseFilterAction } from "@/app/actions/reverseFilter";
+import { EVENT_TYPES, recordEvent } from "@/lib/analytics/events";
+import { ResultsBudgetSlider } from "@/components/b2c/ResultsBudgetSlider";
 import { ResultsScatterExplorer } from "@/components/b2c/ResultsScatterExplorer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -15,6 +18,7 @@ import {
   type ReverseFilterSortDirection,
   type ReverseFilterZone,
 } from "@/lib/reverseFilterDto";
+import { filterZonesByCoverage } from "@/lib/zoneCoverage";
 
 const STAGE_COLORS: Record<string, string> = {
   "조합설립인가": "bg-blue-100 text-blue-800",
@@ -126,6 +130,12 @@ function parseCsvFilter(searchParams: SearchParams, key: string) {
     .split(",")
     .map((item) => item.trim())
     .filter(Boolean);
+}
+
+/** Default false: CORE only. `includeSub=1|true|yes` enables SUB. */
+function parseIncludeSub(searchParams: SearchParams): boolean {
+  const value = firstParam(searchParams.includeSub)?.trim().toLowerCase();
+  return value === "1" || value === "true" || value === "yes";
 }
 
 function parseSortOption(searchParams: SearchParams) {
@@ -405,6 +415,8 @@ export default async function ResultsPage({ searchParams }: { searchParams?: Pro
   const legacyStage = parseFilterValue(resolvedSearchParams, "stage");
   const selectedDistricts = parseCsvFilter(resolvedSearchParams, "districts");
   const selectedStageGroups = parseCsvFilter(resolvedSearchParams, "stageGroups");
+  const opsMode = (await cookies()).get("sf_ops")?.value === "1";
+  const includeSub = opsMode && parseIncludeSub(resolvedSearchParams);
   const selectedSort = parseSortOption(resolvedSearchParams);
   const result = await reverseFilterAction({
     budgetMinKrw,
@@ -412,16 +424,36 @@ export default async function ResultsPage({ searchParams }: { searchParams?: Pro
     sortBy: selectedSort.sortBy,
     sortDirection: selectedSort.sortDirection,
   });
-  const visibleZones = result.ok ? [...result.matchedZones, ...result.nearZones] : [];
+  const allVisibleZones = result.ok ? [...result.matchedZones, ...result.nearZones] : [];
   const effectiveDistricts = selectedDistricts.length > 0 ? selectedDistricts : legacyDistrict !== "all" ? [legacyDistrict] : [];
   const effectiveStageGroups =
     selectedStageGroups.length > 0 ? selectedStageGroups : legacyStage !== "all" ? [stageAxisLabelFor(legacyStage)] : [];
-  const filteredMatchedZones = result.ok ? filterZones(result.matchedZones, effectiveDistricts, effectiveStageGroups) : [];
-  const filteredNearZones = result.ok ? filterZones(result.nearZones, effectiveDistricts, effectiveStageGroups) : [];
+  const filteredMatchedZones = result.ok
+    ? filterZones(filterZonesByCoverage(result.matchedZones, includeSub), effectiveDistricts, effectiveStageGroups)
+    : [];
+  const filteredNearZones = result.ok
+    ? filterZones(filterZonesByCoverage(result.nearZones, includeSub), effectiveDistricts, effectiveStageGroups)
+    : [];
   const visibleResultCount = filteredMatchedZones.length + filteredNearZones.length;
+
+  await recordEvent({
+    eventType: EVENT_TYPES.resultsViewed,
+    path: "/app/results",
+    props: {
+      budgetMinKrw,
+      budgetMaxKrw,
+      includeSub,
+      sort: selectedSort.value,
+      resultCount: visibleResultCount,
+      ok: result.ok,
+    },
+  });
+
   const hasActiveFilters =
     selectedDistricts.length > 0 || selectedStageGroups.length > 0 || legacyDistrict !== "all" || legacyStage !== "all";
-  const nearestZones = result.ok ? result.excludedZones.slice(0, EMPTY_STATE_PREVIEW_LIMIT) : [];
+  const nearestZones = result.ok
+    ? filterZonesByCoverage(result.excludedZones, includeSub).slice(0, EMPTY_STATE_PREVIEW_LIMIT)
+    : [];
   const continuityParams = new URLSearchParams({
     budgetMin: String(budgetMinKrw),
     budgetMax: String(budgetMaxKrw),
@@ -430,7 +462,7 @@ export default async function ResultsPage({ searchParams }: { searchParams?: Pro
 
   if (selectedDistricts.length > 0) continuityParams.set("districts", selectedDistricts.join(","));
   if (selectedStageGroups.length > 0) continuityParams.set("stageGroups", selectedStageGroups.join(","));
-
+  if (includeSub) continuityParams.set("includeSub", "1");
   return (
     <div className="container mx-auto max-w-5xl px-4 py-6 md:py-8">
       <div className="mb-5 md:mb-6">
@@ -439,20 +471,28 @@ export default async function ResultsPage({ searchParams }: { searchParams?: Pro
           className="mb-3 inline-flex min-h-10 items-center rounded-lg px-1 text-sm font-medium text-slate-500 transition hover:text-slate-900"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
-          예산 다시 입력하기
+          처음 화면으로
         </Link>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h1 className="text-xl font-bold text-slate-950 md:text-2xl">Reverse Filter 검색 결과</h1>
             <p className="mt-1 text-sm text-slate-500 md:text-base">
-              예산 범위{" "}
-              <span className="font-semibold text-slate-950">
-                {formatBudget(budgetMinKrw)} ~ {formatBudget(budgetMaxKrw)}
-              </span>{" "}
-              기준
+              아래 슬라이더로 예산 범위를 바로 바꿀 수 있습니다.
             </p>
           </div>
+          <Link
+            href="/app/hexafit"
+            className="inline-flex min-h-10 items-center justify-center rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-2 text-sm font-bold text-indigo-700 hover:bg-indigo-100"
+          >
+            육각형으로 비교
+          </Link>
         </div>
+        <ResultsBudgetSlider
+          key={`${budgetMinKrw}-${budgetMaxKrw}`}
+          budgetMinKrw={budgetMinKrw}
+          budgetMaxKrw={budgetMaxKrw}
+          preservedSearch={continuityParams.toString()}
+        />
       </div>
 
       {result.ok ? (
@@ -466,13 +506,15 @@ export default async function ResultsPage({ searchParams }: { searchParams?: Pro
           </Alert>
 
           <ResultsScatterExplorer
-            zones={visibleZones}
+            zones={allVisibleZones}
             budgetMinKrw={budgetMinKrw}
             budgetMaxKrw={budgetMaxKrw}
             selectedDistricts={effectiveDistricts}
             selectedStageGroups={effectiveStageGroups}
             selectedSort={selectedSort.value}
             sortOptions={SORT_OPTIONS.map(({ value, label }) => ({ value, label }))}
+            includeSub={includeSub}
+            showCoverageToggle={opsMode}
           />
 
           <div className="grid gap-3 sm:grid-cols-3">
@@ -529,7 +571,7 @@ export default async function ResultsPage({ searchParams }: { searchParams?: Pro
             <div className="mx-auto mt-4 max-w-2xl rounded-2xl border border-amber-100 bg-amber-50 p-4 text-left text-sm text-amber-900">
               <p className="font-bold">확인 순서</p>
               <ul className="mt-2 list-disc space-y-1 pl-5">
-                <li>예산 범위가 1억~25억 사이인지 확인합니다.</li>
+                <li>예산 범위가 0~40억 사이인지 확인합니다.</li>
                 <li>최신 Preview alias URL에서 다시 검색합니다.</li>
                 <li>운영자는 `/app/preview-health`에서 DB/env와 seed row count를 확인합니다.</li>
               </ul>

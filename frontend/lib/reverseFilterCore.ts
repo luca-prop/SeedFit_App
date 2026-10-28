@@ -8,8 +8,11 @@ import {
   type ReverseFilterSortDirection,
   type ReverseFilterZone,
 } from "@/lib/reverseFilterDto";
+import { deriveZoneCoverage, type ZoneCoverage } from "@/lib/zoneCoverage";
 
-export const REVERSE_FILTER_GROUP_LIMIT = 30;
+// 예산 적합도는 범위 안 구역의 gap이 모두 0이라 이름순으로 잘린다.
+// 30이면 앞쪽 SUB가 자리를 먹고, 화면에서 SUB를 뺀 뒤 자양3동A 같은 뒤쪽 CORE가 빠진다.
+export const REVERSE_FILTER_GROUP_LIMIT = 200;
 export const REVERSE_FILTER_DISCLAIMER = MVP_DATA_DISCLOSURE.disclaimer;
 
 export type ReverseFilterSnapshotCandidate = {
@@ -18,6 +21,8 @@ export type ReverseFilterSnapshotCandidate = {
   district: string;
   dong: string;
   stage: string;
+  /** Optional sheet/DB override; otherwise derived from stage. */
+  coverage?: ZoneCoverage | null;
   projectType: string | null;
   salePriceMinKrw: bigint | null;
   salePriceMaxKrw: bigint | null;
@@ -176,6 +181,7 @@ export function buildReverseFilterZone(
     district: candidate.district,
     dong: candidate.dong,
     stage: candidate.stage,
+    coverage: deriveZoneCoverage(candidate.stage, candidate.coverage),
     projectType: candidate.projectType,
     investmentMinKrw: bigintToSafeNumber(candidate.investmentMinKrw),
     investmentMaxKrw: candidate.investmentMaxKrw === null ? null : bigintToSafeNumber(candidate.investmentMaxKrw),

@@ -1,7 +1,7 @@
 import { z } from "zod";
 
-export const REVERSE_FILTER_MIN_CASH_KRW = 100_000_000;
-export const REVERSE_FILTER_MAX_CASH_KRW = 2_500_000_000;
+export const REVERSE_FILTER_MIN_CASH_KRW = 0;
+export const REVERSE_FILTER_MAX_CASH_KRW = 4_000_000_000;
 export const REVERSE_FILTER_CASH_STEP_KRW = 50_000_000;
 export const REVERSE_FILTER_NEAR_BUDGET_THRESHOLD_KRW = 500_000_000;
 export const REVERSE_FILTER_NEAR_BUDGET_FIXED_LIMIT_KRW = 50_000_000;
@@ -24,6 +24,8 @@ export const reverseFilterSortBySchema = z.enum([
 export const reverseFilterSortDirectionSchema = z.enum(["asc", "desc"]);
 
 export const reverseFilterBudgetStatusSchema = z.enum(["within_budget", "near_budget", "over_budget"]);
+
+export const zoneCoverageSchema = z.enum(["CORE", "SUB"]);
 
 export const reverseFilterErrorCodeSchema = z.enum([
   "INVALID_INPUT",
@@ -60,6 +62,7 @@ export const reverseFilterZoneSchema = z.object({
   district: z.string().min(1),
   dong: z.string().min(1),
   stage: z.string().min(1),
+  coverage: zoneCoverageSchema,
   projectType: z.string().nullable(),
   investmentMinKrw: safeKrwNumberSchema,
   investmentMaxKrw: safeKrwNumberSchema.nullable(),

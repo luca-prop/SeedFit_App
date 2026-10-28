@@ -173,12 +173,14 @@ def append_zones(lines: list[str], golden: dict[str, Any]) -> dict[str, str]:
         zone_id = deterministic_uuid("zone", zone["naturalKey"])
         zone_ids[zone["naturalKey"]] = zone_id
         lines.append(
-            "INSERT INTO zones (id, district, dong, zone_name, stage, project_type, notes, created_at, updated_at) "
+            "INSERT INTO zones (id, district, dong, zone_name, stage, coverage, project_type, notes, created_at, updated_at) "
             f"VALUES ({sql_string(zone_id)}::uuid, {sql_string(zone['district'])}, {sql_string(zone['dong'])}, "
-            f"{sql_string(zone['zoneName'])}, {sql_string(zone['stage'])}, {sql_string(zone.get('projectType'))}, "
+            f"{sql_string(zone['zoneName'])}, {sql_string(zone['stage'])}, {sql_string(zone.get('coverage'))}, "
+            f"{sql_string(zone.get('projectType'))}, "
             f"{sql_string(zone.get('notes'))}, now(), now()) "
             "ON CONFLICT (district, dong, zone_name) DO UPDATE SET "
-            "stage = EXCLUDED.stage, project_type = EXCLUDED.project_type, notes = EXCLUDED.notes, updated_at = now();"
+            "stage = EXCLUDED.stage, coverage = EXCLUDED.coverage, project_type = EXCLUDED.project_type, "
+            "notes = EXCLUDED.notes, updated_at = now();"
         )
     lines.append("")
     return zone_ids

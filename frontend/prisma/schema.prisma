@@ -26,6 +26,8 @@ model Zone {
   dong      String
   zoneName  String   @map("zone_name")
   stage     String
+  /// CORE = 정비구역지정 이후 (매칭 본선). SUB = 구역지정 전. 비우면 stage에서 파생.
+  coverage  String?  @db.VarChar(8)
   // DATA_CURATION_SPEC.v.2: 구역은 티어에 고정하지 않고 행정구 SSOT로 관리합니다.
   projectType String?  @map("project_type")
   notes     String?
@@ -38,6 +40,7 @@ model Zone {
   @@unique([district, dong, zoneName])
   @@index([district])
   @@index([stage])
+  @@index([coverage])
   @@map("zones")
 }
 
@@ -107,4 +110,31 @@ model LtvPolicy {
 
   @@index([isActive, cashMinKrw, cashMaxKrw])
   @@map("ltv_policies")
+}
+
+/// 익명 방문자 행동 로그. userId는 로그인 도입 전까지 비어 있습니다 (익명 우선).
+model BehaviorEvent {
+  id        String   @id @default(uuid())
+  visitorId String   @map("visitor_id")
+  userId    String?  @map("user_id")
+  eventType String   @map("event_type")
+  zoneId    String?  @map("zone_id")
+  path      String?
+  referrer  String?
+  props     Json?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([eventType, createdAt])
+  @@index([visitorId, createdAt])
+  @@index([zoneId])
+  @@map("behavior_events")
+}
+
+/// 매물 검수보드 PC·폰 동기화. 앱 스키마 밖에 raw SQL로만 있으면 db push가 통째로 지운다.
+model ListingReviewSync {
+  boardId   String   @id @map("board_id")
+  payload   Json
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("listing_review_sync")
 }

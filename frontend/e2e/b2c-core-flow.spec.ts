@@ -4,16 +4,21 @@ test("B2C core flow: budget search to zone detail and comparison", async ({ page
   await page.goto("/");
 
   await expect(page.getByText("내 가용 현금 범위")).toBeVisible();
-  const singleBudgetButton = page.getByRole("button", { name: "3억 단일" });
-  await expect(singleBudgetButton).toBeVisible();
+  const rangeButton = page.getByRole("button", { name: "15~20억" });
+  await expect(rangeButton).toBeVisible();
   await expect(async () => {
-    await singleBudgetButton.click();
-    await expect(page.getByText("3억 ~ 3억")).toBeVisible({ timeout: 1_000 });
+    await rangeButton.click();
+    await expect(page.getByText("15억 ~ 20억")).toBeVisible({ timeout: 1_000 });
   }).toPass({ timeout: 10_000 });
 
   await page.getByRole("button", { name: "이 예산 범위로 구역 찾기" }).click();
   await page.waitForURL(/\/app\/results\?/);
   await expect(page.getByRole("heading", { name: "Reverse Filter 검색 결과" })).toBeVisible();
+  await expect(page.getByText("예산 범위 조절")).toBeVisible();
+  await expect(page.getByText("15억 ~ 20억").first()).toBeVisible();
+  await page.getByRole("link", { name: "5~10억 예산 범위 선택" }).click();
+  await page.waitForURL(/budgetMin=500000000.*budgetMax=1000000000|budgetMax=1000000000.*budgetMin=500000000/);
+  await expect(page.getByText("5억 ~ 10억").first()).toBeVisible();
   await expect(page.getByText("예산 맞춤 구역 분포")).toBeVisible();
 
   const firstZoneDetailLink = page.getByRole("link", { name: "구역 상세 보기" }).first();

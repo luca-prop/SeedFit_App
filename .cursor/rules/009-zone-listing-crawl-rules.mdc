@@ -1,0 +1,49 @@
+---
+description: 재개발 구역 매물 크롤·PIP·검수·429 예방 규칙
+globs: "scripts/data/*listing*.py, scripts/data/fetch_zone_*.py, scripts/data/enrich_listing_details.py, scripts/data/export_listings_sheet.py, scripts/data/apply_approved_listing_investments.py, docs/ZONE_LISTING_CRAWL_RUNBOOK.md, docs/DATA_MANAGEMENT_PLAN.md"
+alwaysApply: false
+---
+# Zone Listing Crawl Rules
+
+상세 런북: `docs/ZONE_LISTING_CRAWL_RUNBOOK.md`
+
+## Pipeline Contract
+- **빌라/다가구 목록**의 수집 단위는 **법정동(cortarNo)** 이다. 이 경로에는 구역 폴리곤 파라미터가 없다 → 동 전수 후 PIP.
+- **관리처분인가(및 이후)** 라도 빌라/다가구 PIP가 기본이다. 코드가 항상 있는 것은 아니다. PIP 좌표 안=0일 때만 `redevelopmentAreaNo` JGB 목록을 병행한다. 상세: `docs/ZONE_LISTING_CRAWL_RUNBOOK.md` 「관리처분인가 이후」.
+- 구역 소속(빌라 경로)은 **폴리곤 PIP**로 판정한다 (`--pip-filter`).
+- PIP 다음에 **소속 필터**(`listing_zone_filters.py`)를 반드시 거친다. 셋 다 기본 ON:
+  - `--no-coord-policy require-mention` — 좌표 미공개는 **구역명을 말할 때만** 통과. 무검증 통과 때문에 폴리곤 안 0건인 구역이 법정동 전체 매물로 채워졌다(미아3·이문4·노량진7·대조1 등 13구역).
+  - `--exclude-other-zone` — 헤드라인이 **다른 구역**(`노량진14구역`·`독산B구역`·`성북2구역`)을 명시하거나, **구역외**(`신흥동구역외`)를 자백하거나, **같은 이름 다른 사업**(`신흥3소규모재개발`·가로주택·모아타운)이면 제외. 숫자·영문·`13의6` 표기를 정규화해 비교한다. Golden 구역 자체가 모아타운이면 다른사업 규칙은 미적용.
+  - `--exclude-non-residential` — 매물유형이 `상가`·`근린생활시설`·`사무실`·`빌딩/건물`·`토지`면 제외. 설명의 `근생`은 `배정`·`입주권`·`조합원`·`분양신청`·`권리가`·`감정가` 신호가 없을 때만 제외. **`상가주택`은 주거**(재개발 조합원 물건).
+- **소속 판정은 헤드라인(제목·매물특징)만 읽는다.** 상세 설명의 중개사 홍보문("인근 수진1구역·태평3구역 상담")까지 세면 신흥3 401건 중 280건이 잘린다.
+- **헤드라인이 자기 구역명을 말하면 설명의 `근생`은 거부권을 잃는다.** 재개발 구역의 근생주택 = 조합원 상가주택이다 (신흥3 7.5억·금호21 84배정 8건 누락 사고). 매물유형이 `상가`면 구역명이 있어도 제외.
+- **JGB 채널은 좌표 미공개 정책을 건너뛴다.** `redevelopmentAreaNo`로 조회했으므로 구역 ID가 소속 증거다.
+- **폴리곤과 겹치는 법정동을 모두 조회한다** (`--overlap-cortars`, 기본 ON). 행정동(예: 충현동) ≠ 법정동(북아현동+충정로2·3가 등)이다. 구역 폴리곤 ∩ VWorld 지적 PNU[:10] → cortar 목록, primary cortar는 항상 포함. 캐시: `data/reference/zone_cortar_overlays.json`.
+- 동일 `cortarNo`는 1회만 수집해 재사용한다. `--max-pages`로 동 목록을 소진한다. 매물은 `articleNo`로 합집합 중복 제거 후 PIP.
+- 폴리곤 없는 구역은 `--polygon-zones-only`로 제외한다 (동 전수를 구역에 귀속할 수 없음).
+- 폴리곤 매칭은 **이름 동점을 그대로 두지 않는다**. Golden이 평범한 「N구역」인데 후보에 `일대`·`가로주택`·`특별계획`·`촉진지구`·`지구단위` 등이 있으면 감점(`different_project_penalty`). 결합정비구역(신월곡1+성북2)은 상대 구역 파트를 떼고 쓴다.
+- 경기 폴리곤은 `zone_parcel_lists/*.json`의 **대표지번 시드**를 고시 면적까지 확장한 추정 윤곽이다. 시드가 틀리면 폴리곤이 **다른 구역 위에** 정확한 면적으로 그려진다(신흥1 시드 `4000`→고시 `4900`, 신흥1↔신흥3 뒤바뀜). 시드 지번은 고시·보도로 교차검증하고 `sourceNote`에 출처를 남긴다. 면적 커버리지는 검증 신호가 아니다.
+- 확장 폴리곤(`pnu_union_*_expanded`)은 `--require-zone-mention`을 면제하지 않는다. `insideCore` 면제는 별지 지번표로 그린 확정 폴리곤에만 적용한다.
+- 크롤 후 `diagnose_zone_polygon_listings.py`로 면적 이상치·핀 이격·좌표미공개 전용 보드·타구역 언급을 감사한다. **폴리곤 안 매물이 하나같이 다른 구역명을 말하면 폴리곤을 의심한다** — 소속 필터가 조용히 걸러내 "매물 없는 구역"처럼 보일 뿐이다.
+- 호가·힌트를 Golden `매매가`(G)·실투자금(C)에 자동 기입하지 않는다. 승인 게이트 후에만 실투자금 반영.
+- 빌라만이 아니다. 기본 `VL:DDDGG:JWJT:SGJT:HOJT`(빌라+단독/다가구+…).
+
+## Auth / 429 Prevention
+- Playwright로 `new.land` 지도를 연 뒤 SPA `Authorization: Bearer`를 스니핑해 목록 API에 붙인다.
+- 상세 `/api/articles/{no}`는 `page.evaluate` same-origin `fetch`만 사용한다 (`page.request`/httpx → 429).
+- 요청 간격에 지터를 준다. 429면 즉시 재시도하지 말고 백오프(20/40/60s) + 지도 재시드.
+- 검수 보드 매물 열기는 탭 1개 재사용 + `OPEN_GAP_MS` 간격. 기본값을 낮출 때는 차단 여부를 보고 되돌릴 수 있게 둔다.
+
+## Review Board
+- 구 → 구역 네비로 한 구역씩 검수한다. 스크롤로 전 구역을 한 페이지에 나열하지 않는다.
+- 보드/상세 보강 기본은 구역당 최저가 **5건**(좌표 확인분 우선). 수집 JSON에는 PIP 통과분 전체를 남긴다.
+- 구역당 복수 승인 권장(초투 min/max). `이 구역 검수 완료`로 작업 상태를 구분한다.
+- **모바일:** 승인 상태는 localStorage + `승인 JSON 내보내기/가져오기`(클립보드 포함). 폰에서 검수 → JSON/CSV 저장 → 노트북에서 가져오기 후 `apply_approved_listing_investments.py`.
+
+## Detail Fields
+- 기보증금/월세는 상세 `allWarrantPrice` / `allRentPrice`(만원)를 우선한다. `warrantPrice`/`rentPrice`의 0에 속지 말 것.
+- 예상 초투 = 호가 − 기보증금(없으면 0). 보드 상위 5건 정렬은 **`예상초투 → 호가`뿐**이고 동가일 때만 좌표 확인분이 앞선다. 소속 신호(`mentions_zone`·`insidePolygon`)를 정렬 키로 올리면 최저가가 밀린다 (신길2 8.5억, 방배15 25억, 금호21 13억 누락 사고).
+- 보드 JSON 페이로드는 `<script type="application/json">` **raw text**다. `html.escape` 하면 `textContent`가 `&quot;`를 그대로 돌려줘 모든 내보내기가 죽는다. `<`만 `\u003c`로 (`_json_script`).
+- 설명 파서로 `기보증금/월세 9,000/30`, 전세·월세 문구를 보강한다.
+- 프리미엄 힌트 토큰: `프리미엄` · `프미` · `P` · **`피`**. `피8억`/`피 15억`은 P와 같다. 한글에 붙은 `피`(커피·피부)는 제외.
+- 호가·힌트를 Golden G/C에 자동 기입하지 않는다.

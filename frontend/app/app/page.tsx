@@ -6,16 +6,12 @@ import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
-
-const QUICK_RANGES = [
-  { label: "1~3억", min: 100000000, max: 300000000 },
-  { label: "2~5억", min: 200000000, max: 500000000 },
-  { label: "3~7억", min: 300000000, max: 700000000 },
-  { label: "5~10억", min: 500000000, max: 1000000000 },
-  { label: "7~12억", min: 700000000, max: 1200000000 },
-  { label: "10~15억", min: 1000000000, max: 1500000000 },
-  { label: "15억+", min: 1500000000, max: 2000000000 },
-];
+import {
+  REVERSE_FILTER_CASH_STEP_KRW,
+  REVERSE_FILTER_MAX_CASH_KRW,
+  REVERSE_FILTER_MIN_CASH_KRW,
+} from "@/lib/reverseFilterDto";
+import { BUDGET_QUICK_RANGES, BUDGET_SLIDER_TICKS_KRW } from "@/lib/resultsBudgetHref";
 
 const formatCurrency = (value: string) => {
   const num = value.replace(/[^0-9]/g, "");
@@ -41,17 +37,23 @@ export default function HomePage() {
   const [budgetMax, setBudgetMax] = useState("");
   const [error, setError] = useState("");
 
-  const sliderMin = Math.max(100000000, Math.min(2000000000, Number(budgetMin.replace(/,/g, "")) || 100000000));
-  const sliderMax = Math.max(100000000, Math.min(2000000000, Number(budgetMax.replace(/,/g, "")) || 500000000));
+  const clampCash = (raw: string, fallback: number) => {
+    if (!raw.trim()) return fallback;
+    const parsed = Number(raw.replace(/,/g, ""));
+    if (!Number.isFinite(parsed)) return fallback;
+    return Math.max(REVERSE_FILTER_MIN_CASH_KRW, Math.min(REVERSE_FILTER_MAX_CASH_KRW, parsed));
+  };
+  const sliderMin = clampCash(budgetMin, 100000000);
+  const sliderMax = clampCash(budgetMax, 500000000);
 
   const handleSearch = () => {
     const rawMin = Number(budgetMin.replace(/,/g, ""));
     const rawMax = Number(budgetMax.replace(/,/g, ""));
-    if (!rawMin || rawMin < 1000000) {
-      setError("최소 금액을 입력해주세요. (100만원 이상)");
+    if (budgetMin.trim() === "" || !Number.isFinite(rawMin) || rawMin < REVERSE_FILTER_MIN_CASH_KRW) {
+      setError("최소 금액을 입력해주세요.");
       return;
     }
-    if (!rawMax || rawMax < rawMin) {
+    if (budgetMax.trim() === "" || !Number.isFinite(rawMax) || rawMax < rawMin) {
       setError("최대 금액은 최소 금액보다 커야 합니다.");
       return;
     }
@@ -129,8 +131,8 @@ export default function HomePage() {
         {/* Quick Range Select */}
         <div>
           <span className="text-sm text-gray-400 block mb-2">빠른 선택:</span>
-          <div className="grid grid-cols-4 md:flex md:flex-wrap gap-2 mb-6">
-            {QUICK_RANGES.map(({ label, min, max }) => (
+          <div className="grid grid-cols-3 md:flex md:flex-wrap gap-2 mb-6">
+            {BUDGET_QUICK_RANGES.map(({ label, min, max }) => (
               <button
                 key={label}
                 onClick={() => {
@@ -150,9 +152,9 @@ export default function HomePage() {
           </span>
           <Slider
             value={[sliderMin, sliderMax]}
-            max={2000000000}
-            min={100000000}
-            step={50000000}
+            max={REVERSE_FILTER_MAX_CASH_KRW}
+            min={REVERSE_FILTER_MIN_CASH_KRW}
+            step={REVERSE_FILTER_CASH_STEP_KRW}
             onValueChange={(v: any) => {
               const vals = Array.isArray(v) ? v : [v];
               if (vals.length >= 2) {
@@ -164,11 +166,9 @@ export default function HomePage() {
             className="w-full"
           />
           <div className="flex justify-between text-xs text-gray-400 mt-1">
-            <span>1억</span>
-            <span>5억</span>
-            <span>10억</span>
-            <span>15억</span>
-            <span>20억</span>
+            {BUDGET_SLIDER_TICKS_KRW.map((tick) => (
+              <span key={tick}>{toEok(tick)}</span>
+            ))}
           </div>
         </div>
       </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   CartesianGrid,
@@ -18,6 +18,11 @@ import { BarChart3, RotateCcw } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { type ReverseFilterZone } from "@/lib/reverseFilterDto";
+import { formatAxisEok, niceYTicks } from "@/lib/scatterChartFormat";
+import { assignLabelSides, preferredLabelSide } from "@/lib/scatterLabelSide";
+import { shortZoneName } from "@/lib/shortZoneName";
+import { filterZonesByCoverage } from "@/lib/zoneCoverage";
+import { CLIENT_EVENTS, track } from "@/lib/analytics/track";
 
 type SortOption = {
   value: string;
@@ -32,6 +37,10 @@ type ResultsScatterExplorerProps = {
   selectedStageGroups: string[];
   selectedSort: string;
   sortOptions: SortOption[];
+  /** When false (default), 구역지정 전 구역은 숨긴다. */
+  includeSub: boolean;
+  /** 운영자 화면에서만 초기 구역 스위치를 보여 준다. */
+  showCoverageToggle?: boolean;
 };
 
 type StageAxis = {
@@ -49,7 +58,6 @@ type ChartPoint = ReverseFilterZone & {
   stageX: number;
   yMinEok: number;
   yMaxEok: number;
-  avgEok: number;
   showLabel: boolean;
   labelSide: "left" | "right";
 };
@@ -68,6 +76,21 @@ const STAGE_AXIS: StageAxis[] = [
 const STAGE_LABELS = Object.fromEntries(STAGE_AXIS.map((stage) => [stage.index, stage.label]));
 const ALL_STAGE_LABELS = STAGE_AXIS.map((stage) => stage.label);
 const NONE_FILTER_VALUE = "__none";
+const DESKTOP_MQ = "(min-width: 768px)";
+
+function useIsDesktop() {
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia(DESKTOP_MQ);
+    const apply = () => setIsDesktop(media.matches);
+    apply();
+    media.addEventListener("change", apply);
+    return () => media.removeEventListener("change", apply);
+  }, []);
+
+  return isDesktop;
+}
 
 function formatBudget(value: number) {
   const eok = value / 100_000_000;
@@ -137,10 +160,6 @@ function normalizeSelected(values: string[], allValues: string[]) {
   return values.length > 0 ? values.filter((value) => allValues.includes(value)) : allValues;
 }
 
-function shortZoneName(name: string) {
-  return name.replace(/\s+/g, "").replace(/구역.*$/, "").replace(/동([A-Z0-9])/g, "$1");
-}
-
 function selectLabelZoneIds(points: Omit<ChartPoint, "showLabel" | "labelSide">[]) {
   if (points.length <= 8) {
     return new Set(points.map((point) => point.zoneId));
@@ -176,7 +195,7 @@ function applyPositionDodge(points: Array<Omit<ChartPoint, "showLabel" | "labelS
   const groups = new Map<string, Array<Omit<ChartPoint, "showLabel" | "labelSide">>>();
 
   for (const point of points) {
-    const key = `${point.stageIndex}-${Math.round(point.avgEok * 10)}`;
+    const key = `${point.stageIndex}-${Math.round(point.yMinEok * 10)}`;
     groups.set(key, [...(groups.get(key) ?? []), point]);
   }
 
@@ -191,7 +210,7 @@ function applyPositionDodge(points: Array<Omit<ChartPoint, "showLabel" | "labelS
   });
 }
 
-function buildChartData(zones: ReverseFilterZone[]) {
+function buildChartData(zones: ReverseFilterZone[], showAllLabels: boolean) {
   const basePoints = zones.map((zone) => {
     const stageAxis = stageAxisFor(zone.stage);
     const yMinEok = zone.requiredCashMinKrw / 100_000_000;
@@ -206,37 +225,38 @@ function buildChartData(zones: ReverseFilterZone[]) {
       stageX: stageAxis.index,
       yMinEok,
       yMaxEok,
-      avgEok: (yMinEok + yMaxEok) / 2,
     };
   });
   const dodged = applyPositionDodge(basePoints);
-  const labelZoneIds = selectLabelZoneIds(dodged);
+  const labelZoneIds = showAllLabels ? new Set(dodged.map((point) => point.zoneId)) : selectLabelZoneIds(dodged);
+  const labelAnchors = dodged.map((point) => ({
+    id: point.zoneId,
+    stageIndex: point.stageIndex,
+    x: point.stageX,
+    y: point.yMinEok,
+    name: point.zoneName,
+  }));
+  const labelSides = assignLabelSides(labelAnchors);
 
-  return dodged.map((point, index) => ({
+  return dodged.map((point) => ({
     ...point,
     showLabel: labelZoneIds.has(point.zoneId),
-    labelSide: (index % 2 === 0 ? "right" : "left") as "left" | "right",
+    labelSide: labelSides.get(point.zoneId) ?? preferredLabelSide(point.stageIndex),
   }));
 }
 
-function ZoneDumbbellShape(props: {
+function ZonePointShape(props: {
   cx?: number;
   cy?: number;
-  yAxis?: { scale?: (value: number) => number };
   payload?: ChartPoint;
   onSelect?: (zoneId: string) => void;
   selectedZoneId?: string | null;
 }) {
-  const { cx, yAxis, payload, onSelect, selectedZoneId } = props;
+  const { cx, cy, payload, onSelect, selectedZoneId } = props;
 
-  if (typeof cx !== "number" || !payload) return null;
+  if (typeof cx !== "number" || typeof cy !== "number" || !payload) return null;
 
   const selected = selectedZoneId === payload.zoneId;
-  const yMin = yAxis?.scale?.(payload.yMinEok) ?? props.cy ?? 0;
-  const yMax = yAxis?.scale?.(payload.yMaxEok) ?? props.cy ?? 0;
-  const topY = Math.min(yMin, yMax);
-  const bottomY = Math.max(yMin, yMax);
-  const samePrice = Math.abs(bottomY - topY) < 3;
   const color = selected ? "#4f46e5" : payload.stageColor;
   const labelVisible = payload.showLabel || selected;
   const labelOffset = payload.labelSide === "left" ? -7 : 7;
@@ -251,17 +271,13 @@ function ZoneDumbbellShape(props: {
       }}
       style={{ cursor: "pointer" }}
     >
-      {!samePrice ? (
-        <line x1={cx} y1={topY} x2={cx} y2={bottomY} stroke={color} strokeWidth={selected ? 4 : 2.5} strokeLinecap="round" />
-      ) : null}
-      <circle cx={cx} cy={topY} r={selected ? 5.5 : 4} fill={color} stroke="#fff" strokeWidth={1.5} />
-      {!samePrice ? <circle cx={cx} cy={bottomY} r={selected ? 5.5 : 4} fill={color} stroke="#fff" strokeWidth={1.5} /> : null}
+      <circle cx={cx} cy={cy} r={selected ? 5.5 : 4} fill={color} stroke="#fff" strokeWidth={1.5} />
       {labelVisible ? (
         <text
           x={cx + labelOffset}
-          y={topY - 6}
+          y={cy - 6}
           fill={selected ? "#312e81" : "#475569"}
-          fontSize={selected ? 13 : 11}
+          fontSize={selected ? 12 : 10}
           fontWeight={selected ? 900 : 700}
           textAnchor={labelAnchor}
         >
@@ -305,9 +321,9 @@ function ScatterTooltip({
           사업 단계: <span className="font-semibold text-slate-800">{zone.stage}</span>
         </p>
         <p>
-          필요 현금:{" "}
+          실투자금:{" "}
           <span className="font-semibold text-slate-800">
-            {formatBudget(zone.requiredCashMinKrw)}
+            최저 {formatBudget(zone.requiredCashMinKrw)}
             {zone.requiredCashMaxKrw && zone.requiredCashMaxKrw !== zone.requiredCashMinKrw
               ? ` ~ ${formatBudget(zone.requiredCashMaxKrw)}`
               : ""}
@@ -375,9 +391,9 @@ function PinnedTooltip({
           사업 단계: <span className="font-semibold text-slate-800">{zone.stage}</span>
         </p>
         <p>
-          필요 현금:{" "}
+          실투자금:{" "}
           <span className="font-semibold text-slate-800">
-            {formatBudget(zone.requiredCashMinKrw)}
+            최저 {formatBudget(zone.requiredCashMinKrw)}
             {zone.requiredCashMaxKrw && zone.requiredCashMaxKrw !== zone.requiredCashMinKrw
               ? ` ~ ${formatBudget(zone.requiredCashMaxKrw)}`
               : ""}
@@ -410,25 +426,40 @@ export function ResultsScatterExplorer({
   selectedStageGroups,
   selectedSort,
   sortOptions,
+  includeSub,
+  showCoverageToggle = false,
 }: ResultsScatterExplorerProps) {
   const router = useRouter();
-  const allDistricts = useMemo(() => uniqueSorted(zones.map((zone) => zone.district)), [zones]);
+  const isDesktop = useIsDesktop();
+  const coverageFilteredZones = useMemo(() => filterZonesByCoverage(zones, includeSub), [zones, includeSub]);
+  const allDistricts = useMemo(
+    () => uniqueSorted(coverageFilteredZones.map((zone) => zone.district)),
+    [coverageFilteredZones],
+  );
   const activeDistricts = normalizeSelected(selectedDistricts, allDistricts);
   const activeStageLabels = normalizeSelected(selectedStageGroups, ALL_STAGE_LABELS);
   const [selectedZoneId, setSelectedZoneId] = useState<string | null>(null);
 
-  const zonesMatchingStages = zones.filter((zone) => activeStageLabels.includes(stageAxisFor(zone.stage).label));
-  const zonesMatchingDistricts = zones.filter((zone) => activeDistricts.includes(zone.district));
+  const zonesMatchingStages = coverageFilteredZones.filter((zone) =>
+    activeStageLabels.includes(stageAxisFor(zone.stage).label),
+  );
+  const zonesMatchingDistricts = coverageFilteredZones.filter((zone) => activeDistricts.includes(zone.district));
   const districtCounts = countBy(zonesMatchingStages.map((zone) => zone.district));
   const stageCounts = countBy(zonesMatchingDistricts.map((zone) => stageAxisFor(zone.stage).label));
-  const filteredZones = zonesMatchingDistricts.filter((zone) => activeStageLabels.includes(stageAxisFor(zone.stage).label));
-  const chartData = buildChartData(filteredZones);
+  const filteredZones = zonesMatchingDistricts.filter((zone) =>
+    activeStageLabels.includes(stageAxisFor(zone.stage).label),
+  );
+  const chartData = buildChartData(filteredZones, isDesktop);
   const selectedPoint = chartData.find((point) => point.zoneId === selectedZoneId) ?? null;
   const budgetMinEok = budgetMinKrw / 100_000_000;
   const budgetMaxEok = budgetMaxKrw / 100_000_000;
+  const yMin = Math.max(0, budgetMinEok - 0.5);
+  const yMax = Math.max(budgetMaxEok + 1, 5);
+  const yTicks = niceYTicks(yMin, yMax);
   const isSingleBudget = budgetMinKrw === budgetMaxKrw;
+  const subCount = zones.filter((zone) => zone.coverage === "SUB").length;
 
-  function pushFilters(nextDistricts: string[], nextStages: string[], nextSort = selectedSort) {
+  function pushFilters(nextDistricts: string[], nextStages: string[], nextSort = selectedSort, nextIncludeSub = includeSub) {
     const params = new URLSearchParams({
       budgetMin: String(budgetMinKrw),
       budgetMax: String(budgetMaxKrw),
@@ -439,6 +470,11 @@ export function ResultsScatterExplorer({
 
     if (districtsParam) params.set("districts", districtsParam);
     if (stagesParam) params.set("stageGroups", stagesParam);
+    if (nextIncludeSub) params.set("includeSub", "1");
+
+    if (nextIncludeSub !== includeSub) {
+      track(CLIENT_EVENTS.includeSubToggled, { enabled: nextIncludeSub });
+    }
 
     router.push(`/app/results?${params.toString()}`);
   }
@@ -480,10 +516,21 @@ export function ResultsScatterExplorer({
             예산 맞춤 구역 분포
           </p>
           <p className="mt-1 text-sm text-slate-500">
-            X축은 사업 단계, Y축은 구역별 최소~최대 실투자금입니다. 파란 예산선 안에 가까울수록 현재 예산과 맞습니다.
+            X축은 사업 단계, Y축은 구역 최저 실투자금입니다. 파란 예산선 안에 가까울수록 현재 예산과 맞습니다.
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          {showCoverageToggle ? (
+            <Button
+              type="button"
+              variant={includeSub ? "default" : "outline"}
+              className="min-h-10"
+              onClick={() => pushFilters(activeDistricts, activeStageLabels, selectedSort, !includeSub)}
+              aria-pressed={includeSub}
+            >
+              초기 구역 포함{subCount > 0 ? ` · ${subCount}` : ""}
+            </Button>
+          ) : null}
           <label htmlFor="results-sort" className="sr-only">
             결과 정렬 기준
           </label>
@@ -583,7 +630,7 @@ export function ResultsScatterExplorer({
         부터 {formatBudget(budgetMaxKrw)}까지입니다. 차트 아래 구역 카드 목록에서도 같은 구역 상세와 비교 링크를 이용할 수 있습니다.
       </p>
       <div
-        className="relative h-[430px] min-h-[430px] min-w-0 overflow-hidden rounded-[1.5rem] border border-slate-100 bg-white p-2 md:h-[540px] md:min-h-[540px] md:p-4"
+        className="relative h-[430px] min-h-[430px] min-w-0 overflow-hidden rounded-[1.5rem] border border-slate-100 bg-white p-2 md:h-[580px] md:min-h-[580px] md:p-4"
         onClick={() => setSelectedZoneId(null)}
         aria-describedby="results-chart-description"
       >
@@ -596,8 +643,8 @@ export function ResultsScatterExplorer({
             selectedSort={selectedSort}
           />
         ) : null}
-        <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={360}>
-          <ScatterChart margin={{ top: 28, right: 24, bottom: 28, left: 0 }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <ScatterChart margin={{ top: isDesktop ? 36 : 28, right: isDesktop ? 28 : 16, bottom: 28, left: isDesktop ? 8 : 0 }}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
             <XAxis
               type="number"
@@ -611,12 +658,14 @@ export function ResultsScatterExplorer({
             />
             <YAxis
               type="number"
-              dataKey="avgEok"
-              unit="억"
-              domain={[Math.max(0, budgetMinEok - 0.5), Math.max(budgetMaxEok + 1, 5)]}
+              dataKey="yMinEok"
+              domain={[yMin, yMax]}
+              ticks={yTicks}
+              tickFormatter={formatAxisEok}
               tick={{ fontSize: 12, fill: "#94a3b8", fontWeight: 600 }}
               axisLine={false}
               tickLine={false}
+              width={48}
             />
             {isSingleBudget ? (
               <ReferenceLine
@@ -655,7 +704,7 @@ export function ResultsScatterExplorer({
             />
             <Scatter
               data={chartData}
-              shape={<ZoneDumbbellShape onSelect={handleSelectZone} selectedZoneId={selectedZoneId} />}
+              shape={<ZonePointShape onSelect={handleSelectZone} selectedZoneId={selectedZoneId} />}
               isAnimationActive={false}
             />
           </ScatterChart>
@@ -677,7 +726,8 @@ export function ResultsScatterExplorer({
       </div>
 
       <p className="text-center text-xs text-slate-400">
-        파란 영역은 입력한 예산 범위입니다. 각 점은 구역 실투자금 범위의 대표 위치이며, 상세 금액은 툴팁과 구역 상세에서 확인할 수 있습니다.
+        파란 영역은 입력한 예산 범위입니다. 각 점은 구역 최저 실투자금입니다. 범위는 점을 누르면 볼 수 있습니다.
+        {isDesktop ? " PC에서는 모든 점에 구역명을 붙입니다." : " 상세 금액은 구역을 눌러 확인할 수 있습니다."}
       </p>
     </section>
   );

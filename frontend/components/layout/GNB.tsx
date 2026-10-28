@@ -4,14 +4,20 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Home, Building2, LayoutDashboard, Menu, X, ClipboardList } from "lucide-react";
+import { Home, Building2, Menu, X, ClipboardList } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
-const navItems = [
+type NavItem = {
+  href: string;
+  label: string;
+  icon: typeof Home;
+  badge?: string;
+};
+
+const navItems: NavItem[] = [
   { href: "/app", label: "홈", icon: Home },
   { href: "/app/b2b", label: "중개사 등록", icon: Building2 },
-  { href: "/app/admin", label: "관리자", icon: LayoutDashboard, badge: "Admin" },
 ];
 
 const isPlayBoardVisible =
