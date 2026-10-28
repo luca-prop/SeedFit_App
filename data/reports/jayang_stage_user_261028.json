@@ -1,0 +1,25 @@
+{
+  "zones": [
+    {
+      "zoneNaturalKey": "광진구|자양동|자양4동 A구역",
+      "zoneName": "자양4동 A구역",
+      "stageDiff": "changed",
+      "sheetStage": "정비구역 지정",
+      "seedfitStageCandidate": "조합설립인가",
+      "forceTrusted": true,
+      "pageTitle": "자양4동 A구역",
+      "topStageRaw": "조합설립인가 (2026.09.10)",
+      "topStageDate": "2026-09-10"
+    },
+    {
+      "zoneNaturalKey": "광진구|자양동|자양 7구역",
+      "zoneName": "자양 7구역",
+      "stageDiff": "changed",
+      "sheetStage": "조합설립인가",
+      "seedfitStageCandidate": "시공사 선정",
+      "forceTrusted": true,
+      "pageTitle": "자양 7구역",
+      "topStageRaw": "시공사 선정"
+    }
+  ]
+}
