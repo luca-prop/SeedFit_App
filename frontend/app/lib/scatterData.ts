@@ -81,8 +81,8 @@ export const scatterData = [
     "name": "자양 7구역",
     "district": "광진구",
     "tier": "T4",
-    "stage": 3.1,
-    "stageStr": "조합설립인가",
+    "stage": 4.1,
+    "stageStr": "시공사 선정",
     "coverage": "CORE",
     "investmentMin": 17.8,
     "investmentMax": 19.0
@@ -158,8 +158,8 @@ export const scatterData = [
     "name": "자양4동 A구역",
     "district": "광진구",
     "tier": "T4",
-    "stage": 2.1,
-    "stageStr": "정비구역 지정",
+    "stage": 3.1,
+    "stageStr": "조합설립인가",
     "coverage": "CORE",
     "investmentMin": 16.4,
     "investmentMax": 18.5
