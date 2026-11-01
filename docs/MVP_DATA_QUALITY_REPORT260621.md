@@ -36,12 +36,12 @@ The report validates normalized Golden Sample data, Naver Land reference evidenc
 - Count: `6`
 - Meaning: 실투자금이 비어 있어 Reverse Filter 대상에서는 제외되지만, 현재 매물 없음 상태로 관리합니다.
 
-- `{"zoneNaturalKey": "동대문구|제기동|제기 4구역", "sourceFile": "golden_samples261027.csv.csv", "sourceDate": "2026-10-27"}`
-- `{"zoneNaturalKey": "성북구|하월곡동|신월곡 1구역", "sourceFile": "golden_samples261027.csv.csv", "sourceDate": "2026-10-27"}`
-- `{"zoneNaturalKey": "동작구|노량진동|노량진 14구역", "sourceFile": "golden_samples261027.csv.csv", "sourceDate": "2026-10-27"}`
-- `{"zoneNaturalKey": "동작구|사당동|사당 19구역", "sourceFile": "golden_samples261027.csv.csv", "sourceDate": "2026-10-27"}`
-- `{"zoneNaturalKey": "동작구|상도동|상도 24구역", "sourceFile": "golden_samples261027.csv.csv", "sourceDate": "2026-10-27"}`
-- `{"zoneNaturalKey": "성동구|행당동|행당 8구역", "sourceFile": "golden_samples261027.csv.csv", "sourceDate": "2026-10-27"}`
+- `{"zoneNaturalKey": "동대문구|제기동|제기 4구역", "sourceFile": "golden_samples261101.csv.csv", "sourceDate": "2026-11-01"}`
+- `{"zoneNaturalKey": "성북구|하월곡동|신월곡 1구역", "sourceFile": "golden_samples261101.csv.csv", "sourceDate": "2026-11-01"}`
+- `{"zoneNaturalKey": "동작구|노량진동|노량진 14구역", "sourceFile": "golden_samples261101.csv.csv", "sourceDate": "2026-11-01"}`
+- `{"zoneNaturalKey": "동작구|사당동|사당 19구역", "sourceFile": "golden_samples261101.csv.csv", "sourceDate": "2026-11-01"}`
+- `{"zoneNaturalKey": "동작구|상도동|상도 24구역", "sourceFile": "golden_samples261101.csv.csv", "sourceDate": "2026-11-01"}`
+- `{"zoneNaturalKey": "성동구|행당동|행당 8구역", "sourceFile": "golden_samples261101.csv.csv", "sourceDate": "2026-11-01"}`
 
 ### `inverted_min_max`
 

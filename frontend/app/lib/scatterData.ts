@@ -1082,8 +1082,8 @@ export const scatterData = [
     "name": "청파 1구역",
     "district": "용산구",
     "tier": "T3",
-    "stage": 3.1,
-    "stageStr": "조합설립인가",
+    "stage": 4.1,
+    "stageStr": "시공사 선정",
     "coverage": "CORE",
     "investmentMin": 7.5,
     "investmentMax": 16.5

@@ -18,6 +18,7 @@ from typing import Any
 from zoneinfo import ZoneInfo
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+from normalize_golden_samples import stage_regresses  # noqa: E402
 from jaegebal_stage_lib import (  # noqa: E402
     detect_project_kind,
     develop_id_from_url,
@@ -242,6 +243,7 @@ def scrape_zone(
         "mappedStatus": mapped.get("status"),
         "mappedMessage": mapped.get("message"),
         "stageDiff": stage_diff,
+        "stageRegression": stage_diff == "changed" and stage_regresses(sheet_stage, candidate),
         "progressScraped": progress,
         "progressMerged": merged_text,
         "progressNewLabels": newly,

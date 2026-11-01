@@ -22,6 +22,7 @@ from normalize_golden_samples import (  # noqa: E402
     moa_stage_on_non_moa_zone,
     normalize_stage,
     progress_marks_stage_in_progress,
+    stage_regresses,
 )
 
 GOLDEN_SHEET_ID = "1YaZjGX53HGNQyAjLp0AIQFGq-j0IWcfPl5WFgUeUfuY"
@@ -195,6 +196,11 @@ def main() -> int:
         action="store_true",
         help="Refresh coverage from new stage when coverage column exists.",
     )
+    parser.add_argument(
+        "--confirm-stage-regression",
+        action="store_true",
+        help="Write a backward stage only when that row has regressionConfirmed=true after the user confirmed it.",
+    )
     args = parser.parse_args()
 
     payload = json.loads(args.diff.read_text(encoding="utf-8"))
@@ -275,8 +281,15 @@ def main() -> int:
             if "진행현황" in index:
                 progress_col = index["진행현황"]
                 progress = row[progress_col] if progress_col < len(row) else ""
-            blocked = moa_stage_on_non_moa_zone(zone_name, new_stage) or progress_marks_stage_in_progress(
-                new_stage, progress
+            regression = stage_regresses(old, new_stage) and not (
+                args.confirm_stage_regression and z.get("regressionConfirmed") is True
+            )
+            if regression:
+                print(f"stage regression blocked (needs user confirm): {key} {old!r} -> {new_stage!r}")
+            blocked = (
+                moa_stage_on_non_moa_zone(zone_name, new_stage)
+                or progress_marks_stage_in_progress(new_stage, progress)
+                or regression
             )
             if not blocked and not stages_equivalent(old, new_stage):
                 value_updates.append({"range": a1(stage_col, row_number), "values": [[new_stage]]})

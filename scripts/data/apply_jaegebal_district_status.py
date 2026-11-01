@@ -30,6 +30,7 @@ from normalize_golden_samples import (  # noqa: E402
     derive_coverage,
     moa_stage_on_non_moa_zone,
     progress_marks_stage_in_progress,
+    stage_regresses,
 )
 
 GOLDEN_SHEET_ID = "1YaZjGX53HGNQyAjLp0AIQFGq-j0IWcfPl5WFgUeUfuY"
@@ -174,6 +175,7 @@ def apply_to_workbook(
     day: str,
     update_coverage: bool = True,
     apply_stage_changes: bool = False,
+    confirm_stage_regression: bool = False,
 ) -> dict[str, Any]:
     wb = load_workbook(xlsx)
     ws = wb.worksheets[0]
@@ -224,6 +226,7 @@ def apply_to_workbook(
         "stagePendingApproval": [],
         "skippedMoaStageOnNonMoa": [],
         "skippedInProgressStage": [],
+        "stageRegressionPending": [],
         "promotedToCore": [],
     }
 
@@ -285,6 +288,16 @@ def apply_to_workbook(
                 {"key": z.get("zoneNaturalKey"), "from": cur_stage, "to": new_stage}
             )
             would_change_stage = False
+        # 이전 단계로 내리는 쓰기는 기본 차단. 사용자가 그 구역을 확인한 뒤에만 regressionConfirmed.
+        if (
+            would_change_stage
+            and stage_regresses(cur_stage, new_stage)
+            and not (confirm_stage_regression and z.get("regressionConfirmed") is True)
+        ):
+            stats["stageRegressionPending"].append(
+                {"key": z.get("zoneNaturalKey"), "from": cur_stage, "to": new_stage}
+            )
+            would_change_stage = False
         if would_change_stage and not apply_stage_changes:
             stats["stagePendingApproval"].append(
                 {
@@ -312,6 +325,13 @@ def apply_to_workbook(
                 stats["coverageUpdated"] += 1
                 if prev_cov == "SUB" and new_cov == "CORE":
                     stats["promotedToCore"].append(z.get("zoneNaturalKey"))
+
+        note = str(z.get("notes") or "").strip()
+        if note and "특징/호재" in hm:
+            prev_note = str(ws.cell(r, hm["특징/호재"]).value or "").strip()
+            if prev_note != note:
+                ws.cell(r, hm["특징/호재"], note)
+                stats["notesUpdated"] = stats.get("notesUpdated", 0) + 1
 
         if z.get("progressMerged"):
             prev = ws.cell(r, progress_col).value
@@ -365,6 +385,11 @@ def main() -> int:
         help="Write 현재 단계/coverage. Default: 진행현황·url만. 단계 변경은 사용자 승인 후 이 플래그로.",
     )
     parser.add_argument(
+        "--confirm-stage-regression",
+        action="store_true",
+        help="사용자가 이전 단계로의 변경을 구역별로 확인한 뒤에만. JSON regressionConfirmed=true 인 행만 쓴다.",
+    )
+    parser.add_argument(
         "--no-update-coverage",
         action="store_true",
         help="Do not re-derive coverage from stage (default: update coverage).",
@@ -389,6 +414,7 @@ def main() -> int:
         ],
         "write": bool(args.write),
         "applyStageChanges": bool(args.apply_stage_changes),
+        "confirmStageRegression": bool(args.confirm_stage_regression),
         "coverageScope": "CORE+SUB (input CSV 전 행. coverage로 제외하지 않음)",
     }
     print(json.dumps(plan, ensure_ascii=False, indent=2))
@@ -434,7 +460,14 @@ def main() -> int:
         day=day,
         update_coverage=not args.no_update_coverage,
         apply_stage_changes=bool(args.apply_stage_changes),
+        confirm_stage_regression=bool(args.confirm_stage_regression),
     )
+    if stats.get("stageRegressionPending"):
+        print(
+            "이전 단계로 내리는 변경은 사용자 확인 전 시트에 안 씁니다. "
+            "구역별로 확인을 받은 행만 regressionConfirmed=true 로 표시하고 "
+            "--confirm-stage-regression 을 붙여 다시 실행하세요."
+        )
     print(json.dumps(stats, ensure_ascii=False, indent=2))
     upload_xlsx_replace(args.sheet_id, out, remote=args.remote)
     return 0

@@ -5,6 +5,11 @@ alwaysApply: true
 ---
 # MVP Data Curation Rules
 
+## Stage regression
+- Golden `현재 단계`를 기존보다 이전 축으로 내리는 변경은 극히 드물다.
+- 그런 후보는 사용자에게 from→to를 보여주고, 그 구역을 확인받기 전에는 시트·시드·프로덕션에 쓰지 않는다.
+- `--apply-stage-changes`만으로는 후퇴를 쓰지 않는다. 확인 후에만 `regressionConfirmed: true`와 `--confirm-stage-regression`을 함께 쓴다.
+
 ## District-Based Zone Master
 - 구역 마스터 데이터는 `DATA_CURATION_SPEC.v.2.md` 기준으로 행정구(`district`) 단위 SSOT로 관리한다.
 - 구역을 물리적으로 T1~T4 티어에 고정 저장하지 않는다.

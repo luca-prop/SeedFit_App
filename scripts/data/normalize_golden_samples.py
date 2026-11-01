@@ -92,6 +92,58 @@ def compact_stage(stage: str) -> str:
     return re.sub(r"\s+", "", stage)
 
 
+# DATA_CURATION_SPEC.v.2.md §4.0. 숫자가 클수록 이후 단계.
+# 같은 숫자는 같은 축(표기 차이)이라 후퇴가 아니다.
+STAGE_PROGRESS_RANK = {
+    "대상지철회": 0,
+    "추진준비": 1,
+    "연번 부여": 1,
+    "신속통합기획 대상지 선정": 1,
+    "(모아)대상지 선정": 1,
+    "신속통합기획 확정": 1,
+    "신속통합기획 완료": 1,
+    "(모아)관리계획수립": 1,
+    "(모아)통합심의통과": 1,
+    "정비구역지정": 2,
+    "정비구역 지정": 2,
+    "(모아)관리계획고시": 2,
+    "추진위 승인": 2,
+    "추진위설립": 2,
+    "조합설립인가": 3,
+    "사업시행자 지정": 3,
+    "시공사선정": 4,
+    "시공사 선정": 4,
+    "건축심의": 4,
+    "사업시행인가": 5,
+    "관리처분인가": 6,
+    "이주": 7,
+    "철거": 7,
+    "착공": 8,
+}
+
+
+def stage_progress_rank(stage: str | None) -> int | None:
+    if not stage:
+        return None
+    normalized = normalize_stage(stage.strip()) or ""
+    if normalized in STAGE_PROGRESS_RANK:
+        return STAGE_PROGRESS_RANK[normalized]
+    compact = compact_stage(normalized)
+    for label, rank in STAGE_PROGRESS_RANK.items():
+        if compact_stage(label) == compact:
+            return rank
+    return None
+
+
+def stage_regresses(current: str | None, candidate: str | None) -> bool:
+    """후보가 시트의 현재 단계보다 이전 축이면 True. 극히 드문 경우라 사용자 확인 전 쓰지 않는다."""
+    current_rank = stage_progress_rank(current)
+    candidate_rank = stage_progress_rank(candidate)
+    if current_rank is None or candidate_rank is None:
+        return False
+    return candidate_rank < current_rank
+
+
 def moa_stage_on_non_moa_zone(zone_name: str | None, stage: str | None) -> bool:
     """구역명에 모아가 없는데 (모아)* 단계가 붙은 경우. 장위15 사고."""
     return bool(stage and "모아" in stage and zone_name and "모아" not in zone_name)
@@ -303,6 +355,9 @@ def normalize(input_path: Path, output_path: Path) -> dict[str, Any]:
                 "projectType": derive_project_type(zone_name, stage),
                 "notes": notes,
             }
+            fin_land_id = clean_text(row.get("금융지도ID"))
+            if fin_land_id:
+                zone_row["finLandAreaId"] = fin_land_id
 
             # Optional geo columns (naver map view key for villa/house listings).
             naver_map_url = clean_text(row.get("naver_map_url"))

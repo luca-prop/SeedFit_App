@@ -1,0 +1,16 @@
+{
+  "zones": [
+    {
+      "zoneNaturalKey": "용산구|청파동|청파 1구역",
+      "zoneName": "청파 1구역",
+      "stageDiff": "changed",
+      "sheetStage": "조합설립인가",
+      "seedfitStageCandidate": "시공사 선정",
+      "forceTrusted": true,
+      "pageTitle": "청파 1구역",
+      "topStageRaw": "시공사 선정 · 대우건설",
+      "notes": "시공사 선정 · 대우건설 (23년 2월 17일 조합설립인가)",
+      "progressMerged": "추진위승인|2005.08.12\n정비구역지정|2022.07.14\n조합설립인가|2023.02.17\n시공사선정|대우건설\n사업시행인가|43개월째 진행중(중앙값 36개월)"
+    }
+  ]
+}

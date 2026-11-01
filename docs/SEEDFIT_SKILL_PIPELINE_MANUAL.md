@@ -189,6 +189,7 @@ python scripts/data/apply_jaegebal_district_status.py --diff … --write --apply
   이미 완료된 시공사 선정을 덮어쓰지 않는다. 진행현황의 "진행중"으로 D열을 갈아끼우지 않는다.
   apply는 후보 단계가 진행현황에서 `진행중`이면 skip (`skippedInProgressStage`).
   (실제 사고: 장위14 `사업시행인가|196개월째 진행중` → 시공사 선정으로 되돌림. 2010.07.11은 시공사 선정일이지 건축심의·사업시행인가가 아님)
+- **이전 단계로 내리는 변경은 사용자 확인 전 금지.** 시공사 선정 → 조합설립인가처럼 축이 뒤로 가면 apply가 `stageRegressionPending`으로 건너뛴다. 사용자가 그 구역을 확인한 뒤에만 `regressionConfirmed: true`와 `--confirm-stage-regression`을 함께 쓴다. `--apply-stage-changes`만으로는 후퇴를 쓰지 않는다.
 - **비모아 구역에 `(모아)*` 단계가 붙으면 stage 갱신 skip.**
   (실제 사고·재발: 장위15 일반 재개발 통합심의 → `(모아)통합심의통과` → SUB. 2026-10-25에 시공사 선정·CORE로 복구)
 - 구역명에 `모아`가 없으면 projectKind를 moa로 두지 않는다. `통합심의통과` common = `건축심의`.
@@ -265,7 +266,7 @@ python scripts/data/apply_jaegebal_district_status.py --diff … --write --apply
   → archive/golden 루트 + YYMMDD/
   → /seedfit-golden-sample-update 절차로 스펙 ## 2.
   → /seedfit-deploy (Supabase → git → Vercel Production)
-  → blog HTML (승인 CORE만. SUB·CORE 보류 제외. 6개 예산 × 구역·단계·초투)
+  → blog HTML (승인 CORE만. SUB·CORE 보류 제외. 6개 예산 × 구역명·단계·초투. 구역 열은 구 접두 없음)
 ```
 
 ### 3.4 절차 체크리스트
