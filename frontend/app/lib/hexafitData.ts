@@ -1001,7 +1001,7 @@ export const hexafitZones: HexafitZoneInput[] = [
     "zoneName": "청파 1구역",
     "district": "용산구",
     "dong": "청파동",
-    "stage": "조합설립인가",
+    "stage": "시공사 선정",
     "coverage": "CORE",
     "minInvestmentBillion": 7.5,
     "maxInvestmentBillion": 16.5,

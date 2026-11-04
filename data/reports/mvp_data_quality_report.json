@@ -2,8 +2,8 @@
   "status": "review",
   "sources": {
     "golden": {
-      "file": "docs/golden_samples261027.csv.csv",
-      "sourceDate": "2026-10-27"
+      "file": "docs/golden_samples261101.csv.csv",
+      "sourceDate": "2026-11-01"
     },
     "naver": {
       "files": [
@@ -46,33 +46,33 @@
       "items": [
         {
           "zoneNaturalKey": "동대문구|제기동|제기 4구역",
-          "sourceFile": "golden_samples261027.csv.csv",
-          "sourceDate": "2026-10-27"
+          "sourceFile": "golden_samples261101.csv.csv",
+          "sourceDate": "2026-11-01"
         },
         {
           "zoneNaturalKey": "성북구|하월곡동|신월곡 1구역",
-          "sourceFile": "golden_samples261027.csv.csv",
-          "sourceDate": "2026-10-27"
+          "sourceFile": "golden_samples261101.csv.csv",
+          "sourceDate": "2026-11-01"
         },
         {
           "zoneNaturalKey": "동작구|노량진동|노량진 14구역",
-          "sourceFile": "golden_samples261027.csv.csv",
-          "sourceDate": "2026-10-27"
+          "sourceFile": "golden_samples261101.csv.csv",
+          "sourceDate": "2026-11-01"
         },
         {
           "zoneNaturalKey": "동작구|사당동|사당 19구역",
-          "sourceFile": "golden_samples261027.csv.csv",
-          "sourceDate": "2026-10-27"
+          "sourceFile": "golden_samples261101.csv.csv",
+          "sourceDate": "2026-11-01"
         },
         {
           "zoneNaturalKey": "동작구|상도동|상도 24구역",
-          "sourceFile": "golden_samples261027.csv.csv",
-          "sourceDate": "2026-10-27"
+          "sourceFile": "golden_samples261101.csv.csv",
+          "sourceDate": "2026-11-01"
         },
         {
           "zoneNaturalKey": "성동구|행당동|행당 8구역",
-          "sourceFile": "golden_samples261027.csv.csv",
-          "sourceDate": "2026-10-27"
+          "sourceFile": "golden_samples261101.csv.csv",
+          "sourceDate": "2026-11-01"
         }
       ]
     },
