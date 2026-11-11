@@ -1,11 +1,19 @@
 import { createHash } from "node:crypto";
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, "../..");
-const sourcePath = join(root, "data/normalized/golden_samples260823.normalized.json");
+const normalizedDir = join(root, "data/normalized");
+const goldenName = readdirSync(normalizedDir)
+  .filter((name) => /^golden_samples\d+\.normalized\.json$/.test(name))
+  .sort()
+  .at(-1);
+if (!goldenName) {
+  throw new Error(`no golden normalized JSON in ${normalizedDir}`);
+}
+const sourcePath = join(normalizedDir, goldenName);
 const outputPath = join(__dirname, "../lib/data/mvpReverseFilterSeed.json");
 
 // Keep in sync with scripts/data/generate_mvp_seed_sql.py
@@ -79,6 +87,7 @@ writeFileSync(
 const sample = candidates.find((item) => item.zoneName === "청파 1구역");
 console.log(
   JSON.stringify({
+    goldenName,
     outputPath,
     candidates: candidates.length,
     sourceDate: raw.source.sourceDate,

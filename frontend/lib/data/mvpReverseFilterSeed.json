@@ -725,9 +725,9 @@
       "projectType": "redevelopment",
       "salePriceMinKrw": 850000000,
       "salePriceMaxKrw": 1400000000,
-      "investmentMinKrw": 850000000,
-      "investmentMaxKrw": 1387000000,
-      "sourceDate": "2026-09-26"
+      "investmentMinKrw": 1010000000,
+      "investmentMaxKrw": 1400000000,
+      "sourceDate": "2026-11-01"
     },
     {
       "zoneId": "bae4df56-5f1c-5a5d-bdb7-714e72dfc8c5",
