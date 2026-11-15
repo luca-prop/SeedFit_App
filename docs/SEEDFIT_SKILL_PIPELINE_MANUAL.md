@@ -637,8 +637,8 @@ Vercel Production env가 비었거나 DB를 갈아끼운 경우만:
 
 ### 6.8 운영 주의
 
-- **Supabase 무료 플랜은 약 7일 idle 시 auto-pause.** 연결 실패면 대시보드에서 먼저 깨운다.
-  상시 방지: `.github/workflows/supabase-keepalive.yml` (3일마다, Secret `SUPABASE_DB_URL`)
+- **Supabase 무료 플랜은 지난 7일 동안 DB 요청이 매일 충분하지 않으면 멈춘다.** 한 번 멈추면 조회만으로는 다시 켜지지 않으니 대시보드에서 Resume 한다.
+  상시 방지: `.github/workflows/supabase-keepalive.yml` (매일 12:00 UTC, Secret `SUPABASE_DB_URL`)
 - seed는 **upsert 전제**. 운영 중 재실행은 덮어쓰기 범위를 먼저 확인.
 - 커밋 메시지는 **사용자 지정을 따른다.** 임의 생성 금지.
 - `.env.supabase-prod` · `data/tmp_*` 가 스테이징에 섞이지 않았는지 확인.
@@ -769,7 +769,7 @@ foreach ($d in Get-ChildItem $src -Directory) {
 | 경기 구역 두 개가 서로 뒤바뀜 | 시드 지번 오기로 확장 폴리곤이 통째로 이동 | 고시·보도로 시드 지번 교차검증, `sourceNote`에 출처 기록 |
 | 비교기축 단지가 엉뚱하게 매칭 | 정렬 후 O·P열 VLOOKUP 행번호 어긋남 | `repair_ref_vlookup_and_map_tab.py` |
 | `prisma db push` 실패 | 트랜잭션 풀러(6543)로 시도 | `push-and-seed-supabase-prod.mjs` 사용 (직결 전환 내장) |
-| Supabase 연결 거부 | 무료 플랜 7일 idle auto-pause | 대시보드에서 깨우기, keepalive 워크플로 확인 |
+| Supabase 연결 거부 | 무료 플랜이 일주일간 요청 부족으로 pause. 실패 ping은 복구하지 못함 | 대시보드에서 Resume, 매일 keepalive 확인 |
 | git push 했는데 사이트 그대로 | 브랜치가 `main` 이 아님 | `npx vercel --prod` 명시 실행 |
 | 배포 후 구역 수 급감 | seed 입력 JSON 결손 | 배포 중단, normalize/validate 리포트 재확인 |
 | 크롤 중 429 | 요청 과다 | **즉시 재시도 금지**, delay 상향 후 재개 |
