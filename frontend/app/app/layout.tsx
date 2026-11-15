@@ -1,5 +1,6 @@
 import GNB from "@/components/layout/GNB";
 import { DataDisclosureNotice } from "@/components/domain/DataDisclosureNotice";
+import { ZoneAsOfProvider } from "@/components/domain/zoneAsOf";
 
 /**
  * App Layout — 기존 서비스 페이지용 레이아웃
@@ -14,7 +15,7 @@ export default function AppLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <>
+    <ZoneAsOfProvider>
       <GNB />
       <main className="flex-1 bg-gray-50">{children}</main>
       <footer className="border-t bg-slate-50 px-4 py-4 md:py-5">
@@ -22,6 +23,6 @@ export default function AppLayout({
           <DataDisclosureNotice />
         </div>
       </footer>
-    </>
+    </ZoneAsOfProvider>
   );
 }

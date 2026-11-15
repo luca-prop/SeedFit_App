@@ -81,7 +81,11 @@ def main() -> None:
             }
         )
     rows.sort(key=lambda r: (r["district"], r["name"]))
+    source_date = str(raw.get("source", {}).get("sourceDate") or "")
+    if not source_date:
+        raise SystemExit("golden JSON has no source.sourceDate")
     OUT.write_text(
+        f'export const scatterDataAsOf = "{source_date}";\n\n'
         "export const scatterData = "
         + json.dumps(rows, ensure_ascii=False, indent=2)
         + ";\n",

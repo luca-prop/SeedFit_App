@@ -2,6 +2,7 @@ import Link from "next/link";
 import { AlertTriangle, ArrowLeft, Building2, FileText, Landmark, TrendingUp } from "lucide-react";
 
 import { comparisonDataAction } from "@/app/actions/comparisonData";
+import { SetZoneAsOf } from "@/components/domain/zoneAsOf";
 import { EVENT_TYPES, recordEvent } from "@/lib/analytics/events";
 import { ComparisonAssetCard } from "@/components/domain/ComparisonAssetCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -198,6 +199,7 @@ export default async function ComparisonPage({ params, searchParams }: Compariso
 
   return (
     <div className="container mx-auto max-w-6xl px-4 py-6 md:py-8">
+      {zone.sourceDate ? <SetZoneAsOf date={zone.sourceDate} /> : null}
       <div className="mb-5 md:mb-6">
         <div className="mb-3 flex flex-wrap gap-2">
           <Link href={resultsHref} className="inline-flex min-h-10 items-center rounded-lg px-1 text-sm font-medium text-slate-500 transition hover:text-slate-900">

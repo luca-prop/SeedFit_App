@@ -37,6 +37,14 @@ export function listFallbackZoneSnapshots(): ReverseFilterSnapshotCandidate[] {
   }));
 }
 
+export function getFallbackSourceDate(): string {
+  return seed.sourceDate;
+}
+
 export function getFallbackDataSyncedAt(): string {
   return new Date(`${seed.sourceDate}T00:00:00.000Z`).toISOString();
+}
+
+export function findFallbackZone(zoneId: string): SeedCandidate | undefined {
+  return (seed.candidates as SeedCandidate[]).find((candidate) => candidate.zoneId === zoneId);
 }

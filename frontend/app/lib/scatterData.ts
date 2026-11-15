@@ -1,3 +1,5 @@
+export const scatterDataAsOf = "2026-11-01";
+
 export const scatterData = [
   {
     "id": "미아 2구역",

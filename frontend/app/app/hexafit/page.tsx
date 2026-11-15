@@ -1,4 +1,6 @@
 import HexafitExplorer from "@/components/b2c/HexafitExplorer";
+import { SetZoneAsOf } from "@/components/domain/zoneAsOf";
+import { scatterDataAsOf } from "@/app/lib/scatterData";
 import { EVENT_TYPES, recordEvent } from "@/lib/analytics/events";
 
 export const dynamic = "force-dynamic";
@@ -22,5 +24,10 @@ export default async function HexafitPage({ searchParams }: { searchParams: Sear
     props: { zones: initialZones },
   });
 
-  return <HexafitExplorer initialZones={initialZones} />;
+  return (
+    <>
+      <SetZoneAsOf date={scatterDataAsOf} />
+      <HexafitExplorer initialZones={initialZones} />
+    </>
+  );
 }
