@@ -42,6 +42,8 @@ type ResultsScatterExplorerProps = {
   includeSub: boolean;
   /** 운영자 화면에서만 초기 구역 스위치를 보여 준다. */
   showCoverageToggle?: boolean;
+  /** 이름 검색은 예산 밖 구역까지 이 목록에서 찾는다. 없으면 zones만 검색한다. */
+  catalogZones?: ReverseFilterZone[];
 };
 
 type StageAxis = {
@@ -101,6 +103,12 @@ function formatBudget(value: number) {
 
 function formatBudgetEok(value: number) {
   return Number.isInteger(value) ? `${value}억` : `${value.toFixed(1)}억`;
+}
+
+function zoneNameMatches(name: string, query: string) {
+  const needle = query.trim().toLowerCase().replace(/\s+/g, "");
+  if (!needle) return false;
+  return name.toLowerCase().replace(/\s+/g, "").includes(needle);
 }
 
 function buildZoneHref(path: string, zone: ChartPoint, budgetMinKrw: number, budgetMaxKrw: number, selectedSort: string) {
@@ -418,6 +426,7 @@ export function ResultsScatterExplorer({
   sortOptions,
   includeSub,
   showCoverageToggle = false,
+  catalogZones,
 }: ResultsScatterExplorerProps) {
   const router = useRouter();
   const isDesktop = useIsDesktop();
@@ -429,6 +438,7 @@ export function ResultsScatterExplorer({
   const activeDistricts = normalizeSelected(selectedDistricts, allDistricts);
   const activeStageLabels = normalizeSelected(selectedStageGroups, ALL_STAGE_LABELS);
   const [selectedZoneId, setSelectedZoneId] = useState<string | null>(null);
+  const [zoneQuery, setZoneQuery] = useState("");
 
   const zonesMatchingStages = coverageFilteredZones.filter((zone) =>
     activeStageLabels.includes(stageAxisFor(zone.stage).label),
@@ -439,12 +449,29 @@ export function ResultsScatterExplorer({
   const filteredZones = zonesMatchingDistricts.filter((zone) =>
     activeStageLabels.includes(stageAxisFor(zone.stage).label),
   );
-  const chartData = buildChartData(filteredZones, isDesktop);
+  const nameHits = zoneQuery.trim()
+    ? filterZonesByCoverage(catalogZones ?? zones, includeSub).filter((zone) =>
+        zoneNameMatches(zone.zoneName, zoneQuery),
+      )
+    : [];
+  const chartZones = nameHits.length
+    ? [
+        ...filteredZones.filter((zone) => !nameHits.some((hit) => hit.zoneId === zone.zoneId)),
+        ...nameHits,
+      ]
+    : filteredZones;
+  const chartData = buildChartData(chartZones, isDesktop).map((point) =>
+    nameHits.some((hit) => hit.zoneId === point.zoneId) ? { ...point, showLabel: true } : point,
+  );
   const selectedPoint = chartData.find((point) => point.zoneId === selectedZoneId) ?? null;
   const budgetMinEok = budgetMinKrw / 100_000_000;
   const budgetMaxEok = budgetMaxKrw / 100_000_000;
   const yMin = Math.max(0, budgetMinEok - 0.5);
-  const yMax = Math.max(budgetMaxEok + 1, 5);
+  const nameHitMaxEok = nameHits.reduce(
+    (max, zone) => Math.max(max, zone.requiredCashMinKrw / 100_000_000),
+    0,
+  );
+  const yMax = Math.max(budgetMaxEok + 1, 5, nameHitMaxEok + 1);
   const yTicks = niceYTicks(yMin, yMax);
   const isSingleBudget = budgetMinKrw === budgetMaxKrw;
   const subCount = zones.filter((zone) => zone.coverage === "SUB").length;
@@ -619,6 +646,25 @@ export function ResultsScatterExplorer({
         예산 맞춤 구역 분포 차트입니다. 표시 결과는 {chartData.length}개이고, 예산 범위는 {formatBudget(budgetMinKrw)}
         부터 {formatBudget(budgetMaxKrw)}까지입니다. 차트 아래 구역 카드 목록에서도 같은 구역 상세와 비교 링크를 이용할 수 있습니다.
       </p>
+      <div className="rounded-2xl border border-slate-100 bg-slate-50 p-3">
+        <label htmlFor="results-zone-query" className="mb-2 block text-xs font-bold text-slate-500">
+          구역 이름
+        </label>
+        <input
+          id="results-zone-query"
+          value={zoneQuery}
+          onChange={(event) => setZoneQuery(event.target.value)}
+          placeholder="예: 성수전략"
+          className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-900 outline-none focus:border-indigo-400"
+        />
+        {zoneQuery.trim() ? (
+          <p className="mt-2 text-xs font-semibold text-indigo-700">
+            {nameHits.length > 0
+              ? `‘${zoneQuery.trim()}’ ${nameHits.length}곳. 예산 범위 밖이어도 차트에 표시합니다.`
+              : `‘${zoneQuery.trim()}’에 해당하는 구역이 없습니다.`}
+          </p>
+        ) : null}
+      </div>
       <div
         className="relative h-[430px] min-h-[430px] min-w-0 overflow-hidden rounded-[1.5rem] border border-slate-100 bg-white p-2 md:h-[580px] md:min-h-[580px] md:p-4"
         onClick={() => setSelectedZoneId(null)}
