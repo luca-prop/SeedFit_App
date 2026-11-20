@@ -31,7 +31,8 @@ import {
   YAxis,
 } from "recharts";
 import { BudgetRangeSearch } from "@/components/b2c/BudgetRangeSearch";
-import { scatterData } from "@/app/lib/scatterData";
+import { scatterData, scatterDataAsOf } from "@/app/lib/scatterData";
+import { SetZoneAsOf } from "@/components/domain/zoneAsOf";
 import { PROGRESS_DATES } from "@/app/lib/scatterDates";
 import { COMPARISON_APTS } from "@/lib/mockData";
 
@@ -270,6 +271,7 @@ export default function LandingPage() {
 
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-[#0A0F1C] text-white">
+      <SetZoneAsOf date={scatterDataAsOf} />
       {/* ── Sticky Nav ── */}
       <nav className={`fixed top-0 z-50 w-full transition-all duration-300 ${scrollY > 60 ? "bg-[#0A0F1C]/90 backdrop-blur-lg shadow-lg shadow-black/20 border-b border-white/5" : ""}`}>
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5">

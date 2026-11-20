@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { AlertTriangle, ArrowLeft, Database, Search } from "lucide-react";
 
 import { reverseFilterAction } from "@/app/actions/reverseFilter";
+import { FallbackDataBanner, SetZoneAsOf } from "@/components/domain/zoneAsOf";
 import { EVENT_TYPES, recordEvent } from "@/lib/analytics/events";
 import { ResultsBudgetSlider } from "@/components/b2c/ResultsBudgetSlider";
 import { ResultsScatterExplorer } from "@/components/b2c/ResultsScatterExplorer";
@@ -482,13 +483,21 @@ export default async function ResultsPage({ searchParams }: { searchParams?: Pro
 
       {result.ok ? (
         <div className="space-y-8">
-          <Alert className="border-blue-200 bg-blue-50 text-blue-800">
-            <AlertTriangle className="h-4 w-4" />
-            <AlertTitle className="text-sm md:text-base">최신 큐레이션 데이터</AlertTitle>
-            <AlertDescription className="text-xs md:text-sm">
-              데이터 동기화 기준일: {formatDateTime(result.dataSyncedAt)}. {result.disclaimer}
-            </AlertDescription>
-          </Alert>
+          <SetZoneAsOf
+            date={result.zoneAsOf ?? result.dataSyncedAt.slice(0, 10)}
+            fallback={result.usedFallback}
+          />
+          {result.usedFallback ? (
+            <FallbackDataBanner date={result.zoneAsOf ?? result.dataSyncedAt.slice(0, 10)} />
+          ) : (
+            <Alert className="border-blue-200 bg-blue-50 text-blue-800">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertTitle className="text-sm md:text-base">최신 큐레이션 데이터</AlertTitle>
+              <AlertDescription className="text-xs md:text-sm">
+                데이터 기준일: {formatDateTime(result.dataSyncedAt)}. {result.disclaimer}
+              </AlertDescription>
+            </Alert>
+          )}
 
           <ResultsScatterExplorer
             zones={allVisibleZones}

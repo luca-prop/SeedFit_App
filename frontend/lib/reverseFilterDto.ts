@@ -88,6 +88,8 @@ export const reverseFilterSuccessSchema = z.object({
   excludedZones: z.array(reverseFilterExcludedZoneSchema),
   totalMatchedCount: z.number().int().min(0),
   dataSyncedAt: z.string().datetime(),
+  zoneAsOf: z.string().date().optional(),
+  usedFallback: z.boolean().default(false),
   disclaimer: z.string().min(1),
 });
 

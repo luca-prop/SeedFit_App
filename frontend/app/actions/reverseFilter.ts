@@ -130,8 +130,10 @@ export async function reverseFilterAction(input: unknown): Promise<ReverseFilter
       input: parsedInput,
       ...groups,
       dataSyncedAt: source.dataSyncedAt,
+      zoneAsOf: source.dataSyncedAt.slice(0, 10),
+      usedFallback: source.usedFallback,
       disclaimer: source.usedFallback
-        ? `${REVERSE_FILTER_DISCLAIMER} (현재 Preview DB 연결이 불가해 큐레이션 seed로 조회 중입니다.)`
+        ? `${REVERSE_FILTER_DISCLAIMER} 지금 ${source.dataSyncedAt.slice(0, 10)} 예비 파일을 보고 있습니다.`
         : REVERSE_FILTER_DISCLAIMER,
     });
   } catch (error) {

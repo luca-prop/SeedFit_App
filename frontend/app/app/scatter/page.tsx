@@ -5,7 +5,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, MapPin, X, SlidersHorizontal, ExternalLink, Maximize2, Minimize2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import { scatterData } from "../../lib/scatterData";
+import { scatterData, scatterDataAsOf } from "../../lib/scatterData";
+import { SetZoneAsOf } from "@/components/domain/zoneAsOf";
 import { assignLabelSides, preferredLabelSide } from "@/lib/scatterLabelSide";
 import { shortZoneName } from "@/lib/shortZoneName";
 import { REFERENCE_COMPLEXES } from "../../lib/referenceComplexes";
@@ -13,6 +14,12 @@ import { PROGRESS_DATES } from "../../lib/scatterDates";
 
 // 데이터에서 고유 구 목록 자동 추출
 const ALL_DISTRICTS = Array.from(new Set(scatterData.map((d) => d.district)));
+
+function zoneNameMatches(name: string, query: string) {
+  const needle = query.trim().toLowerCase().replace(/\s+/g, "");
+  if (!needle) return false;
+  return name.toLowerCase().replace(/\s+/g, "").includes(needle);
+}
 import {
   ScatterChart,
   Scatter,
@@ -333,6 +340,7 @@ function ScatterChartContent() {
 
   // 자동 줌 토글 (도메인 기반, 모바일/웹 공통 적용)
   const [autoZoomEnabled, setAutoZoomEnabled] = useState(true);
+  const [zoneQuery, setZoneQuery] = useState("");
 
   // 모바일 감지: X축 라벨 축약용 (item 2-B)
   const [isMobile, setIsMobile] = useState(false);
@@ -512,6 +520,24 @@ function ScatterChartContent() {
       data = [...data, ...refPoints];
     }
 
+    const nameQuery = zoneQuery.trim();
+    if (nameQuery) {
+      const present = new Set(data.map((point: { id: string }) => point.id));
+      const forced = scatterData
+        .filter((point) => zoneNameMatches(point.name, nameQuery))
+        .map((point) => {
+          const avg = (point.investmentMin + point.investmentMax) / 2;
+          const isPinned = pinnedData && pinnedData.name === point.name;
+          return { ...point, avg, isOut: false, isPinned, hasPinned: !!pinnedData };
+        });
+      data = [
+        ...data.map((point) =>
+          zoneNameMatches(point.name, nameQuery) ? { ...point, isOut: false } : point,
+        ),
+        ...forced.filter((point) => !present.has(point.id)),
+      ];
+    }
+
     const dodged = applyPositionDodge(data);
     const sides = assignLabelSides(
       dodged
@@ -529,7 +555,7 @@ function ScatterChartContent() {
       ...point,
       labelSide: point.isRef ? "right" : (sides.get(point.id) ?? preferredLabelSide(Math.floor(point.stage))),
     }));
-  }, [hasBudget, budgetMinEok, budgetMaxEok, showAllZones, selectedDistrict, activeDistricts, activeStageGroups, pinnedData]);
+  }, [hasBudget, budgetMinEok, budgetMaxEok, showAllZones, selectedDistrict, activeDistricts, activeStageGroups, pinnedData, zoneQuery]);
 
   // 자동 줌 도메인: 예산 범위 구역이 화면의 85%를 차지하도록
   const autoZoomDomains = useMemo(() => {
@@ -618,8 +644,13 @@ function ScatterChartContent() {
     [pinnedData, isMobile]
   );
 
+  const nameHits = zoneQuery.trim()
+    ? scatterData.filter((point) => zoneNameMatches(point.name, zoneQuery))
+    : [];
+
   return (
     <div className="container mx-auto px-4 py-6 md:py-8 max-w-6xl min-h-screen flex flex-col bg-gray-50/30">
+      <SetZoneAsOf date={scatterDataAsOf} />
       <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <Button
@@ -705,6 +736,26 @@ function ScatterChartContent() {
             )}
           </div>
         </div>
+      </div>
+
+      <div className="mb-4 rounded-2xl border border-gray-100 bg-white p-3 shadow-sm">
+        <label htmlFor="scatter-zone-query" className="mb-2 block text-xs font-bold text-gray-500">
+          구역 이름
+        </label>
+        <input
+          id="scatter-zone-query"
+          value={zoneQuery}
+          onChange={(event) => setZoneQuery(event.target.value)}
+          placeholder="예: 성수전략"
+          className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm font-medium text-gray-900 outline-none focus:border-indigo-400"
+        />
+        {zoneQuery.trim() ? (
+          <p className="mt-2 text-xs font-semibold text-indigo-700">
+            {nameHits.length > 0
+              ? `‘${zoneQuery.trim()}’ ${nameHits.length}곳. 예산 범위 밖이어도 차트에 표시합니다.`
+              : `‘${zoneQuery.trim()}’에 해당하는 구역이 없습니다.`}
+          </p>
+        ) : null}
       </div>
 
       {/* 구별 필터 칩 */}
@@ -903,7 +954,7 @@ function ScatterChartContent() {
                   <ZonePointShape
                     {...props}
                     onPointClick={handlePointClick}
-                    showLabels={!isMobile || autoZoomEnabled}
+                    showLabels={!isMobile || autoZoomEnabled || zoneQuery.trim().length > 0}
                     labelSides={Object.fromEntries(displayData.map((point: { id: string; labelSide?: string }) => [point.id, point.labelSide]))}
                   />
                 )}

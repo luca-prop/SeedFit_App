@@ -5,7 +5,9 @@ import { ArrowLeft, Building2, CalendarDays, FileText, Landmark, TrendingUp } fr
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ReferenceApartmentComparisonCard } from "@/components/domain/ReferenceApartmentComparisonCard";
+import { FallbackDataBanner, SetZoneAsOf } from "@/components/domain/zoneAsOf";
 import { MVP_DATA_DISCLOSURE } from "@/lib/dataDisclosure";
+import { findFallbackZone, getFallbackSourceDate } from "@/lib/reverseFilterFallback";
 import { EVENT_TYPES, recordEvent } from "@/lib/analytics/events";
 import { prisma } from "@/lib/prisma";
 
@@ -93,6 +95,15 @@ function formatKrwRange(minKrw: bigint | null | undefined, maxKrw: bigint | null
   return `${formatKrw(minKrw)} ~ ${formatKrw(maxKrw)}`;
 }
 
+function isoDate(value: Date) {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Seoul",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(value);
+}
+
 function formatDate(value: Date | null | undefined) {
   if (!value) {
     return "업데이트 예정";
@@ -122,27 +133,92 @@ function toSafeKrwNumber(value: bigint | null | undefined) {
 export default async function ZoneDetailLitePage({ params, searchParams }: ZoneDetailPageProps) {
   const { id } = await params;
   const resolvedSearchParams = searchParams ? await searchParams : {};
-  const zone = await prisma.zone.findUnique({
-    where: {
-      id,
-    },
+  const resultsHref = buildResultsHref(resolvedSearchParams);
+  let zone: Awaited<ReturnType<typeof prisma.zone.findUnique<{
+    where: { id: string };
     include: {
-      investmentSnapshots: {
-        orderBy: {
-          sourceDate: "desc",
-        },
-        take: 1,
-      },
+      investmentSnapshots: { orderBy: { sourceDate: "desc" }; take: 1 };
       referenceApartments: {
-        orderBy: {
-          priority: "asc",
+        orderBy: { priority: "asc" };
+        include: { referenceApartment: true };
+      };
+    };
+  }>>> | null = null;
+  try {
+    zone = await prisma.zone.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        investmentSnapshots: {
+          orderBy: {
+            sourceDate: "desc",
+          },
+          take: 1,
         },
-        include: {
-          referenceApartment: true,
+        referenceApartments: {
+          orderBy: {
+            priority: "asc",
+          },
+          include: {
+            referenceApartment: true,
+          },
         },
       },
-    },
-  });
+    });
+  } catch (error) {
+    console.error("zone detail database path failed; using curated seed fallback", error);
+    const fallbackDate = getFallbackSourceDate();
+    const fallbackZone = findFallbackZone(id);
+
+    return (
+      <div className="container mx-auto max-w-5xl px-4 py-6 md:py-8">
+        <SetZoneAsOf date={fallbackZone?.sourceDate ?? fallbackDate} fallback />
+        <Link
+          href={resultsHref}
+          className="mb-3 inline-flex min-h-10 items-center rounded-lg px-1 text-sm font-medium text-slate-500 transition hover:text-slate-900"
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          검색 결과로 돌아가기
+        </Link>
+        <FallbackDataBanner date={fallbackDate} />
+        {fallbackZone ? (
+          <div className="grid gap-4 md:grid-cols-3">
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm text-slate-500">구역</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-xl font-black text-slate-950">{fallbackZone.zoneName}</p>
+                <p className="mt-2 text-xs text-slate-500">{fallbackZone.district} {fallbackZone.dong}</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm text-slate-500">사업 단계</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-xl font-black text-slate-950">{fallbackZone.stage}</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm text-slate-500">실투자금 범위</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-xl font-black text-slate-950">
+                  {formatKrwRange(BigInt(fallbackZone.investmentMinKrw), fallbackZone.investmentMaxKrw === null ? null : BigInt(fallbackZone.investmentMaxKrw))}
+                </p>
+                <p className="mt-2 text-xs text-slate-500">이 금액은 {fallbackZone.sourceDate} 예비 파일 기준입니다.</p>
+              </CardContent>
+            </Card>
+          </div>
+        ) : (
+          <p className="text-sm text-slate-600">이 구역은 예비 파일에 없습니다.</p>
+        )}
+      </div>
+    );
+  }
 
   if (!zone) {
     notFound();
@@ -158,8 +234,8 @@ export default async function ZoneDetailLitePage({ params, searchParams }: ZoneD
   const snapshot = zone.investmentSnapshots[0];
   const investmentRange = formatKrwRange(snapshot?.investmentMinKrw, snapshot?.investmentMaxKrw);
   const projectTypeLabel = formatProjectType(zone.projectType);
-  const resultsHref = buildResultsHref(resolvedSearchParams);
   const comparisonHref = buildComparisonHref(zone.id, zone.zoneName, resolvedSearchParams);
+  const hexafitHref = `/app/hexafit?zones=${encodeURIComponent(zone.zoneName)}`;
   const featureNotes = [
     zone.notes,
     `${zone.district} ${zone.dong}의 ${projectTypeLabel} 구역입니다.`,
@@ -169,6 +245,7 @@ export default async function ZoneDetailLitePage({ params, searchParams }: ZoneD
 
   return (
     <div className="container mx-auto max-w-5xl px-4 py-6 md:py-8">
+      {snapshot ? <SetZoneAsOf date={isoDate(snapshot.sourceDate)} /> : null}
       <div className="mb-6">
         <Link
           href={resultsHref}
@@ -187,12 +264,20 @@ export default async function ZoneDetailLitePage({ params, searchParams }: ZoneD
             <h1 className="text-2xl font-black text-slate-950 md:text-3xl">{zone.zoneName}</h1>
             <p className="mt-2 text-sm text-slate-500">구역 기본 정보와 최신 실투자금 범위를 빠르게 확인하는 Lite 화면입니다.</p>
           </div>
-          <Link
-            href={comparisonHref}
-            className="inline-flex min-h-11 items-center justify-center rounded-xl bg-indigo-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-indigo-700"
-          >
-            같은 예산 기축단지 비교
-          </Link>
+          <div className="flex flex-col gap-2 sm:items-end">
+            <Link
+              href={comparisonHref}
+              className="inline-flex min-h-11 items-center justify-center rounded-xl bg-indigo-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-indigo-700"
+            >
+              같은 예산 기축단지 비교
+            </Link>
+            <Link
+              href={hexafitHref}
+              className="inline-flex min-h-11 items-center justify-center rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-2 text-sm font-bold text-indigo-700 transition hover:bg-indigo-100"
+            >
+              육각형으로 비교
+            </Link>
+          </div>
         </div>
       </div>
 
