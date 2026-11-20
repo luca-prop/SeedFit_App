@@ -411,6 +411,9 @@ export default async function ResultsPage({ searchParams }: { searchParams?: Pro
     sortDirection: selectedSort.sortDirection,
   });
   const allVisibleZones = result.ok ? [...result.matchedZones, ...result.nearZones] : [];
+  const catalogZones = result.ok
+    ? [...result.matchedZones, ...result.nearZones, ...result.excludedZones]
+    : [];
   const effectiveDistricts = selectedDistricts.length > 0 ? selectedDistricts : legacyDistrict !== "all" ? [legacyDistrict] : [];
   const effectiveStageGroups =
     selectedStageGroups.length > 0 ? selectedStageGroups : legacyStage !== "all" ? [stageAxisLabelFor(legacyStage)] : [];
@@ -509,6 +512,7 @@ export default async function ResultsPage({ searchParams }: { searchParams?: Pro
             sortOptions={SORT_OPTIONS.map(({ value, label }) => ({ value, label }))}
             includeSub={includeSub}
             showCoverageToggle={opsMode}
+            catalogZones={catalogZones}
           />
 
           <div className="grid gap-3 sm:grid-cols-3">
